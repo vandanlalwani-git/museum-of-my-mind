@@ -55,6 +55,7 @@
   --radius: 2px;
   --measure: 65ch;
   --content-max: 1280px;
+  --bar-h: 4.75rem;
 
   /* Motion */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);

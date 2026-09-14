@@ -15,6 +15,7 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--space-6);
+  min-height: var(--bar-h);
   padding: var(--space-4) var(--space-6);
   border-bottom: 1px solid var(--hairline-soft);
   background: rgba(10, 11, 16, 0.72);
@@ -57,6 +58,7 @@
 }
 
 @media (max-width: 900px) {
+  :root { --bar-h: 6.5rem; }
   .shell__bar {
     grid-template-columns: 1fr auto;
     grid-template-areas: 'brand tools' 'compass compass';

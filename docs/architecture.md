@@ -10,7 +10,7 @@
 | Local data | IndexedDB via `idb` | Thin promise wrapper, no ORM, no magic. |
 | State | Zustand | Small, no boilerplate, works with async loaders. |
 | Motion | Framer Motion (`motion` package) | Room transitions, layout animation. |
-| 3D | React Three Fiber + drei (lazy, only Observatory and Workshop) | Loaded on demand; never on the entrance path. |
+| 3D | React Three Fiber + drei (lazy, only Observatory and Workshop) | Loaded on demand; never on the entrance path. **Status:** not yet added. The Observatory sky ships as a 2D canvas renderer, which is also the permanent non-WebGL fallback. |
 | Graph layout | d3-force (Archive only) | Deterministic with a seeded RNG. |
 | PWA | `vite-plugin-pwa` (Workbox) | Precache app shell; offline after first load. |
 | Fonts | Self-hosted in `/public/fonts` | Offline; no third-party requests. |
@@ -116,6 +116,10 @@ Every room route is lazy-loaded. The entrance is in the main chunk. Room routes 
 - All assets are precached on first load.
 - No runtime network requests are made by the app. Link records open in a new tab via the browser, not fetched.
 - IndexedDB is the only persistence. `localStorage` is used only for a single `hasVisited` flag to skip the entrance's first-time animation.
+
+## Observatory rendering
+
+`rooms/observatory/layout.ts` is a pure function from goals and projects to normalised positions (goals on a golden-angle spiral, projects on tilted orbits). `SkyCanvas.tsx` draws that layout on a 2D canvas each animation frame (or once, under reduced motion) and hit-tests pointer events against the last frame's positions. All mutations flow through `useMuseumStore.upsert/remove`, which write to IndexedDB before updating memory, so every change survives refresh.
 
 ## Determinism
 

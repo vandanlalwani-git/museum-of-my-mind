@@ -43,7 +43,7 @@ export default function Settings() {
       const backup = parseBackup(await file.text());
       const result = await importBackup(backup, mode);
       if (active) await enter(active.id);
-      say(`Restored ${result.records} items across ${result.museums} museum${result.museums === 1 ? '' : 's'}.`);
+      say(`Restored ${result.records} item${result.records === 1 ? '' : 's'} across ${result.museums} museum${result.museums === 1 ? '' : 's'}.`);
     } catch (e) {
       say(e instanceof BackupError ? e.message : 'That file could not be read.');
     } finally {

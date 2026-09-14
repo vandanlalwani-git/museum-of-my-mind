@@ -16,12 +16,15 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] PWA manifest + service worker + `_redirects` + `_headers` (no deploy).
 - [x] Vitest: repository CRUD and hydrate smoke tests.
 
-## Phase 1 — Observatory
+## Phase 1 — Observatory (done 2026-09-14)
 
-- Goal and project editors (create, edit, archive) with the Vitrine/Instrument components.
-- 2D constellation renderer on canvas first (goals as star clusters, projects orbiting, next actions as bright points). Deterministic layout from goal id.
-- R3F sky as progressive enhancement behind a WebGL check, lazy-loaded.
-- Keyboard navigation between stars; accessible list equivalent.
+- [x] Goal, project, and next-action editors: create, edit, rest/wake, fulfil, release, revisit, finish, set aside, complete, undo, let go.
+- [x] 2D constellation renderer on canvas: goals as glowing stars, projects in tilted orbits, next actions as gold companions, the goal's next action pulsing. Deterministic layout from ids (`layout.ts`, tested).
+- [x] Panel: sky index (in the sky / beneath the horizon / adrift) and goal detail with projects and actions.
+- [x] Empty museum: an invitation and a three-line guide instead of a blank state.
+- [x] Keyboard navigation across goals on the canvas; the panel is the accessible list equivalent; list-only fallback if the canvas cannot draw.
+- [x] Responsive: sky above, panel below on narrow screens; compass scrolls in one row.
+- [ ] Deferred: React Three Fiber sky as a progressive enhancement. The canvas renderer is the baseline and would remain the non-WebGL fallback. Needs owner approval because three.js adds roughly 150KB gzipped to the room chunk.
 
 ## Phase 2 — Archive
 

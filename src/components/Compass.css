@@ -28,7 +28,18 @@
   opacity: 1;
   box-shadow: 0 0 8px 2px var(--gold-glow-strong);
 }
-@media (max-width: 760px) {
-  .compass { gap: var(--space-3); }
-  .compass__point { font-size: 0.625rem; letter-spacing: 0.1em; }
+@media (max-width: 900px) {
+  .compass {
+    flex-wrap: nowrap;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    margin-inline: calc(var(--space-6) * -1);
+    padding-inline: var(--space-6);
+    mask-image: linear-gradient(90deg, transparent, #000 var(--space-6), #000 calc(100% - var(--space-6)), transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--space-6), #000 calc(100% - var(--space-6)), transparent);
+  }
+  .compass::-webkit-scrollbar { display: none; }
+  .compass__point { font-size: 0.625rem; letter-spacing: 0.1em; white-space: nowrap; flex: none; }
 }
