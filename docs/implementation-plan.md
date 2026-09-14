@@ -59,9 +59,11 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] Empty states: no goals (invitation to the Observatory); a goal with nothing unfinished (invitation to the Workshop).
 - [ ] Settings polish from the old plan (delete own museum, update prompt control) rolls into Phase 7.
 
-## Phase 5 — Cabinet of Curiosities
+## Phase 5 — Cabinet of Curiosities (done 2026-09-14)
 
-- Ranks by staleness + serendipity (seeded daily shuffle); one drawer at a time; "keep", "revisit", "let it go".
+- [x] One drawer at a time, with two more waiting below and arrow keys between them. Chosen by stated rules in `rules.ts` (tested for determinism, daily variety, exclusions): not opened in a while, tied to a goal in the sky, old and unfinished, shares a tag with something touched this week, a memory from around this date. Every drawer says why it opened.
+- [x] Actions that do what they say and nothing else: open it, still interesting (counts as opened), make it a project (with a thread back), add as a next step to an active project, set a resting project in motion, put it away for 60 days (`restUntil`), archive it or set it aside, show something else (session only).
+- [x] Quiet empty states for a new museum and for a fully seen day. Demo drawers come from Alex's older material.
 
 ## Phase 7 — Polish and ship
 

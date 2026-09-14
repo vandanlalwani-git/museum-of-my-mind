@@ -16,6 +16,8 @@ export interface BaseRecord {
   updatedAt: number;
   lastVisitedAt: number;
   tags: string[];
+  /** Set by the Cabinet's "put it away": stays out of the drawers until then. */
+  restUntil?: number;
 }
 
 export type Horizon = 'season' | 'year' | 'decade' | 'lifetime';

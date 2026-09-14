@@ -22,3 +22,6 @@
 
 .instrument--ember { border-color: rgba(168, 85, 63, 0.4); color: var(--ember); }
 .instrument--ember:hover { border-color: var(--ember); color: var(--ember); }
+
+a.instrument { text-decoration: none; }
+a.instrument:hover { text-decoration: none; }

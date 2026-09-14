@@ -42,7 +42,6 @@
 .fg__invite { display: flex; flex-direction: column; gap: var(--space-4); max-width: 34rem; }
 .fg__invite-title { font-size: var(--text-2xl); line-height: 1.1; }
 .fg__invite-lede { font-family: var(--font-display); font-style: italic; font-size: var(--text-lg); color: var(--parchment-dim); }
-a.instrument { text-decoration: none; }
 
 .fg-saved { position: relative; }
 .fg-saved .index__item.is-loaded .index__title { color: var(--gold); }
