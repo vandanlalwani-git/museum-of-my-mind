@@ -22,6 +22,8 @@ interface MuseumState {
   leave: () => Promise<void>;
   createOwnMuseum: (name: string, visitorName?: string) => Promise<Museum>;
   refreshMuseums: () => Promise<void>;
+  /** Deletes a personal museum and everything in it. Refuses the demo. */
+  deleteMuseum: (museumId: string) => Promise<void>;
 
   /** Write a record to IndexedDB and reflect it in memory. */
   upsert: <T extends RecordType>(type: T, record: RecordMap[T]) => Promise<void>;
@@ -89,6 +91,15 @@ export const useMuseumStore = create<MuseumState>((set, get) => ({
 
   async refreshMuseums() {
     set({ museums: await museumRepo.list() });
+  },
+
+  async deleteMuseum(museumId) {
+    const museum = await museumRepo.get(museumId);
+    if (!museum) return;
+    if (museum.kind !== 'own') throw new Error('The demo museum cannot be deleted; reload it instead.');
+    if (get().activeMuseumId === museumId) await get().leave();
+    await museumRepo.remove(museumId);
+    await get().refreshMuseums();
   },
 
   async upsert(type, record) {

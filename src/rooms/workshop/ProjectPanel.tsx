@@ -3,9 +3,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Instrument } from '@/components/Instrument';
 import { ActionList } from '@/components/ActionList';
 import { ProjectEditor } from '@/components/ProjectEditor';
+import { ThreadList } from '@/components/ThreadList';
 import { relativeAge } from '@/lib/dates';
 import { STATUS_LABEL, type MuseumOps } from '@/store/ops';
-import { THREAD_LABEL, type MuseumRecords, type Project } from '@/types';
+import type { MuseumRecords, Project } from '@/types';
 import { nextOpenAction } from './pickup';
 
 interface Props {
@@ -113,22 +114,7 @@ export function ProjectPanel({ project, records, ops, now, reasons, onBack, onDe
       {threads.length > 0 && (
         <section className="panel__section">
           <div className="panel__section-head"><span className="plaque">Threads · {threads.length}</span></div>
-          <ul className="threads">
-            {threads.map((t) => {
-              const outgoing = t.fromId === project.id;
-              const other = titles.get(outgoing ? t.toId : t.fromId);
-              return (
-                <li key={t.id} className="thread">
-                  <p className="thread__line">
-                    {outgoing ? <em>This</em> : (other ? <RouterLink className="thread__target" to={other.to}>{other.title}</RouterLink> : <span className="thread__target--gone">something gone</span>)}
-                    {' '}<span className="thread__kind">{THREAD_LABEL[t.kind]}</span>{' '}
-                    {outgoing ? (other ? <RouterLink className="thread__target" to={other.to}>{other.title}</RouterLink> : <span className="thread__target--gone">something gone</span>) : <em>this</em>}
-                  </p>
-                  {t.why && <p className="thread__why">“{t.why}”</p>}
-                </li>
-              );
-            })}
-          </ul>
+          <ThreadList threads={threads} selfId={project.id} titles={titles} onUpdate={ops.updateThread} onRemove={ops.removeThread} />
         </section>
       )}
     </div>

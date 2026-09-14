@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { ThreadList } from '@/components/ThreadList';
 import { Instrument } from '@/components/Instrument';
 import { SelectField, TextArea, TextField } from '@/components/Field';
 import { relativeAge } from '@/lib/dates';
@@ -15,6 +15,7 @@ export interface ArchiveOps {
   restoreItem: (item: ArchiveItem) => Promise<void>;
   deleteItem: (item: ArchiveItem) => Promise<void>;
   addThread: (fromId: string, toId: string, kind: ThreadKind, why: string) => Promise<void>;
+  updateThread: (thread: Thread, patch: { kind: ThreadKind; why: string }) => Promise<void>;
   removeThread: (id: string) => Promise<void>;
 }
 
@@ -31,14 +32,15 @@ export function ItemPanel({ item, records, ops, onBack, onSelect }: Props) {
   const kind = itemKind(item);
   const archived = isArchived(item);
   const titles = useMemo(() => {
-    const m = new Map<string, { title: string; where: 'archive' | 'observatory'; archived?: boolean }>();
-    for (const i of allItems(records)) m.set(i.id, { title: i.title, where: 'archive', archived: isArchived(i) });
-    for (const g of records.goals) m.set(g.id, { title: g.title, where: 'observatory' });
-    for (const p of records.projects) m.set(p.id, { title: p.title, where: 'observatory' });
+    const m = new Map<string, { title: string; to?: string; note?: string }>();
+    for (const i of allItems(records)) m.set(i.id, { title: i.title, ...(isArchived(i) ? { note: 'put away' } : {}) });
+    for (const g of records.goals) m.set(g.id, { title: g.title, to: `/observatory?goal=${g.id}`, note: 'observatory' });
+    for (const p of records.projects) m.set(p.id, { title: p.title, to: `/workshop?project=${p.id}`, note: 'workshop' });
     return m;
   }, [records]);
   const threads = records.threads.filter((t) => t.fromId === item.id || t.toId === item.id);
   const attached = kind === 'memory' ? [(item as Memory).goalId, (item as Memory).projectId].filter(Boolean).map((id) => titles.get(id!)) : [];
+  const cut = async (t: Thread) => { await ops.removeThread(t.id); };
 
   return (
     <div className="panel">
@@ -105,35 +107,10 @@ export function ItemPanel({ item, records, ops, onBack, onSelect }: Props) {
         {threads.length === 0 && mode !== 'connect' && (
           <p className="panel__empty">Nothing is tied to this yet. A thread says how two things belong together, in your words.</p>
         )}
-        <ul className="threads">
-          {threads.map((t: Thread) => {
-            const outgoing = t.fromId === item.id;
-            const otherId = outgoing ? t.toId : t.fromId;
-            const other = titles.get(otherId);
-            return (
-              <li key={t.id} className="thread">
-                <p className="thread__line">
-                  {outgoing ? <em>This</em> : <ThreadTarget id={otherId} info={other} onSelect={onSelect} />}
-                  {' '}<span className="thread__kind">{THREAD_LABEL[t.kind]}</span>{' '}
-                  {outgoing ? <ThreadTarget id={otherId} info={other} onSelect={onSelect} /> : <em>this</em>}
-                </p>
-                {t.why && <p className="thread__why">“{t.why}”</p>}
-                <button type="button" className="thread__remove" aria-label="Cut this thread" onClick={() => void ops.removeThread(t.id)}>×</button>
-              </li>
-            );
-          })}
-        </ul>
+        <ThreadList threads={threads} selfId={item.id} titles={titles} onSelect={onSelect} onUpdate={ops.updateThread} onRemove={cut} />
       </section>
     </div>
   );
-}
-
-function ThreadTarget({ id, info, onSelect }: { id: string; info: { title: string; where: 'archive' | 'observatory'; archived?: boolean } | undefined; onSelect: (id: string) => void }) {
-  if (!info) return <span className="thread__target thread__target--gone">something that is gone</span>;
-  if (info.where === 'observatory') {
-    return <RouterLink className="thread__target" to="/observatory">{info.title} <span className="plaque">observatory</span></RouterLink>;
-  }
-  return <button type="button" className="thread__target" onClick={() => onSelect(id)}>{info.title}{info.archived ? <span className="plaque"> put away</span> : null}</button>;
 }
 
 function Body({ item }: { item: ArchiveItem }) {

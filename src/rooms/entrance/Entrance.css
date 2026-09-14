@@ -49,7 +49,7 @@
 .entrance__eyebrow { margin-bottom: var(--space-2); }
 
 .entrance__title {
-  font-size: clamp(2.6rem, 7vw, var(--text-3xl));
+  font-size: clamp(2.2rem, 7vw, var(--text-3xl));
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.015em;

@@ -85,6 +85,7 @@ export default function Observatory() {
 
   return (
     <section className={`obs ${empty ? 'obs--empty' : ''}`}>
+      <h1 className="visually-hidden">Observatory</h1>
       <div className="obs__sky">
         {canvasOk && dome && !empty && (
           <Suspense fallback={null}>

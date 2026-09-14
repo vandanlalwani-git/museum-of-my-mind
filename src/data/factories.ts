@@ -52,6 +52,6 @@ export function makeThread(museumId: string, fromId: string, toId: string, kind:
   return { ...stamp(museumId), fromId, toId, kind, ...(why?.trim() ? { why: why.trim() } : {}) };
 }
 
-export function makeScenario(museumId: string, input: { name: string; goalId: string; hoursPerWeek: number; consistency: number; focus: number; rest: number }): Scenario {
-  return { ...stamp(museumId), name: input.name.trim() || 'Untitled what-if', goalId: input.goalId, hoursPerWeek: input.hoursPerWeek, consistency: input.consistency, focus: input.focus, rest: input.rest };
+export function makeScenario(museumId: string, input: { name: string; goalId: string; hoursPerWeek: number; consistency: number; focus: number; rest: number; projectHours?: number }): Scenario {
+  return { ...stamp(museumId), name: input.name.trim() || 'Untitled what-if', goalId: input.goalId, hoursPerWeek: input.hoursPerWeek, consistency: input.consistency, focus: input.focus, rest: input.rest, ...(input.projectHours ? { projectHours: input.projectHours } : {}) };
 }

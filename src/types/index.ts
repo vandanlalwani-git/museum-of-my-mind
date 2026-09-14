@@ -38,6 +38,8 @@ export interface Project extends BaseRecord {
   goalIds: string[];
   status: ProjectStatus;
   progress: number; // 0..1
+  /** A rough size in focused hours (15 small, 40 medium, 100 large), if the keeper has set one. */
+  sizeHours?: number;
 }
 
 export interface Action extends BaseRecord {
@@ -99,6 +101,8 @@ export interface Scenario extends BaseRecord {
   consistency: number;  // 0..1, share of weeks the hours actually happen
   focus: number;        // 0..1, 1 = one main project, 0 = everything at once
   rest: number;         // 0..1, how much recovery is protected
+  /** Typical project size assumed by this what-if, in focused hours. Defaults to 40. */
+  projectHours?: number;
 }
 
 export type RecordType = 'goals' | 'projects' | 'actions' | 'notes' | 'links' | 'memories' | 'threads' | 'scenarios';

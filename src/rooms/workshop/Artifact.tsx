@@ -54,9 +54,10 @@ export function Artifact({ project, actions, goals, selected, now, reasons, onOp
         <span className="artifact__age plaque">Touched {relativeAge(project.lastVisitedAt, now)}</span>
         {next && project.status !== 'done' && project.status !== 'abandoned' && <span className="artifact__next"><span className="artifact__next-dot" aria-hidden="true" />{next.text}</span>}
       </span>
-      {reasons && (
+      {reasons && reasons[0] && (
         <span className="artifact__why">
-          {reasons.map((r, i) => <span key={i}>{r}</span>)}
+          <span>{reasons[0]}</span>
+          {reasons.length > 1 && <span className="artifact__why-more">{reasons.length - 1} more reason{reasons.length - 1 === 1 ? '' : 's'} inside</span>}
         </span>
       )}
       {project.status === 'done' && <span className="artifact__seal plaque" aria-hidden="true">done</span>}

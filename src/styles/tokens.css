@@ -66,3 +66,12 @@
 
   --shadow-deep: 0 24px 64px rgba(0, 0, 0, 0.5);
 }
+
+@media (max-width: 400px) {
+  :root {
+    --text-3xl: 2.9rem;
+    --text-2xl: 2rem;
+    --text-xl: 1.5rem;
+    --text-lg: 1.15rem;
+  }
+}

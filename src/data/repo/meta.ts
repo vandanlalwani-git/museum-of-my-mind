@@ -21,4 +21,5 @@ export const META_KEYS = {
   settings: 'settings',
   schemaVersion: 'schemaVersion',
   demoSeedVersion: 'demoSeedVersion',
+  lastBackupAt: 'lastBackupAt',
 } as const;

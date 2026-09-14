@@ -65,11 +65,24 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] Actions that do what they say and nothing else: open it, still interesting (counts as opened), make it a project (with a thread back), add as a next step to an active project, set a resting project in motion, put it away for 60 days (`restUntil`), archive it or set it aside, show something else (session only).
 - [x] Quiet empty states for a new museum and for a fully seen day. Demo drawers come from Alex's older material.
 
-## Phase 7 — Polish and ship
+## Phase 6 — Final polish and settings (done 2026-09-14)
 
-- Sound toggle with two sounds.
-- Lighthouse pass, bundle audit, a11y sweep.
-- Cloudflare Pages deploy (only after approval).
+- [x] Sound: two procedural Web Audio sounds (a hinge on room change, a small bell when something is kept). Never before a user gesture, only with the toggle on, silent under reduced motion.
+- [x] Typography steps down one size below 400px.
+- [x] Workshop cards show the single strongest reason; all reasons stay in the panel.
+- [x] Archive wall switches to lit-only labels past 60 visible items.
+- [x] Settings: "About this museum" plaque (counts, last touched, last backup), demo-only "Reload the demo collection", guarded deletion of a personal museum (type its name; export offered first; the demo can never be deleted).
+- [x] Threads can be re-tied in place (relation and reason) in the Archive and the Workshop.
+- [x] Future Gallery: a typical project size dial (small, medium, large) plus a per-project rough size set in the Workshop; the reading names every sized project and calls the sizes guesses.
+- [x] Accessibility sweep by DOM audit in every room (every control named, every field labelled, canvases and maps described). **Lighthouse could not run**: no Chromium-based browser is installed on this Mac and no software was installed to provide one.
+
+## Phase 7 — Optional "Ask my AI" (bring your own Claude key)
+
+See docs/architecture.md, "Ask my AI".
+
+## Phase 8 — Production readiness and free deployment
+
+See docs/deploy.md.
 
 ## Decisions needed from the owner
 

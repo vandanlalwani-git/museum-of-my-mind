@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { Compass } from '@/components/Compass';
@@ -7,6 +7,7 @@ import { Instrument } from '@/components/Instrument';
 import { useMuseumStore } from '@/store/museum';
 import { useUiStore, type BeforeInstallPromptEvent } from '@/store/ui';
 import { EASE_OUT_QUINT } from '@/lib/motion';
+import { installSoundGesture, playDoor } from '@/lib/sound';
 import './AppShell.css';
 
 export function AppShell() {
@@ -24,6 +25,13 @@ export function AppShell() {
     window.addEventListener('beforeinstallprompt', onPrompt);
     return () => window.removeEventListener('beforeinstallprompt', onPrompt);
   }, [setInstallPrompt]);
+
+  useEffect(() => installSoundGesture(), []);
+  const firstRoute = useRef(true);
+  useEffect(() => {
+    if (firstRoute.current) { firstRoute.current = false; return; }
+    playDoor();
+  }, [location.pathname]);
 
   useEffect(() => { if (!isEntrance) noteRoomVisit(); }, [location.pathname, isEntrance, noteRoomVisit]);
 

@@ -29,33 +29,26 @@ export function pickUps(records: MuseumRecords, now: number, limit = 3): Pickup[
     const age = Math.floor((now - p.createdAt) / DAY);
     if (days < FRESH_DAYS) continue; // touched this week: not forgotten
 
-    const reasons: string[] = [];
-    let score = 0;
+    const weighted: { text: string; weight: number }[] = [];
     const next = nextOpenAction(p.id, records.actions);
     const goal: Goal | undefined = p.goalIds.map((id) => activeGoals.get(id)).find(Boolean);
 
     if (days >= 14 && next) {
-      score += 3 + Math.min(days, 180) / 30;
-      reasons.push(`Not touched in ${days} days, but it still has a next step: “${next.text}”.`);
+      weighted.push({ weight: 3 + Math.min(days, 180) / 30, text: `Not touched in ${days} days, but it still has a next step: “${next.text}”.` });
     } else if (days >= 14) {
-      score += 1 + Math.min(days, 180) / 45;
-      reasons.push(`Not touched in ${days} days.`);
+      weighted.push({ weight: 1 + Math.min(days, 180) / 45, text: `Not touched in ${days} days.` });
     }
-    if (goal) {
-      score += 1;
-      reasons.push(`It serves “${goal.title}”, which is still in the sky.`);
-    }
+    if (goal) weighted.push({ weight: 1, text: `It serves “${goal.title}”, which is still in the sky.` });
     if (p.status !== 'idea' && p.progress >= 0.7) {
-      score += 2;
-      reasons.push(`Nearly there: about ${Math.round(p.progress * 100)}% done.`);
+      weighted.push({ weight: 2, text: `Nearly there: about ${Math.round(p.progress * 100)}% done.` });
     } else if (p.status === 'paused' && days >= 30 && p.progress >= 0.25) {
-      score += 2;
-      reasons.push(`Resting for ${days} days with real progress behind it (${Math.round(p.progress * 100)}%).`);
+      weighted.push({ weight: 2, text: `Resting for ${days} days with real progress behind it (${Math.round(p.progress * 100)}%).` });
     }
-    if (p.status === 'idea' && age >= 30) {
-      score += 1.5;
-      reasons.push(`An idea that has waited ${age} days.`);
-    }
+    if (p.status === 'idea' && age >= 30) weighted.push({ weight: 1.5, text: `An idea that has waited ${age} days.` });
+
+    const score = weighted.reduce((s, w) => s + w.weight, 0);
+    // Strongest reason first, so a card can show just the one that matters most.
+    const reasons = weighted.sort((a, b) => b.weight - a.weight).map((w) => w.text);
     if (score > 0) out.push({ project: p, score, reasons });
   }
 

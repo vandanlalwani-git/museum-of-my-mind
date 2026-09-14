@@ -50,7 +50,7 @@ export function Entrance() {
     setBusy(true);
     try {
       await enter(m.id);
-      say(m.kind === 'demo' ? "You are walking through Alex's museum. Alex is fictional. Touch anything." : `Welcome back to ${m.name}.`);
+      say(m.kind === 'demo' ? "You are walking through Alex's museum. Alex is fictional. Touch anything." : `Welcome back to ${m.name}.`, undefined, { quiet: true });
       navigate('/observatory');
     } finally {
       setBusy(false);

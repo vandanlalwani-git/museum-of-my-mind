@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { META_KEYS, metaRepo } from '@/data/repo/meta';
 import { defaultSettings, type Settings } from '@/types';
+import { setSoundEnabled } from '@/lib/sound';
 
 interface SettingsState extends Settings {
   loaded: boolean;
@@ -9,6 +10,7 @@ interface SettingsState extends Settings {
 }
 
 function applyToDocument(s: Settings) {
+  setSoundEnabled(s.soundEnabled);
   if (typeof document === 'undefined') return;
   document.documentElement.dataset.reduceMotion = s.reduceMotion;
 }

@@ -161,19 +161,6 @@ button.tag:hover { color: var(--gold); border-color: var(--gold-dim); }
 .arc-url a { font-size: var(--text-sm); overflow-wrap: anywhere; }
 .arc-body { display: flex; flex-direction: column; gap: var(--space-3); font-size: var(--text-base); line-height: 1.65; color: var(--parchment); }
 
-.threads { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
-.thread { position: relative; padding: var(--space-3) var(--space-6) var(--space-3) 0; border-bottom: 1px solid var(--hairline-soft); display: flex; flex-direction: column; gap: var(--space-1); }
-.thread__line { font-size: var(--text-sm); color: var(--parchment-dim); line-height: 1.5; }
-.thread__line em { font-style: italic; color: var(--parchment-faint); }
-.thread__kind { color: var(--gold-dim); font-style: italic; }
-.thread__target { color: var(--parchment); font-family: var(--font-display); font-size: var(--text-base); transition: color var(--dur-fast) var(--ease); }
-.thread__target:hover { color: var(--gold); text-decoration: none; }
-.thread__target--gone { color: var(--parchment-faint); font-style: italic; }
-.thread__why { font-family: var(--font-display); font-style: italic; font-size: var(--text-base); color: var(--parchment); }
-.thread__remove { position: absolute; right: 0; top: var(--space-3); color: var(--parchment-faint); font-size: var(--text-base); line-height: 1; padding: 0.2rem 0.3rem; opacity: 0; transition: opacity var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease); }
-.thread:hover .thread__remove, .thread__remove:focus-visible { opacity: 1; }
-.thread__remove:hover { color: var(--ember); }
-
 .connect__preview { font-size: var(--text-sm); color: var(--parchment-dim); }
 .connect__preview strong { color: var(--parchment); font-weight: 500; }
 .connect__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; max-height: 14rem; overflow-y: auto; }
@@ -188,6 +175,7 @@ button.tag:hover { color: var(--gold); border-color: var(--gold-dim); }
   .arc__panel { border-left: 0; border-top: 1px solid var(--hairline-soft); }
   .arc__legend { display: none; }
   .arc__anchor { left: var(--space-4); bottom: var(--space-4); }
-  .thread__remove { opacity: 1; }
   .wall__label { font-size: 15px; }
 }
+
+.wall--dense .wall__node--note .wall__glyph, .wall--dense .wall__node--link .wall__glyph, .wall--dense .wall__node--memory .wall__glyph { r: 5; }

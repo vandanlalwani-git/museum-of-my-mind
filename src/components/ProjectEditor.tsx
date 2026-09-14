@@ -20,12 +20,13 @@ export function ProjectEditor({ project, goals, onSave, onCancel }: Props) {
   const [progress, setProgress] = useState(Math.round(project.progress * 100));
   const [goalIds, setGoalIds] = useState<string[]>(project.goalIds);
   const [tags, setTags] = useState(project.tags.join(', '));
+  const [size, setSize] = useState<string>(project.sizeHours ? String(project.sizeHours) : '');
   const inSky = goals.filter((g) => g.state === 'active' || g.state === 'dormant' || project.goalIds.includes(g.id));
 
   const toggleGoal = (id: string) => setGoalIds((ids) => (ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]));
 
   return (
-    <form className="goal-form" onSubmit={(e: FormEvent) => { e.preventDefault(); if (title.trim()) void onSave({ title: title.trim(), summary: summary.trim(), status, progress: progress / 100, goalIds, tags: parseTags(tags) }); }}>
+    <form className="goal-form" onSubmit={(e: FormEvent) => { e.preventDefault(); if (title.trim()) void onSave({ title: title.trim(), summary: summary.trim(), status, progress: progress / 100, goalIds, tags: parseTags(tags), ...(size ? { sizeHours: Number(size) } : { sizeHours: undefined }) } as Partial<Project>); }}>
       <TextField label="Project" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} required autoFocus />
       <TextArea label="What it is" value={summary} onChange={(e) => setSummary(e.target.value)} maxLength={600} rows={3} />
       <SelectField label="State" value={status} onChange={(e) => setStatus(e.target.value as ProjectStatus)}>
@@ -41,6 +42,12 @@ export function ProjectEditor({ project, goals, onSave, onCancel }: Props) {
           </label>
         ))}
       </fieldset>
+      <SelectField label="Rough size" value={size} onChange={(e) => setSize(e.target.value)} hint="A guess in focused hours. The Future Gallery uses it; nothing else does.">
+        <option value="">Unsure</option>
+        <option value="15">Small · about 15 hours</option>
+        <option value="40">Medium · about 40 hours</option>
+        <option value="100">Large · about 100 hours</option>
+      </SelectField>
       <TextField label="Tags" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="health, running" />
       <div className="form-actions">
         <Instrument tone="primary" type="submit" disabled={!title.trim()}>Save</Instrument>

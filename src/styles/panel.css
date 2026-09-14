@@ -57,7 +57,25 @@
 .index__next { font-size: var(--text-sm); color: var(--parchment-dim); }
 
 
+.threads { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.thread { position: relative; padding: var(--space-3) 4.5rem var(--space-3) 0; border-bottom: 1px solid var(--hairline-soft); display: flex; flex-direction: column; gap: var(--space-1); }
+.thread__line { font-size: var(--text-sm); color: var(--parchment-dim); line-height: 1.5; }
+.thread__line em { font-style: italic; color: var(--parchment-faint); }
+.thread__kind { color: var(--gold-dim); font-style: italic; }
+.thread__target { color: var(--parchment); font-family: var(--font-display); font-size: var(--text-base); transition: color var(--dur-fast) var(--ease); }
+.thread__target:hover { color: var(--gold); text-decoration: none; }
+.thread__target--gone { color: var(--parchment-faint); font-style: italic; }
+.thread__why { font-family: var(--font-display); font-style: italic; font-size: var(--text-base); color: var(--parchment); }
+.thread__tools { position: absolute; right: 0; top: var(--space-3); display: flex; align-items: center; gap: var(--space-2); opacity: 0; transition: opacity var(--dur-fast) var(--ease); }
+.thread:hover .thread__tools, .thread__tools:focus-within { opacity: 1; }
+.thread__edit { color: var(--parchment-faint); }
+.thread__edit:hover { color: var(--gold); }
+.thread__remove { color: var(--parchment-faint); font-size: var(--text-base); line-height: 1; padding: 0.2rem 0.3rem; transition: color var(--dur-fast) var(--ease); }
+.thread__remove:hover { color: var(--ember); }
+
+
 @media (max-width: 960px) {
+  .thread__tools { opacity: 1; }
   .panel { padding: var(--space-5) var(--space-5) var(--space-10); }
 }
 

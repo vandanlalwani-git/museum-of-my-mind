@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { playChime } from '@/lib/sound';
 
 export interface QuietMessage {
   id: number;
@@ -7,7 +8,8 @@ export interface QuietMessage {
 
 interface UiState {
   message: QuietMessage | null;
-  say: (text: string, ms?: number) => void;
+  /** A quiet confirmation. Chimes (if sound is on) unless `quiet` is set. */
+  say: (text: string, ms?: number, opts?: { quiet?: boolean }) => void;
   hush: () => void;
   installPrompt: BeforeInstallPromptEvent | null;
   setInstallPrompt: (e: BeforeInstallPromptEvent | null) => void;
@@ -20,8 +22,9 @@ let timer: ReturnType<typeof setTimeout> | undefined;
 
 export const useUiStore = create<UiState>((set, get) => ({
   message: null,
-  say(text, ms = 4200) {
+  say(text, ms = 4200, opts) {
     if (timer) clearTimeout(timer);
+    if (!opts?.quiet) playChime();
     const id = ++counter;
     set({ message: { id, text } });
     timer = setTimeout(() => {

@@ -34,6 +34,10 @@ export function ArchiveMap({ graph, selectedId, matchIds, onSelect }: Props) {
     return { x: (minX + maxX) / 2 - w / 2, y: (minY + maxY) / 2 - h / 2, w, h };
   }, [graph]);
 
+  /** Past this many items the wall shows labels only for what is lit. */
+  const DENSE = 60;
+  const dense = graph.nodes.filter((n) => n.kind !== 'tag').length > DENSE;
+
   const focusId = hoverId ?? selectedId;
   const neighbours = useMemo(() => (focusId ? neighboursOf(graph, focusId) : null), [graph, focusId]);
 
@@ -86,11 +90,11 @@ export function ArchiveMap({ graph, selectedId, matchIds, onSelect }: Props) {
   return (
     <svg
       ref={svgRef}
-      className="wall"
+      className={`wall ${dense ? 'wall--dense' : ''}`}
       viewBox={`${box.x} ${box.y} ${box.w} ${box.h}`}
       preserveAspectRatio="xMidYMid meet"
       role="group"
-      aria-label={`Map of ${graph.nodes.length} items and tags with ${graph.edges.filter((e) => e.kind === 'thread').length} threads. Drag to pan, scroll to zoom.`}
+      aria-label={`Map of ${graph.nodes.length} items and tags with ${graph.edges.filter((e) => e.kind === 'thread').length} threads. Drag to pan, scroll to zoom.${dense ? ' The wall is dense, so labels appear on hover or selection.' : ''}`}
       onWheel={onWheel}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -122,6 +126,7 @@ export function ArchiveMap({ graph, selectedId, matchIds, onSelect }: Props) {
             const lit = isLit(n.id);
             const match = isMatch(n.id);
             const selected = n.id === selectedId;
+            const showLabel = !dense || n.kind === 'tag' || selected || hoverId === n.id || (focusId !== null && lit);
             return (
               <g
                 key={n.id}
@@ -142,13 +147,13 @@ export function ArchiveMap({ graph, selectedId, matchIds, onSelect }: Props) {
                 <circle className="wall__hit" r={n.kind === 'tag' ? 14 : 18} />
                 {selected && <circle className="wall__ring" r={n.r + 7} />}
                 <Glyph node={n} />
-                <text
+                {showLabel && <text
                   className="wall__label"
                   y={n.kind === 'tag' ? n.r + 11 : n.r + 14}
                   textAnchor="middle"
                 >
                   {n.kind === 'tag' ? n.title.toUpperCase() : truncate(n.title, 26)}
-                </text>
+                </text>}
               </g>
             );
           })}

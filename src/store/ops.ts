@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { makeAction, makeGoal, makeProject, touched } from '@/data/factories';
+import { makeAction, makeGoal, makeProject, makeThread, touched } from '@/data/factories';
 import { useMuseumStore } from '@/store/museum';
 import { useUiStore } from '@/store/ui';
-import type { Action, Goal, GoalState, Horizon, Project, ProjectStatus } from '@/types';
+import type { Action, Goal, GoalState, Horizon, Project, ProjectStatus, Thread, ThreadKind } from '@/types';
 
 /**
  * The one set of operations on goals, projects, and actions. Every room
@@ -23,6 +23,10 @@ export interface MuseumOps {
   addAction: (projectId: string, text: string) => Promise<Action>;
   toggleAction: (action: Action) => Promise<void>;
   removeAction: (action: Action) => Promise<void>;
+
+  addThread: (fromId: string, toId: string, kind: ThreadKind, why?: string) => Promise<Thread>;
+  updateThread: (thread: Thread, patch: { kind: ThreadKind; why: string }) => Promise<void>;
+  removeThread: (thread: Thread) => Promise<void>;
 }
 
 export const STATUS_LABEL: Record<ProjectStatus, string> = {
@@ -59,7 +63,11 @@ export function useMuseumOps(): MuseumOps {
         await upsert('projects', withExtras);
         return withExtras;
       },
-      async updateProject(project, patch) { await upsert('projects', touched(project, patch)); },
+      async updateProject(project, patch) {
+        const next = touched(project, patch);
+        if ('sizeHours' in patch && patch.sizeHours === undefined) delete (next as { sizeHours?: number }).sizeHours;
+        await upsert('projects', next);
+      },
       async setProjectStatus(project, status) {
         const patch: Partial<Project> = { status };
         if (status === 'done') patch.progress = 1;
@@ -98,6 +106,19 @@ export function useMuseumOps(): MuseumOps {
         if (p) await upsert('projects', touched(p));
       },
       async removeAction(action) { await remove('actions', action.id); },
+
+      async addThread(fromId, toId, kind, why) {
+        const t = makeThread(id(), fromId, toId, kind, why);
+        await upsert('threads', t);
+        say('A thread ties them now.');
+        return t;
+      },
+      async updateThread(thread, patch) {
+        const { why: _old, ...rest } = thread;
+        await upsert('threads', touched({ ...rest, ...(patch.why ? { why: patch.why } : {}) } as Thread, { kind: patch.kind }));
+        say('The thread is re-tied.');
+      },
+      async removeThread(thread) { await remove('threads', thread.id); },
     };
   }, [museumId, upsert, remove, say]);
 }

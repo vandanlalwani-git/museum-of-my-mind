@@ -97,3 +97,5 @@
   .ws__grid, .ws__grid--table { grid-template-columns: 1fr; }
   .artifact { min-height: 0; }
 }
+
+.artifact__why-more { color: var(--parchment-faint); }

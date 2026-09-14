@@ -8,10 +8,10 @@ import { useMuseumStore } from '@/store/museum';
 import { useUiStore } from '@/store/ui';
 import type { Scenario } from '@/types';
 import { Timeline } from './Timeline';
-import { assumptionsText, clampControls, explain, simulate, type Controls } from './model';
+import { SIZE_OPTIONS, assumptionsText, clampControls, explain, simulate, type Controls } from './model';
 import './future.css';
 
-const DEFAULT: Controls = { hoursPerWeek: 3, consistency: 0.6, focus: 0.7, rest: 0.6 };
+const DEFAULT: Controls = { hoursPerWeek: 3, consistency: 0.6, focus: 0.7, rest: 0.6, projectHours: 40 };
 
 export default function FutureGallery() {
   const museumId = useMuseumStore((s) => s.activeMuseumId)!;
@@ -39,7 +39,7 @@ export default function FutureGallery() {
   const set = (patch: Partial<Controls>) => { setControls((c) => clampControls({ ...c, ...patch })); setDirty(true); };
   const load = (s: Scenario) => {
     setGoalId(goals.some((g) => g.id === s.goalId) ? s.goalId : (inSky[0]?.id ?? ''));
-    setControls(clampControls(s));
+    setControls(clampControls({ hoursPerWeek: s.hoursPerWeek, consistency: s.consistency, focus: s.focus, rest: s.rest, projectHours: s.projectHours ?? 40 }));
     setLoadedId(s.id);
     setName(s.name);
     setDirty(false);
@@ -47,10 +47,10 @@ export default function FutureGallery() {
   const keep = async () => {
     if (!goal) return;
     if (loaded) {
-      await upsert('scenarios', touched(loaded, { name: name.trim() || loaded.name, goalId: goal.id, ...controls }));
+      await upsert('scenarios', touched(loaded, { name: name.trim() || loaded.name, goalId: goal.id, hoursPerWeek: controls.hoursPerWeek, consistency: controls.consistency, focus: controls.focus, rest: controls.rest, projectHours: controls.projectHours ?? 40 }));
       say('The what-if is kept, as edited.');
     } else {
-      const s = makeScenario(museumId, { name, goalId: goal.id, ...controls });
+      const s = makeScenario(museumId, { name, goalId: goal.id, hoursPerWeek: controls.hoursPerWeek, consistency: controls.consistency, focus: controls.focus, rest: controls.rest, projectHours: controls.projectHours ?? 40 });
       await upsert('scenarios', s);
       setLoadedId(s.id);
       setName(s.name);
@@ -95,6 +95,9 @@ export default function FutureGallery() {
               <RangeField label="Consistency" min={0} max={100} step={5} value={Math.round(controls.consistency * 100)} onChange={(e) => set({ consistency: Number(e.target.value) / 100 })} hint={consistencyHint(controls.consistency)} />
               <RangeField label="Focus" min={0} max={100} step={5} value={Math.round(controls.focus * 100)} onChange={(e) => set({ focus: Number(e.target.value) / 100 })} hint={focusHint(controls.focus, outlook.workedCount, outlook.candidateCount)} />
               <RangeField label="Rest and recovery" min={0} max={100} step={5} value={Math.round(controls.rest * 100)} onChange={(e) => set({ rest: Number(e.target.value) / 100 })} hint={restHint(controls.rest)} />
+              <SelectField label="Typical project size" value={String(controls.projectHours ?? 40)} onChange={(e) => set({ projectHours: Number(e.target.value) })} hint="A rough guess used for any project without its own size. Set a size per project in the Workshop.">
+                {SIZE_OPTIONS.map((o) => <option key={o.hours} value={o.hours}>{o.label} · {o.hint}</option>)}
+              </SelectField>
             </div>
 
             <div className="fg__frame">
@@ -108,7 +111,7 @@ export default function FutureGallery() {
                 {showAssumptions ? 'Hide the assumptions' : 'Show the assumptions behind this'}
               </button>
               {showAssumptions && (
-                <ul className="fg__assumptions">{assumptionsText().map((a, i) => <li key={i}>{a}</li>)}</ul>
+                <ul className="fg__assumptions">{assumptionsText(controls).map((a, i) => <li key={i}>{a}</li>)}</ul>
               )}
               {outlook.candidateCount === 0 && (
                 <p className="panel__empty">Give this goal a project in the <RouterLink to="/workshop">Workshop</RouterLink> and the dials will have something to move.</p>

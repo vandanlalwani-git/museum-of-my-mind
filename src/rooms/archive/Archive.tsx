@@ -90,11 +90,17 @@ export default function Archive() {
       await upsert('threads', makeThread(museumId, fromId, toId, kind, why));
       say('A thread ties them now.');
     },
+    async updateThread(thread, patch) {
+      const { why: _old, ...rest } = thread;
+      await upsert('threads', touched({ ...rest, ...(patch.why ? { why: patch.why } : {}) } as typeof thread, { kind: patch.kind }));
+      say('The thread is re-tied.');
+    },
     async removeThread(id) { await remove('threads', id); },
   }), [museumId, records.threads, upsert, remove, say]);
 
   return (
     <section className={`arc ${empty ? 'arc--empty' : ''}`}>
+      <h1 className="visually-hidden">Archive</h1>
       <div className="arc__wall">
         {!empty && <ArchiveMap graph={graph} selectedId={selectedId} matchIds={matchIds} onSelect={selectFromMap} />}
         {empty && (
