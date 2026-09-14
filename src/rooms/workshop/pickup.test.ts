@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { pickUps } from './pickup';
 import { demoRecords } from '@/data/seed/demo';
+import { emptyRecords } from '@/types';
 
 const NOW = Date.UTC(2026, 8, 1, 9, 0, 0); // the seed's base date
 
@@ -27,6 +28,6 @@ describe('pickUps', () => {
   });
 
   it('returns nothing for an empty museum', () => {
-    expect(pickUps({ goals: [], projects: [], actions: [], notes: [], links: [], memories: [], threads: [] }, NOW)).toEqual([]);
+    expect(pickUps(emptyRecords(), NOW)).toEqual([]);
   });
 });

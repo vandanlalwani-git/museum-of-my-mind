@@ -1,4 +1,4 @@
-import type { Action, Goal, Link, Memory, Museum, MuseumRecords, Note, Project, Thread } from '@/types';
+import type { Action, Goal, Link, Memory, Museum, MuseumRecords, Note, Project, Scenario, Thread } from '@/types';
 
 /**
  * The demo museum belongs to Alex, a fictional person with a full-time job
@@ -319,4 +319,25 @@ const threads: Thread[] = [
   { ...base('t-13', at(9)), fromId: 'n-8', toId: 'g-health', kind: 'supports', why: 'Lunchtime walks are the cheapest win.' },
 ];
 
-export const demoRecords: MuseumRecords = { goals, projects, actions, notes, links, memories, threads };
+const scenarios: Scenario[] = [
+  {
+    ...base('s-1', at(8), at(8), at(8)),
+    name: 'Two evenings a week on the budget app',
+    goalId: 'g-side-project',
+    hoursPerWeek: 4,
+    consistency: 0.7,
+    focus: 0.85,
+    rest: 0.6,
+  },
+  {
+    ...base('s-2', at(8), at(8), at(8)),
+    name: 'Everything at once, no rest',
+    goalId: 'g-side-project',
+    hoursPerWeek: 6,
+    consistency: 0.5,
+    focus: 0.1,
+    rest: 0.25,
+  },
+];
+
+export const demoRecords: MuseumRecords = { goals, projects, actions, notes, links, memories, threads, scenarios };

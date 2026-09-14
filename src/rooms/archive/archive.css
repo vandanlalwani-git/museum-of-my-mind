@@ -181,7 +181,7 @@ button.tag:hover { color: var(--gold); border-color: var(--gold-dim); }
 .connect__cand:hover, .connect__cand.is-active { color: var(--gold); }
 
 @media (max-width: 960px) {
-  .arc { grid-template-columns: 1fr; min-height: 0; }
+  .arc { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .arc__wall { position: relative; top: 0; height: 52vh; min-height: 20rem; }
   .arc--empty .arc__wall { height: auto; min-height: 0; }
   .arc--empty .arc__invite { position: relative; inset: auto; padding: var(--space-8) var(--space-5); }

@@ -91,7 +91,7 @@
 .ws-goal:hover { color: var(--gold); text-decoration: none; }
 
 @media (max-width: 960px) {
-  .ws { grid-template-columns: 1fr; min-height: 0; }
+  .ws { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .ws__room { padding: var(--space-6) var(--space-5) var(--space-8); gap: var(--space-6); }
   .ws__panel { border-left: 0; border-top: 1px solid var(--hairline-soft); }
   .ws__grid, .ws__grid--table { grid-template-columns: 1fr; }

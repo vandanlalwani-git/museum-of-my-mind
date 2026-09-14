@@ -50,17 +50,16 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] One shared operations module (`store/ops.ts`) and shared `ActionList` / `ProjectEditor` components now serve the Observatory and Workshop, so no data is forked. Deep links: `/observatory?goal=`, `/archive?item=`, `/workshop?project=`.
 - [x] Empty bench invitation for a new personal museum. No 3D here: the 2D artifacts are fast and legible on phones.
 
-## Phase 4 — Backup, settings, PWA polish
+## Phase 4 — Future Gallery (done 2026-09-14)
 
-- Export/import UI with merge/replace; round-trip test.
-- Custom install prompt; update prompt.
-- Reset demo; delete own museum (with confirmation).
+- [x] Four dials (hours a week, consistency, focus, rest and recovery) over a chosen goal's unfinished projects. Deterministic model in `model.ts` with every assumption stated and readable in the room (tested: monotonic, clamped, consistency brightens, scattering trades speed for breadth, thin rest fades).
+- [x] Twelve-month timeline as an instrument face: goal brightness at 3, 6, 12 months; a rising track per project; "could finish" milestones; waiting projects dashed. Accessible text alternative.
+- [x] Calm plain-language reading of each scenario; "waiting is not failing"; copy says it is a way of looking, not a forecast.
+- [x] Kept what-ifs: a new `scenarios` store (IndexedDB v2 migration, backup schema 2, version 1 files still import). Keep, load, edit, save changes, let go. Two demo scenarios for Alex.
+- [x] Empty states: no goals (invitation to the Observatory); a goal with nothing unfinished (invitation to the Workshop).
+- [ ] Settings polish from the old plan (delete own museum, update prompt control) rolls into Phase 7.
 
-## Phase 5 — Future Gallery
-
-- Deterministic simulator: sliders for hours/week, focus, and a "what if I dropped X" toggle; renders a rearranged constellation and workshop and shows the deltas. Copy states plainly it is a model, not a prediction.
-
-## Phase 6 — Cabinet of Curiosities
+## Phase 5 — Cabinet of Curiosities
 
 - Ranks by staleness + serendipity (seeded daily shuffle); one drawer at a time; "keep", "revisit", "let it go".
 

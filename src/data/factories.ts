@@ -1,5 +1,5 @@
 import { newId } from '@/lib/ids';
-import type { Action, BaseRecord, Goal, Horizon, Link, Memory, Note, NoteKind, Project, Thread, ThreadKind } from '@/types';
+import type { Action, BaseRecord, Goal, Horizon, Link, Memory, Note, NoteKind, Project, Scenario, Thread, ThreadKind } from '@/types';
 
 function stamp(museumId: string, now = Date.now()): BaseRecord {
   return { id: newId(), museumId, createdAt: now, updatedAt: now, lastVisitedAt: now, tags: [] };
@@ -50,4 +50,8 @@ export function makeMemory(museumId: string, input: { title: string; body?: stri
 
 export function makeThread(museumId: string, fromId: string, toId: string, kind: ThreadKind, why?: string): Thread {
   return { ...stamp(museumId), fromId, toId, kind, ...(why?.trim() ? { why: why.trim() } : {}) };
+}
+
+export function makeScenario(museumId: string, input: { name: string; goalId: string; hoursPerWeek: number; consistency: number; focus: number; rest: number }): Scenario {
+  return { ...stamp(museumId), name: input.name.trim() || 'Untitled what-if', goalId: input.goalId, hoursPerWeek: input.hoursPerWeek, consistency: input.consistency, focus: input.focus, rest: input.rest };
 }

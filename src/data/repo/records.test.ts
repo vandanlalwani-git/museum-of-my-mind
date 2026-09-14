@@ -61,3 +61,36 @@ describe('backup', () => {
     expect(() => parseBackup(JSON.stringify({ format: 'museum-of-my-mind-backup', schemaVersion: 1, museums: [], records: { goals: [{ id: 'x', museumId: 'ghost' }] } }))).toThrow(/not in this backup/);
   });
 });
+
+describe('schema v2', () => {
+  it('upgrades a v1 database in place and keeps its records', async () => {
+    await closeDB();
+    globalThis.indexedDB = new IDBFactory();
+    // Create a v1-shaped database by hand.
+    const { openDB } = await import('idb');
+    const v1 = await openDB('museum-of-my-mind', 1, {
+      upgrade(db) {
+        db.createObjectStore('museums', { keyPath: 'id' }).createIndex('byKind', 'kind');
+        for (const n of ['goals', 'projects', 'notes', 'links', 'memories'] as const) db.createObjectStore(n, { keyPath: 'id' }).createIndex('byMuseum', 'museumId');
+        const a = db.createObjectStore('actions', { keyPath: 'id' }); a.createIndex('byMuseum', 'museumId'); a.createIndex('byProject', 'projectId');
+        const t = db.createObjectStore('threads', { keyPath: 'id' }); t.createIndex('byMuseum', 'museumId'); t.createIndex('byFrom', 'fromId'); t.createIndex('byTo', 'toId');
+        db.createObjectStore('meta', { keyPath: 'key' });
+      },
+    });
+    await v1.put('goals', { id: 'g', museumId: 'own', createdAt: 1, updatedAt: 1, lastVisitedAt: 1, tags: [], title: 'Old', why: '', horizon: 'year', state: 'active' });
+    v1.close();
+
+    const rec = await loadMuseumRecords('own');
+    expect(rec.goals[0]?.title).toBe('Old');
+    expect(rec.scenarios).toEqual([]);
+    await repos.scenarios.put({ id: 's', museumId: 'own', createdAt: 1, updatedAt: 1, lastVisitedAt: 1, tags: [], name: 'W', goalId: 'g', hoursPerWeek: 3, consistency: 0.5, focus: 1, rest: 0.5 });
+    expect((await loadMuseumRecords('own')).scenarios).toHaveLength(1);
+  });
+
+  it('imports a version 1 backup without scenarios', async () => {
+    const parsed = parseBackup(JSON.stringify({ format: 'museum-of-my-mind-backup', schemaVersion: 1, exportedAt: '', museums: [{ id: 'm', name: 'M', kind: 'own', createdAt: 1, lastEnteredAt: 1 }], records: { goals: [], projects: [], actions: [], notes: [], links: [], memories: [], threads: [] } }));
+    expect(parsed.records.scenarios).toEqual([]);
+    const result = await importBackup(parsed, 'merge');
+    expect(result.museums).toBe(1);
+  });
+});

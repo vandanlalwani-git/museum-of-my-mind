@@ -89,7 +89,17 @@ export const THREAD_LABEL: Record<ThreadKind, string> = {
   'reminds-me-of': 'reminds me of',
 };
 
-export type RecordType = 'goals' | 'projects' | 'actions' | 'notes' | 'links' | 'memories' | 'threads';
+/** A saved "what if?" from the Future Gallery. A reflection, never a forecast. */
+export interface Scenario extends BaseRecord {
+  name: string;
+  goalId: string;
+  hoursPerWeek: number; // 0..20
+  consistency: number;  // 0..1, share of weeks the hours actually happen
+  focus: number;        // 0..1, 1 = one main project, 0 = everything at once
+  rest: number;         // 0..1, how much recovery is protected
+}
+
+export type RecordType = 'goals' | 'projects' | 'actions' | 'notes' | 'links' | 'memories' | 'threads' | 'scenarios';
 
 export interface RecordMap {
   goals: Goal;
@@ -99,9 +109,10 @@ export interface RecordMap {
   links: Link;
   memories: Memory;
   threads: Thread;
+  scenarios: Scenario;
 }
 
-export const RECORD_TYPES: RecordType[] = ['goals', 'projects', 'actions', 'notes', 'links', 'memories', 'threads'];
+export const RECORD_TYPES: RecordType[] = ['goals', 'projects', 'actions', 'notes', 'links', 'memories', 'threads', 'scenarios'];
 
 export interface MuseumRecords {
   goals: Goal[];
@@ -111,10 +122,11 @@ export interface MuseumRecords {
   links: Link[];
   memories: Memory[];
   threads: Thread[];
+  scenarios: Scenario[];
 }
 
 export const emptyRecords = (): MuseumRecords => ({
-  goals: [], projects: [], actions: [], notes: [], links: [], memories: [], threads: [],
+  goals: [], projects: [], actions: [], notes: [], links: [], memories: [], threads: [], scenarios: [],
 });
 
 export interface Settings {

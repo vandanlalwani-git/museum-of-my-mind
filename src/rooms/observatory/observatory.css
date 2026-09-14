@@ -97,25 +97,6 @@
   min-height: 0;
 }
 
-/* Index */
-.index { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
-.index__item {
-  display: flex; gap: var(--space-3); align-items: flex-start;
-  width: 100%; text-align: left;
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--hairline-soft);
-  color: var(--parchment);
-  transition: color var(--dur-fast) var(--ease);
-}
-.index__item:hover .index__title { color: var(--gold); }
-.index__item.is-dormant { opacity: 0.6; }
-.index__item.is-beneath { opacity: 0.7; }
-.index__star { flex: none; width: 7px; height: 7px; margin-top: 0.55rem; border-radius: 50%; background: var(--parchment); box-shadow: 0 0 8px 2px var(--gold-glow-strong); }
-.is-dormant .index__star { box-shadow: none; background: var(--parchment-dim); }
-.index__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.index__title { font-size: var(--text-lg); line-height: 1.2; transition: color var(--dur-fast) var(--ease); }
-.index__next { font-size: var(--text-sm); color: var(--parchment-dim); }
-
 /* Projects */
 .projects { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .project { border-bottom: 1px solid var(--hairline-soft); }
@@ -151,7 +132,7 @@
 .project__age { font-size: var(--text-xs); color: var(--parchment-faint); letter-spacing: 0.04em; }
 
 @media (max-width: 960px) {
-  .obs { grid-template-columns: 1fr; min-height: 0; }
+  .obs { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .obs__sky { position: relative; top: 0; height: 58vh; min-height: 22rem; }
   .obs--empty .obs__sky { height: auto; min-height: 0; }
   .obs--empty .obs__invite { position: relative; inset: auto; padding: var(--space-8) var(--space-5); }
