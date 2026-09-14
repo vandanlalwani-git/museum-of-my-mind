@@ -24,7 +24,7 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] Empty museum: an invitation and a three-line guide instead of a blank state.
 - [x] Keyboard navigation across goals on the canvas; the panel is the accessible list equivalent; list-only fallback if the canvas cannot draw.
 - [x] Responsive: sky above, panel below on narrow screens; compass scrolls in one row.
-- [ ] Deferred: React Three Fiber sky as a progressive enhancement. The canvas renderer is the baseline and would remain the non-WebGL fallback. Needs owner approval because three.js adds roughly 150KB gzipped to the room chunk.
+- [x] Phase 1.5 (done 2026-09-14): React Three Fiber dome behind the 2D canvas. Lazy chunk (~240KB gzipped) loaded only when the Observatory opens and only when WebGL is available, motion is not reduced, the device is not low-powered, and the session has not fallen back. The 2D canvas stays the complete fallback and keeps drawing labels, lines, click targets, and the accessible alternative. A performance guard drops the dome for the session if frames stay slow.
 
 ## Phase 2 — Archive
 

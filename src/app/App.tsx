@@ -28,7 +28,15 @@ export function App() {
   const error = useMuseumStore((s) => s.error);
   const loadSettings = useSettingsStore((s) => s.load);
 
-  useEffect(() => { void loadSettings(); void boot(); }, [boot, loadSettings]);
+  useEffect(() => {
+    void loadSettings();
+    void boot().then(async () => {
+      // Dev-only inspection hook: `?enter=demo` opens a museum straight away in a fresh profile.
+      if (!import.meta.env.DEV) return;
+      const id = new URLSearchParams(location.search).get('enter');
+      if (id) await useMuseumStore.getState().enter(id).catch(() => undefined);
+    });
+  }, [boot, loadSettings]);
 
   if (status === 'error') {
     return (

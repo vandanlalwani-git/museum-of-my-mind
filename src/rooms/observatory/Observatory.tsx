@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { makeAction, makeGoal, makeProject, touched } from '@/data/factories';
 import { useMuseumStore } from '@/store/museum';
 import { useUiStore } from '@/store/ui';
+import { useSettingsStore } from '@/store/settings';
+import { motionReduced } from '@/lib/motion';
+import { disableDomeForSession, domeDisabledBySession, lowPowerDevice, webglAvailable } from '@/lib/webgl';
 import type { Action, Goal, GoalState, Project, ProjectStatus } from '@/types';
 import { GoalForm } from './GoalForm';
 import { GoalPanel, type GoalOps } from './GoalPanel';
@@ -9,6 +12,12 @@ import { SkyCanvas } from './SkyCanvas';
 import { SkyIndex } from './SkyIndex';
 import { isInSky, layoutSky, nextForGoal } from './layout';
 import './observatory.css';
+
+const Sky3D = lazy(() => import('./Sky3D'));
+
+function domeWanted(): boolean {
+  return webglAvailable() && !motionReduced() && !lowPowerDevice() && !domeDisabledBySession();
+}
 
 export default function Observatory() {
   const museumId = useMuseumStore((s) => s.activeMuseumId)!;
@@ -21,6 +30,25 @@ export default function Observatory() {
   const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
   const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
   const [canvasOk, setCanvasOk] = useState(true);
+  const [dome, setDome] = useState<boolean>(() => domeWanted());
+  const [domeReady, setDomeReady] = useState(false);
+  const [litGoalId, setLitGoalId] = useState<string | null>(null);
+  const pointerRef = useRef({ x: 0.5, y: 0.5 });
+  const reduceMotion = useSettingsStore((s) => s.reduceMotion);
+
+  // The keeper's motion setting can switch the dome on or off while the room is open.
+  useEffect(() => {
+    const wanted = domeWanted();
+    setDome(wanted);
+    if (!wanted) setDomeReady(false);
+  }, [reduceMotion]);
+
+  const dropDome = useCallback((reason: 'perf' | 'lost') => {
+    disableDomeForSession();
+    setDome(false);
+    setDomeReady(false);
+    if (reason === 'perf') say('The sky is drawn flat here, to keep the room quick.');
+  }, [say]);
 
   const layout = useMemo(() => layoutSky(goals, projects), [goals, projects]);
   const selectedGoal = goals.find((g) => g.id === selectedGoalId) ?? null;
@@ -97,8 +125,26 @@ export default function Observatory() {
   return (
     <section className={`obs ${empty ? 'obs--empty' : ''}`}>
       <div className="obs__sky">
+        {canvasOk && dome && !empty && (
+          <Suspense fallback={null}>
+            <Sky3D
+              layout={layout}
+              goals={goals}
+              projects={projects}
+              litGoalId={litGoalId}
+              selectedGoalId={selectedGoalId}
+              pointerRef={pointerRef}
+              onReady={() => setDomeReady(true)}
+              onPoorPerformance={() => dropDome('perf')}
+              onContextLost={() => dropDome('lost')}
+            />
+          </Suspense>
+        )}
         {canvasOk ? (
           <SkyCanvas
+            mode={dome && domeReady && !empty ? 'overlay' : 'full'}
+            pointerRef={pointerRef}
+            onActiveGoal={setLitGoalId}
             layout={layout}
             goals={goals}
             projects={projects}

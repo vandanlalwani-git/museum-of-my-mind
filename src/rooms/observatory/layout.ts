@@ -1,4 +1,5 @@
 import { hashString, mulberry32 } from '@/lib/rng';
+import { motionReduced } from '@/lib/motion';
 import type { Action, Goal, Project } from '@/types';
 
 /**
@@ -115,4 +116,35 @@ export function nextForGoal(goalId: string, projects: Project[], actions: Action
     if (action) return { project, action };
   }
   return null;
+}
+
+export const ORBIT_SQUASH = 0.62;   // orbits are seen at a tilt
+export const ORBIT_SPEED = 0.012;   // radians per second: one revolution in roughly nine minutes
+
+/** Shared sky clock in seconds. Zero (still) under reduced motion so every layer agrees. */
+export function skyTime(now = performance.now()): number {
+  return motionReduced() ? 0 : now / 1000;
+}
+
+export interface Point { x: number; y: number }
+export interface Resolved { goals: Map<string, Point>; projects: Map<string, Point> }
+
+/** Pixel positions for a layout at time t on a w×h surface. Used by both the 2D and 3D layers. */
+export function resolvePositions(layout: SkyLayout, w: number, h: number, t: number): Resolved {
+  const minDim = Math.min(w, h);
+  const goals = new Map<string, Point>();
+  for (const gn of layout.goals) goals.set(gn.id, { x: gn.x * w, y: gn.y * h });
+  const projects = new Map<string, Point>();
+  for (const pn of layout.projects) {
+    if (pn.goalId) {
+      const gn = layout.byId.get(pn.goalId);
+      const gp = goals.get(pn.goalId)!;
+      const orbit = (gn && gn.kind === 'goal' ? gn.orbit : 0.09) * minDim;
+      const a = pn.angle + t * ORBIT_SPEED;
+      projects.set(pn.id, { x: gp.x + Math.cos(a) * orbit, y: gp.y + Math.sin(a) * orbit * ORBIT_SQUASH });
+    } else {
+      projects.set(pn.id, { x: pn.x * w, y: pn.y * h });
+    }
+  }
+  return { goals, projects };
 }

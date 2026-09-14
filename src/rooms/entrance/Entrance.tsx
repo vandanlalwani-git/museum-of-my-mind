@@ -118,14 +118,14 @@ export function Entrance() {
 
           {!building ? (
             <Doorway
-              eyebrow={returning ? 'Begin another' : 'Build your own'}
-              title={returning ? 'A new wing' : 'An empty museum'}
-              description={<>Begins with nothing on the walls. Lives only on this device. You can export it whole, any time, as one file.</>}
+              eyebrow={returning ? 'Begin another museum' : 'Build your own'}
+              title={returning ? 'A separate collection' : 'An empty museum'}
+              description={<>{returning ? 'A second museum with its own rooms, kept apart from the others.' : 'Begins with nothing on the walls.'} Lives only on this device. You can export it whole, any time, as one file.</>}
               footnote="No login · works offline · yours to keep"
               onOpen={() => setBuilding(true)}
             />
           ) : (
-            <Doorway as="div" eyebrow="Build your own" title="Name the place" description={<>You can rename it later. The keeper's name is optional and appears only on the plaques.</>}>
+            <Doorway as="div" eyebrow={returning ? 'A separate collection' : 'Build your own'} title="Name the museum" description={<>You can rename it later. The keeper's name is optional and appears only on the plaques.</>}>
               <form className="entrance__form" onSubmit={build}>
                 <label className="entrance__field">
                   <span className="plaque">Museum name</span>
@@ -146,7 +146,7 @@ export function Entrance() {
 
         {others.length > 0 && (
           <motion.div className="entrance__others" {...stagger(4)}>
-            <span className="plaque">Other wings</span>
+            <span className="plaque">Other museums</span>
             <ul>
               {others.map((m) => (
                 <li key={m.id}>

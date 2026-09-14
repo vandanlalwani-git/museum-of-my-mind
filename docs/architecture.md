@@ -10,7 +10,7 @@
 | Local data | IndexedDB via `idb` | Thin promise wrapper, no ORM, no magic. |
 | State | Zustand | Small, no boilerplate, works with async loaders. |
 | Motion | Framer Motion (`motion` package) | Room transitions, layout animation. |
-| 3D | React Three Fiber + drei (lazy, only Observatory and Workshop) | Loaded on demand; never on the entrance path. **Status:** not yet added. The Observatory sky ships as a 2D canvas renderer, which is also the permanent non-WebGL fallback. |
+| 3D | React Three Fiber + drei (lazy, only Observatory and Workshop) | Loaded on demand; never on the entrance path. **Status:** the Observatory dome (`Sky3D.tsx`) is live; drei is not used. The 2D canvas renderer remains the permanent fallback. |
 | Graph layout | d3-force (Archive only) | Deterministic with a seeded RNG. |
 | PWA | `vite-plugin-pwa` (Workbox) | Precache app shell; offline after first load. |
 | Fonts | Self-hosted in `/public/fonts` | Offline; no third-party requests. |
@@ -120,6 +120,10 @@ Every room route is lazy-loaded. The entrance is in the main chunk. Room routes 
 ## Observatory rendering
 
 `rooms/observatory/layout.ts` is a pure function from goals and projects to normalised positions (goals on a golden-angle spiral, projects on tilted orbits). `SkyCanvas.tsx` draws that layout on a 2D canvas each animation frame (or once, under reduced motion) and hit-tests pointer events against the last frame's positions. All mutations flow through `useMuseumStore.upsert/remove`, which write to IndexedDB before updating memory, so every change survives refresh.
+
+### The dome (3D layer)
+
+`Sky3D.tsx` is a lazy chunk mounted behind the 2D canvas with an orthographic camera whose world units equal CSS pixels, so both layers share `resolvePositions()` and `skyTime()` from `layout.ts` and agree on every star's position. The dome draws distant stars, drifting dust, additive halos for goal and project stars, orbital traces, and the selected goal's slow rings. Everything is procedural; no textures or models; no post-processing (bloom is faked with additive halos). The 2D canvas switches to overlay mode only after the dome's first frame, so the fallback is seamless. `lib/webgl.ts` decides eligibility; a performance guard disables the dome for the session on sustained slow frames. Dev-only inspection hooks (`?forceframes=1`, `?enter=<museumId>`) live in `main.tsx` and `App.tsx` and are compiled out of production.
 
 ## Determinism
 

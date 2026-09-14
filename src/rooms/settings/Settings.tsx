@@ -30,7 +30,7 @@ export default function Settings() {
       a.download = `museum-of-my-mind-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      say('A copy of every wing is in your downloads.');
+      say('A copy of every museum is in your downloads.');
     } finally {
       setBusy(false);
     }

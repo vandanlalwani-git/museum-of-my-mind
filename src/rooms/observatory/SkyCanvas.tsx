@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
 import { hashString, mulberry32 } from '@/lib/rng';
-import { prefersReducedMotion } from '@/lib/motion';
+import { motionReduced } from '@/lib/motion';
 import type { Action, Goal, Project } from '@/types';
 import type { SkyLayout } from './layout';
-import { nextActionFor } from './layout';
+import { ORBIT_SQUASH, nextActionFor, resolvePositions, skyTime } from './layout';
 
 interface Props {
   layout: SkyLayout;
@@ -15,6 +15,10 @@ interface Props {
   onSelectGoal: (id: string | null) => void;
   onSelectProject: (id: string) => void;
   onUnsupported?: () => void;
+  /** 'full' draws everything; 'overlay' leaves stars, glow, and bodies to the 3D layer beneath. */
+  mode?: 'full' | 'overlay';
+  pointerRef?: RefObject<{ x: number; y: number }>;
+  onActiveGoal?: (id: string | null) => void;
 }
 
 interface Pos { x: number; y: number; id: string; kind: 'goal' | 'project' }
@@ -24,8 +28,6 @@ const COLORS = {
   gold: '#c9a961', goldDim: '#8a7440', verdigris: '#5e8b6e', ember: '#a8553f',
 };
 
-const ORBIT_SQUASH = 0.62;      // orbits are seen at a tilt
-const ORBIT_SPEED = 0.012;      // radians per second: one revolution in ~9 minutes
 const HIT_RADIUS = 18;
 
 /**
@@ -38,7 +40,7 @@ export function SkyCanvas(props: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [focusIndex, setFocusIndex] = useState<number>(-1);
-  const state = useRef({ hoverId: null as string | null, pointer: { x: 0.5, y: 0.5 }, positions: [] as Pos[], focusId: null as string | null });
+  const state = useRef({ hoverId: null as string | null, pointer: { x: 0.5, y: 0.5 }, positions: [] as Pos[], focusId: null as string | null, reportedActive: undefined as string | null | undefined });
   const propsRef = useRef(props);
   propsRef.current = props;
   state.current.hoverId = hoverId;
@@ -50,9 +52,8 @@ export function SkyCanvas(props: Props) {
     const ctx = canvas.getContext('2d');
     if (!ctx) { onUnsupported?.(); return; }
 
-    const reduced = prefersReducedMotion();
+    const reduced = motionReduced();
     let w = 0, h = 0, dpr = 1, raf = 0;
-    const t0 = performance.now();
     let bg: { x: number; y: number; r: number; a: number; depth: number }[] = [];
 
     const resize = () => {
@@ -70,16 +71,17 @@ export function SkyCanvas(props: Props) {
     const draw = (now: number) => {
       const p = propsRef.current;
       const st = state.current;
-      const t = reduced ? 0 : (now - t0) / 1000;
+      const overlay = p.mode === 'overlay';
+      const t = reduced ? 0 : skyTime(now);
       const minDim = Math.min(w, h);
       const goalById = new Map(p.goals.map((g) => [g.id, g]));
       const projectById = new Map(p.projects.map((pr) => [pr.id, pr]));
 
       ctx.clearRect(0, 0, w, h);
 
-      // Background stars with gentle parallax.
+      // Background stars with gentle parallax (the dome draws these in overlay mode).
       const px = (st.pointer.x - 0.5) * 14, py = (st.pointer.y - 0.5) * 10;
-      for (const s of bg) {
+      for (const s of overlay ? [] : bg) {
         ctx.globalAlpha = s.a;
         ctx.fillStyle = COLORS.parchmentDim;
         ctx.beginPath();
@@ -88,34 +90,19 @@ export function SkyCanvas(props: Props) {
       }
       ctx.globalAlpha = 1;
 
-      // Resolve positions.
+      // Resolve positions through the shared resolver so the dome agrees.
+      const resolved = resolvePositions(p.layout, w, h, t);
       const positions: Pos[] = [];
-      const goalPos = new Map<string, { x: number; y: number }>();
-      for (const gn of p.layout.goals) {
-        const gp = { x: gn.x * w, y: gn.y * h };
-        goalPos.set(gn.id, gp);
-        positions.push({ ...gp, id: gn.id, kind: 'goal' });
-      }
-      const projPos = new Map<string, { x: number; y: number }>();
-      for (const pn of p.layout.projects) {
-        let pos: { x: number; y: number };
-        if (pn.goalId) {
-          const gn = p.layout.byId.get(pn.goalId);
-          const gp = goalPos.get(pn.goalId)!;
-          const orbit = (gn && gn.kind === 'goal' ? gn.orbit : 0.09) * minDim;
-          const a = pn.angle + t * ORBIT_SPEED;
-          pos = { x: gp.x + Math.cos(a) * orbit, y: gp.y + Math.sin(a) * orbit * ORBIT_SQUASH };
-        } else {
-          pos = { x: pn.x * w, y: pn.y * h };
-        }
-        projPos.set(pn.id, pos);
-        positions.push({ ...pos, id: pn.id, kind: 'project' });
-      }
+      const goalPos = resolved.goals;
+      const projPos = resolved.projects;
+      for (const gn of p.layout.goals) positions.push({ ...goalPos.get(gn.id)!, id: gn.id, kind: 'goal' });
+      for (const pn of p.layout.projects) positions.push({ ...projPos.get(pn.id)!, id: pn.id, kind: 'project' });
       st.positions = positions;
 
       const activeGoalId = st.hoverId && goalById.has(st.hoverId) ? st.hoverId
         : st.hoverId && projectById.has(st.hoverId) ? (p.layout.byId.get(st.hoverId) as { goalId?: string | null } | undefined)?.goalId ?? null
         : p.selectedGoalId ?? st.focusId;
+      if (st.reportedActive !== activeGoalId) { st.reportedActive = activeGoalId; p.onActiveGoal?.(activeGoalId); }
 
       // Orbit ring and constellation lines.
       for (const gn of p.layout.goals) {
@@ -123,7 +110,7 @@ export function SkyCanvas(props: Props) {
         const goal = goalById.get(gn.id);
         const lit = activeGoalId === gn.id;
         const dormant = goal?.state === 'dormant';
-        if (lit && gn.projectIds.length) {
+        if (lit && gn.projectIds.length && !overlay) {
           ctx.strokeStyle = COLORS.goldDim;
           ctx.globalAlpha = 0.28;
           ctx.lineWidth = 1;
@@ -170,7 +157,8 @@ export function SkyCanvas(props: Props) {
         ctx.globalAlpha = lit || hovered ? Math.min(1, alpha + 0.1) : alpha * 0.75;
         ctx.fillStyle = fill;
         ctx.beginPath();
-        if (pr.status === 'idea') { ctx.strokeStyle = fill; ctx.lineWidth = 1; ctx.arc(pp.x, pp.y, r, 0, Math.PI * 2); ctx.stroke(); }
+        if (overlay) { /* the dome draws the body */ }
+        else if (pr.status === 'idea') { ctx.strokeStyle = fill; ctx.lineWidth = 1; ctx.arc(pp.x, pp.y, r, 0, Math.PI * 2); ctx.stroke(); }
         else { ctx.arc(pp.x, pp.y, r, 0, Math.PI * 2); ctx.fill(); }
 
         // Open next action: a small gold companion.
@@ -211,7 +199,7 @@ export function SkyCanvas(props: Props) {
         const selected = p.selectedGoalId === gn.id;
         const dormant = goal.state === 'dormant';
         const r = 3.2 + Math.min(gn.projectIds.length, 5) * 0.7;
-        if (!dormant) {
+        if (!dormant && !overlay) {
           const glowR = r * (lit ? 7 : 4.5);
           const grd = ctx.createRadialGradient(gp.x, gp.y, 0, gp.x, gp.y, glowR);
           grd.addColorStop(0, lit ? 'rgba(201,169,97,0.45)' : 'rgba(201,169,97,0.22)');
@@ -219,10 +207,12 @@ export function SkyCanvas(props: Props) {
           ctx.fillStyle = grd; ctx.globalAlpha = 1;
           ctx.beginPath(); ctx.arc(gp.x, gp.y, glowR, 0, Math.PI * 2); ctx.fill();
         }
-        ctx.globalAlpha = dormant ? 0.55 : 1;
-        ctx.fillStyle = dormant ? COLORS.parchmentDim : lit ? COLORS.gold : COLORS.parchment;
-        ctx.beginPath(); ctx.arc(gp.x, gp.y, r, 0, Math.PI * 2); ctx.fill();
-        if (selected || st.focusId === gn.id) {
+        if (!overlay) {
+          ctx.globalAlpha = dormant ? 0.55 : 1;
+          ctx.fillStyle = dormant ? COLORS.parchmentDim : lit ? COLORS.gold : COLORS.parchment;
+          ctx.beginPath(); ctx.arc(gp.x, gp.y, r, 0, Math.PI * 2); ctx.fill();
+        }
+        if ((selected && !overlay) || st.focusId === gn.id) {
           ctx.strokeStyle = COLORS.gold; ctx.globalAlpha = 0.8; ctx.lineWidth = 1;
           ctx.beginPath(); ctx.arc(gp.x, gp.y, r + 6, 0, Math.PI * 2); ctx.stroke();
         }
@@ -256,13 +246,14 @@ export function SkyCanvas(props: Props) {
   useEffect(() => {
     const c = ref.current as (HTMLCanvasElement & { __redraw?: () => void }) | null;
     c?.__redraw?.();
-  }, [layout, goals, projects, actions, selectedGoalId, emphasisProjectId, hoverId, focusIndex]);
+  }, [layout, goals, projects, actions, selectedGoalId, emphasisProjectId, hoverId, focusIndex, props.mode]);
 
   const hit = (clientX: number, clientY: number): Pos | null => {
     const canvas = ref.current; if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
     const x = clientX - rect.left, y = clientY - rect.top;
     state.current.pointer = { x: x / rect.width, y: y / rect.height };
+    if (propsRef.current.pointerRef?.current) { propsRef.current.pointerRef.current.x = state.current.pointer.x; propsRef.current.pointerRef.current.y = state.current.pointer.y; }
     let best: Pos | null = null, bestD = HIT_RADIUS;
     for (const p of state.current.positions) {
       const d = Math.hypot(p.x - x, p.y - y);

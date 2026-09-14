@@ -15,11 +15,20 @@
     var(--obsidian);
 }
 .sky {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
   outline-offset: -3px;
 }
+.sky3d {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.sky3d canvas { display: block; }
 .sky:focus-visible { outline: 2px solid var(--gold); }
 
 .obs__nosky {
