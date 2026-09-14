@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { clearSessionKey, hasSessionKey, onSessionKeyChange } from '@/ai/session';
 import { Instrument } from '@/components/Instrument';
 import { TextField } from '@/components/Field';
 import { exportBackup, importBackup, parseBackup, serializeBackup, BackupError, type ImportMode } from '@/data/backup';
@@ -26,6 +27,8 @@ export default function Settings() {
   const [lastBackupAt, setLastBackupAt] = useState<number | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [typed, setTyped] = useState('');
+  const [keyHeld, setKeyHeld] = useState(hasSessionKey());
+  useEffect(() => onSessionKeyChange(() => setKeyHeld(hasSessionKey())), []);
 
   useEffect(() => { void metaRepo.get<number>(META_KEYS.lastBackupAt).then((v) => setLastBackupAt(v ?? null)); }, []);
 
@@ -151,6 +154,20 @@ export default function Settings() {
             <option value="off">Full motion</option>
           </select>
         </label>
+      </div>
+
+      <div className="settings__group">
+        <h2 className="settings__h2">Ask my AI</h2>
+        <p className="settings__p">Optional, off by default, and never needed. With it on, you can choose exact items and ask your own Claude to reflect on them. Selected content leaves this browser only after you confirm each request, through this site's relay to Anthropic, using your own API key and credits, and is then governed by Anthropic's API and data policies. Nothing is applied to your museum unless you accept it. The museum stays free, private, and fully usable with this off.</p>
+        <label className="settings__toggle">
+          <input type="checkbox" checked={settings.aiEnabled} onChange={(e) => { void settings.update({ aiEnabled: e.target.checked }); if (!e.target.checked) clearSessionKey(); }} />
+          Turn on “Ask my AI” (bring your own Anthropic key)
+        </label>
+        <div className="settings__row">
+          {settings.aiEnabled && <RouterLink to="/reflect" className="instrument">Open “Ask my AI”</RouterLink>}
+          <Instrument tone="quiet" onClick={() => { clearSessionKey(); say('The session key is forgotten.', undefined, { quiet: true }); }} disabled={!keyHeld}>{keyHeld ? 'Forget the session key now' : 'No key is held right now'}</Instrument>
+        </div>
+        <p className="settings__p">The key is asked for when you start an analysis and kept only in this tab's memory. It is forgotten on refresh or when the tab closes, and it is never written to storage, backups, the address bar, or logs.</p>
       </div>
 
       <div className="settings__group">

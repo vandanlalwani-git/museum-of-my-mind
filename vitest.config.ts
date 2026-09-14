@@ -6,6 +6,6 @@ export default defineConfig({
   test: {
     environment: 'node',
     setupFiles: ['fake-indexeddb/auto'],
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'shared/**/*.test.ts', 'functions/**/*.test.ts'],
   },
 });

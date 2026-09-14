@@ -1,8 +1,8 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import type { Action, Goal, Link, Memory, Museum, Note, Project, Scenario, Thread } from '@/types';
+import type { Action, Goal, Link, Memory, Museum, Note, Project, Reflection, Scenario, Thread } from '@/types';
 
 export const DB_NAME = 'museum-of-my-mind';
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 
 interface MetaEntry { key: string; value: unknown }
 
@@ -16,6 +16,7 @@ export interface MuseumDB extends DBSchema {
   memories: { key: string; value: Memory; indexes: { byMuseum: string } };
   threads: { key: string; value: Thread; indexes: { byMuseum: string; byFrom: string; byTo: string } };
   scenarios: { key: string; value: Scenario; indexes: { byMuseum: string } };
+  reflections: { key: string; value: Reflection; indexes: { byMuseum: string } };
   meta: { key: string; value: MetaEntry };
 }
 
@@ -48,6 +49,11 @@ export function getDB(): Promise<IDBPDatabase<MuseumDB>> {
           // Phase 4: saved Future Gallery scenarios.
           const scenarios = db.createObjectStore('scenarios', { keyPath: 'id' });
           scenarios.createIndex('byMuseum', 'museumId');
+        }
+        if (oldVersion < 3) {
+          // Phase 7: kept "Ask my AI" results (accepted proposals only; never keys).
+          const reflections = db.createObjectStore('reflections', { keyPath: 'id' });
+          reflections.createIndex('byMuseum', 'museumId');
         }
       },
       blocked() { console.warn('[museum] database upgrade blocked by another tab'); },

@@ -340,4 +340,4 @@ const scenarios: Scenario[] = [
   },
 ];
 
-export const demoRecords: MuseumRecords = { goals, projects, actions, notes, links, memories, threads, scenarios };
+export const demoRecords: MuseumRecords = { goals, projects, actions, notes, links, memories, threads, scenarios, reflections: [] };

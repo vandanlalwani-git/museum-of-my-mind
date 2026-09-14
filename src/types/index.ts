@@ -105,7 +105,18 @@ export interface Scenario extends BaseRecord {
   projectHours?: number;
 }
 
-export type RecordType = 'goals' | 'projects' | 'actions' | 'notes' | 'links' | 'memories' | 'threads' | 'scenarios';
+/** A kept result from "Ask my AI": only what the keeper accepted, plus the reflection text. Free to read forever. */
+export interface Reflection extends BaseRecord {
+  mode: string;
+  model: string;
+  itemIds: string[];
+  themes: string[];
+  reflection: string;
+  reasoning: string;
+  accepted: { tags: number; threads: number; projects: number; actions: number };
+}
+
+export type RecordType = 'goals' | 'projects' | 'actions' | 'notes' | 'links' | 'memories' | 'threads' | 'scenarios' | 'reflections';
 
 export interface RecordMap {
   goals: Goal;
@@ -116,9 +127,10 @@ export interface RecordMap {
   memories: Memory;
   threads: Thread;
   scenarios: Scenario;
+  reflections: Reflection;
 }
 
-export const RECORD_TYPES: RecordType[] = ['goals', 'projects', 'actions', 'notes', 'links', 'memories', 'threads', 'scenarios'];
+export const RECORD_TYPES: RecordType[] = ['goals', 'projects', 'actions', 'notes', 'links', 'memories', 'threads', 'scenarios', 'reflections'];
 
 export interface MuseumRecords {
   goals: Goal[];
@@ -129,18 +141,21 @@ export interface MuseumRecords {
   memories: Memory[];
   threads: Thread[];
   scenarios: Scenario[];
+  reflections: Reflection[];
 }
 
 export const emptyRecords = (): MuseumRecords => ({
-  goals: [], projects: [], actions: [], notes: [], links: [], memories: [], threads: [], scenarios: [],
+  goals: [], projects: [], actions: [], notes: [], links: [], memories: [], threads: [], scenarios: [], reflections: [],
 });
 
 export interface Settings {
   soundEnabled: boolean;
   reduceMotion: 'system' | 'on' | 'off';
+  /** "Ask my AI" is off unless the keeper turns it on. Off means no code path ever calls the relay. */
+  aiEnabled: boolean;
 }
 
-export const defaultSettings: Settings = { soundEnabled: false, reduceMotion: 'system' };
+export const defaultSettings: Settings = { soundEnabled: false, reduceMotion: 'system', aiEnabled: false };
 
 export type RoomId = 'entrance' | 'observatory' | 'archive' | 'workshop' | 'future' | 'cabinet';
 

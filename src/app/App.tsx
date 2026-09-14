@@ -13,6 +13,7 @@ const Workshop = lazy(() => import('@/rooms/workshop/Workshop'));
 const FutureGallery = lazy(() => import('@/rooms/future/FutureGallery'));
 const Cabinet = lazy(() => import('@/rooms/cabinet/Cabinet'));
 const Settings = lazy(() => import('@/rooms/settings/Settings'));
+const Reflect = lazy(() => import('@/rooms/reflect/Reflect'));
 
 function Booting() {
   return (
@@ -64,6 +65,7 @@ export function App() {
               <Route path="/future" element={<Suspense fallback={<Booting />}><FutureGallery /></Suspense>} />
               <Route path="/cabinet" element={<Suspense fallback={<Booting />}><Cabinet /></Suspense>} />
               <Route path="/settings" element={<Suspense fallback={<Booting />}><Settings /></Suspense>} />
+              <Route path="/reflect" element={<Suspense fallback={<Booting />}><Reflect /></Suspense>} />
             </Route>
             <Route path="*" element={<Entrance />} />
           </Route>

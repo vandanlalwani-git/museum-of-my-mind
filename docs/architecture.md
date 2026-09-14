@@ -129,6 +129,18 @@ Every room route is lazy-loaded. The entrance is in the main chunk. Room routes 
 
 `rooms/archive/graph.ts` builds the wall: item nodes (notes, ideas, links, memories that are not put away), one hub node per tag in use, and goal or project nodes only where a thread reaches them. Edges are explicit threads and tag membership. Layout is d3-force run synchronously to rest with a seeded random source, so the map is stable across reloads. `ArchiveMap.tsx` renders it as SVG with pan and zoom; every node is a focusable button. Note, link, and memory records gained optional `kind`, `archivedAt`, and thread `why` fields without a schema bump, because IndexedDB stores are schemaless and all readers treat the fields as optional.
 
+## Ask my AI (optional, bring your own Claude key)
+
+Off by default; the museum never calls the network unless the keeper turns it on and confirms a specific request. The pieces:
+
+- `shared/reflect-schema.ts`: the request and result contracts, size limits, the tool schema handed to Claude, the system prompt (items are quoted data; instructions inside them are never followed), and validators used on both sides.
+- `functions/api/reflect.ts`: the only server code, a Cloudflare Pages Function at `POST /api/reflect`. It checks the Origin (the app's own host, or localhost in development), the content type, a body limit, and the key's shape; forwards one request to Anthropic with the key in the `x-api-key` header; validates the tool-use result; and answers with `Cache-Control: no-store`. Errors are reduced to short codes; nothing from upstream is echoed; nothing is logged or stored. Any other method gets 405. Static routes never touch it because Pages only routes `/api/reflect` to it.
+- `src/ai/session.ts`: the key lives in a module variable for the tab and nowhere else. It is never written to storage, backups, the URL, or logs, and is cleared on refresh, on an invalid-key answer, when the feature is turned off, or on demand at the keeper's desk.
+- `src/ai/client.ts`: posts to the same-origin relay with the key in a header, maps failures to short codes, and re-validates the result.
+- `src/rooms/reflect/Reflect.tsx`: choose a mode and the exact items, read a plain-language preview (what, how much, to which model, paid by whom, treated as quoted data), enter the key, send or go back, then Accept / Edit / Reject every proposal. Only accepted proposals are applied, through the same operations every room uses; the reflection text and counts are kept in a `reflections` store (IndexedDB v3, backup schema 3) and can be cleared.
+
+If the relay is unavailable (no connection, or the free Functions quota is exhausted), the room says so and every other room is unaffected, because nothing else depends on it.
+
 ## Determinism
 
 The Future Gallery and the Archive layout use a seeded PRNG (`mulberry32`) so the same inputs always render the same scene. This matters for trust: a "what if" simulator that shifts on refresh feels like a prediction; one that holds still feels like a model.
@@ -146,6 +158,6 @@ Static output in `dist/`. Cloudflare Pages: build command `npm run build`, outpu
 
 ## Security posture
 
-- No secrets in the repo, ever. CI can grep for `sk-`, `key=`, and similar patterns.
+- No secrets in the repo, ever. CI can grep for `sk-`, `key=`, and similar patterns. The reflection relay never stores the key it is handed; there is no deployed secret because the feature is bring-your-own-key.
 - No third-party scripts.
 - Import parser rejects unknown top-level keys and any record with a foreign `museumId` unless explicitly remapped.

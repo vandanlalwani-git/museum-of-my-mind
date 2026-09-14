@@ -22,7 +22,7 @@ A polished, portfolio-quality, local-first, game-like digital museum for one per
 - Import/export backup is a first-class feature and must round-trip losslessly.
 - Static-site deployable to Cloudflare Pages. No server code.
 - No login, no subscriptions, no analytics, no telemetry, no external database, no third-party scripts.
-- Never put API keys in client-side code. There is no `.env` with secrets. If an AI feature is ever added, the key is user-supplied and stored only locally, or routed through a worker the user deploys themselves.
+- Never put API keys in client-side code, the repo, `.env`, storage, backups, URLs, or logs. The optional "Ask my AI" feature is bring-your-own-key: the key lives in tab memory only and is relayed once per confirmed request through `functions/api/reflect.ts`, which stores and logs nothing. Never add a deployed secret for it.
 - The fictional demo museum ("Alex's Next Chapter": a person with a full-time job making gradual progress on health, a side project, creativity, and relationships) must always seed cleanly and make the app understandable within seconds with zero personal data. Use short, everyday language in seed content; no specialist crafts or invented lore. Never reference a real person. Bump `DEMO_SEED_VERSION` whenever the demo content changes so returning visitors get the refreshed demo; own museums are never touched by the seed.
 - PWA install experience is required.
 - Deterministic rendering for the Archive layout and Future Gallery (seeded PRNG). The Future Gallery is a "what if?" simulator, not a prediction engine, and its copy must say so.

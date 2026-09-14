@@ -49,6 +49,7 @@ export const repos = {
   memories: recordRepo('memories'),
   threads: recordRepo('threads'),
   scenarios: recordRepo('scenarios'),
+  reflections: recordRepo('reflections'),
 };
 
 /** Load every record for a museum in a single read transaction. */

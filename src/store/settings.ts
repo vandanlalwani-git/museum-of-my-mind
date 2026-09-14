@@ -25,8 +25,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     set({ ...merged, loaded: true });
   },
   async update(patch) {
-    const { soundEnabled, reduceMotion } = get();
-    const next: Settings = { soundEnabled, reduceMotion, ...patch };
+    const { soundEnabled, reduceMotion, aiEnabled } = get();
+    const next: Settings = { soundEnabled, reduceMotion, aiEnabled, ...patch };
     applyToDocument(next);
     set(next);
     await metaRepo.set(META_KEYS.settings, next);

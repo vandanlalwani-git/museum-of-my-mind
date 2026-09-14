@@ -3,7 +3,7 @@ import { clearMuseumRecords, loadMuseumRecords, writeMuseumRecords } from '@/dat
 import { RECORD_TYPES, emptyRecords, type Museum, type MuseumRecords, type RecordType } from '@/types';
 
 export const BACKUP_FORMAT = 'museum-of-my-mind-backup';
-export const BACKUP_SCHEMA_VERSION = 2; // 2 adds scenarios; version 1 files import cleanly
+export const BACKUP_SCHEMA_VERSION = 3; // 2 added scenarios, 3 added reflections; older files import cleanly
 
 export interface Backup {
   format: typeof BACKUP_FORMAT;
