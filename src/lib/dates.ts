@@ -7,7 +7,7 @@ export function relativeAge(from: number, now = Date.now()): string {
   if (d <= 0) return 'today';
   if (d === 1) return 'yesterday';
   if (d < 30) return `${d} days ago`;
-  if (d < 365) return `${Math.floor(d / 30)} months ago`;
+  if (d < 365) { const m = Math.floor(d / 30); return m <= 1 ? 'a month ago' : `${m} months ago`; }
   const y = Math.floor(d / 365);
   return y === 1 ? 'a year ago' : `${y} years ago`;
 }

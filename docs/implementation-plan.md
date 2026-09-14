@@ -26,11 +26,16 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] Responsive: sky above, panel below on narrow screens; compass scrolls in one row.
 - [x] Phase 1.5 (done 2026-09-14): React Three Fiber dome behind the 2D canvas. Lazy chunk (~240KB gzipped) loaded only when the Observatory opens and only when WebGL is available, motion is not reduced, the device is not low-powered, and the session has not fallen back. The 2D canvas stays the complete fallback and keeps drawing labels, lines, click targets, and the accessible alternative. A performance guard drops the dome for the session if frames stay slow.
 
-## Phase 2 — Archive
+## Phase 2 — Archive (done 2026-09-14)
 
-- Note, link, and thread editors. Simple markdown rendering.
-- d3-force map with seeded layout; pan/zoom; thread-following focus mode.
-- Search (client-side, title + body + tags).
+- [x] Capture in one line: thought, idea, link, or memory. Enter keeps it; the first line becomes the title.
+- [x] Item panel: full content, tags, edit (per kind), put away / bring back, let go (with inline confirm), and threads with the keeper's own "why".
+- [x] Threads between any two things, including goals and projects in the Observatory, in either direction, with a typed relation.
+- [x] The wall: seeded d3-force SVG map of items, tag hubs, and threads. Goals and projects appear only when a thread reaches them. Pan, zoom, hover to light neighbours, keyboard-focusable nodes, search dims non-matches.
+- [x] Index with search across titles, bodies, addresses, and tags; tag filters; put-away section.
+- [x] Empty state invitation and three-line guide. No inferred connections anywhere; nothing links unless the keeper tags or threads it.
+- [x] Demo seed versioning: the fictional museum refreshes itself when its content changes (`DEMO_SEED_VERSION`).
+- [ ] Not built, by decision: AI interpretation of notes.
 
 ## Phase 3 — Workshop
 

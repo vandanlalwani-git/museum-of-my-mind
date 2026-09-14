@@ -3,7 +3,8 @@ import { IDBFactory } from 'fake-indexeddb';
 import { closeDB } from '@/data/db';
 import { repos, loadMuseumRecords, clearMuseumRecords } from '@/data/repo/records';
 import { museumRepo } from '@/data/repo/museums';
-import { ensureDemoSeeded, DEMO_MUSEUM_ID } from '@/data/seed';
+import { ensureDemoSeeded, DEMO_MUSEUM_ID, DEMO_SEED_VERSION } from '@/data/seed';
+import { META_KEYS, metaRepo } from '@/data/repo/meta';
 import { demoRecords } from '@/data/seed/demo';
 import { exportBackup, importBackup, parseBackup, serializeBackup } from '@/data/backup';
 
@@ -23,9 +24,12 @@ describe('repositories', () => {
     expect(await repos.goals.get('g1')).toBeUndefined();
   });
 
-  it('seeds the demo once and hydrates it whole', async () => {
+  it('seeds the demo once, refreshes it when the seed version rises, and hydrates it whole', async () => {
     expect(await ensureDemoSeeded()).toBe(true);
     expect(await ensureDemoSeeded()).toBe(false);
+    await metaRepo.set(META_KEYS.demoSeedVersion, DEMO_SEED_VERSION - 1);
+    expect(await ensureDemoSeeded()).toBe(true);
+    expect(await metaRepo.get(META_KEYS.demoSeedVersion)).toBe(DEMO_SEED_VERSION);
     const rec = await loadMuseumRecords(DEMO_MUSEUM_ID);
     expect(rec.goals).toHaveLength(demoRecords.goals.length);
     expect(rec.projects).toHaveLength(demoRecords.projects.length);

@@ -44,15 +44,22 @@ export interface Action extends BaseRecord {
   doneAt?: number;
 }
 
+export type NoteKind = 'note' | 'idea';
+
 export interface Note extends BaseRecord {
   title: string;
   body: string;
+  /** Defaults to 'note' when absent. */
+  kind?: NoteKind;
+  /** Set when the keeper puts it away. Archived items leave the map but stay searchable. */
+  archivedAt?: number;
 }
 
 export interface Link extends BaseRecord {
   url: string;
   title: string;
   whySaved: string;
+  archivedAt?: number;
 }
 
 export interface Memory extends BaseRecord {
@@ -61,6 +68,7 @@ export interface Memory extends BaseRecord {
   occurredAt: number;
   goalId?: string;
   projectId?: string;
+  archivedAt?: number;
 }
 
 export type ThreadKind = 'supports' | 'inspired-by' | 'blocks' | 'reminds-me-of';
@@ -69,7 +77,17 @@ export interface Thread extends BaseRecord {
   fromId: string;
   toId: string;
   kind: ThreadKind;
+  /** The keeper's own words for why these two belong together. */
+  why?: string;
 }
+
+export const THREAD_KINDS: ThreadKind[] = ['supports', 'inspired-by', 'blocks', 'reminds-me-of'];
+export const THREAD_LABEL: Record<ThreadKind, string> = {
+  'supports': 'supports',
+  'inspired-by': 'was inspired by',
+  'blocks': 'blocks',
+  'reminds-me-of': 'reminds me of',
+};
 
 export type RecordType = 'goals' | 'projects' | 'actions' | 'notes' | 'links' | 'memories' | 'threads';
 

@@ -20,4 +20,5 @@ export const META_KEYS = {
   activeMuseumId: 'activeMuseumId',
   settings: 'settings',
   schemaVersion: 'schemaVersion',
+  demoSeedVersion: 'demoSeedVersion',
 } as const;

@@ -1,0 +1,42 @@
+/* The side panel used by every room: header, sections, forms, guides. */
+
+.panel {
+  padding: var(--space-6) var(--space-6) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.panel__back { align-self: flex-start; color: var(--parchment-dim); transition: color var(--dur-fast) var(--ease); }
+.panel__back:hover { color: var(--gold); }
+.panel__head { display: flex; flex-direction: column; gap: var(--space-3); }
+.panel__title { font-size: var(--text-xl); line-height: 1.15; letter-spacing: -0.01em; }
+.panel__why { font-family: var(--font-display); font-style: italic; font-size: var(--text-base); color: var(--parchment-dim); line-height: 1.5; }
+.panel__age { font-size: var(--text-xs); color: var(--parchment-faint); letter-spacing: 0.04em; }
+.panel__empty { font-size: var(--text-sm); color: var(--parchment-faint); line-height: 1.6; }
+
+.panel__next {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(201, 169, 97, 0.06), transparent);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.panel__next--empty { border-color: var(--hairline-soft); background: none; }
+.panel__next-text { font-size: var(--text-lg); line-height: 1.25; color: var(--parchment); }
+.panel__next-project { font-size: var(--text-sm); color: var(--parchment-dim); }
+
+.panel__section { display: flex; flex-direction: column; gap: var(--space-4); }
+.panel__section-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 2rem; }
+
+.form-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.goal-form { display: flex; flex-direction: column; gap: var(--space-4); }
+
+
+.guide { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: var(--space-3); font-size: var(--text-sm); color: var(--parchment-dim); line-height: 1.6; }
+.guide strong { color: var(--parchment); font-weight: 500; }
+
+@media (max-width: 960px) {
+  .panel { padding: var(--space-5) var(--space-5) var(--space-10); }
+}

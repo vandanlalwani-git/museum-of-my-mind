@@ -162,6 +162,7 @@ const notes: Note[] = [
   },
   {
     ...base('n-3', at(45), at(45), at(45), ['astronomy']),
+    kind: 'idea',
     title: 'Averted vision',
     body: 'You see faint stars by not looking at them. The edge of the eye is more sensitive than the centre. This is also true of ideas.',
   },
@@ -172,6 +173,7 @@ const notes: Note[] = [
   },
   {
     ...base('n-5', at(15), at(15), at(15), ['writing']),
+    kind: 'idea',
     title: 'Structure for the guide',
     body: 'Not by season. By where it comes from: sea fogs, valley fogs, the two that come from nowhere. Each with a name, a smell, a sound, and what the birds do.',
   },
@@ -241,14 +243,15 @@ const memories: Memory[] = [
 ];
 
 const threads: Thread[] = [
-  { ...base('t-1', at(170)), fromId: 'n-4', toId: 'p-escapement', kind: 'supports' },
-  { ...base('t-2', at(300)), fromId: 'n-1', toId: 'p-fog-taxonomy', kind: 'supports' },
-  { ...base('t-3', at(290)), fromId: 'l-3', toId: 'n-1', kind: 'supports' },
-  { ...base('t-4', at(320)), fromId: 'n-6', toId: 'g-fog-guide', kind: 'inspired-by' },
-  { ...base('t-5', at(45)), fromId: 'n-3', toId: 'n-5', kind: 'reminds-me-of' },
-  { ...base('t-6', at(150)), fromId: 'p-crucible', toId: 'p-escapement', kind: 'blocks' },
-  { ...base('t-7', at(60)), fromId: 'l-2', toId: 'p-orion-drill', kind: 'supports' },
-  { ...base('t-8', at(250)), fromId: 'n-2', toId: 'g-tide-clock', kind: 'reminds-me-of' },
+  { ...base('t-1', at(170)), fromId: 'n-4', toId: 'p-escapement', kind: 'supports', why: 'The pour temperature will decide whether the wheel comes out clean.' },
+  { ...base('t-2', at(300)), fromId: 'n-1', toId: 'p-fog-taxonomy', kind: 'supports', why: 'The first fog with a name that was not mine.' },
+  { ...base('t-3', at(290)), fromId: 'l-3', toId: 'n-1', kind: 'supports', why: 'Explains the falling-tide rule the trawlermen already knew.' },
+  { ...base('t-4', at(320)), fromId: 'n-6', toId: 'g-fog-guide', kind: 'inspired-by', why: 'She was writing the guide one word a day. I am only finishing it.' },
+  { ...base('t-5', at(45)), fromId: 'n-3', toId: 'n-5', kind: 'reminds-me-of', why: 'Do not organise the fogs head-on; come at them sideways.' },
+  { ...base('t-6', at(150)), fromId: 'p-crucible', toId: 'p-escapement', kind: 'blocks', why: 'No furnace, no pour.' },
+  { ...base('t-7', at(60)), fromId: 'l-2', toId: 'p-orion-drill', kind: 'supports', why: 'The star-hopping drills are the whole method.' },
+  { ...base('t-8', at(250)), fromId: 'n-2', toId: 'g-tide-clock', kind: 'reminds-me-of', why: 'It is a moon clock. I should stop expecting it to know the sea.' },
+  { ...base('t-9', at(88)), fromId: 'm-2', toId: 'l-4', kind: 'supports', why: 'Cullen still lets you up the tower; the register was right.' },
 ];
 
 export const demoRecords: MuseumRecords = { goals, projects, actions, notes, links, memories, threads };

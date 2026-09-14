@@ -125,6 +125,10 @@ Every room route is lazy-loaded. The entrance is in the main chunk. Room routes 
 
 `Sky3D.tsx` is a lazy chunk mounted behind the 2D canvas with an orthographic camera whose world units equal CSS pixels, so both layers share `resolvePositions()` and `skyTime()` from `layout.ts` and agree on every star's position. The dome draws distant stars, drifting dust, additive halos for goal and project stars, orbital traces, and the selected goal's slow rings. Everything is procedural; no textures or models; no post-processing (bloom is faked with additive halos). The 2D canvas switches to overlay mode only after the dome's first frame, so the fallback is seamless. `lib/webgl.ts` decides eligibility; a performance guard disables the dome for the session on sustained slow frames. Dev-only inspection hooks (`?forceframes=1`, `?enter=<museumId>`) live in `main.tsx` and `App.tsx` and are compiled out of production.
 
+## Archive rendering
+
+`rooms/archive/graph.ts` builds the wall: item nodes (notes, ideas, links, memories that are not put away), one hub node per tag in use, and goal or project nodes only where a thread reaches them. Edges are explicit threads and tag membership. Layout is d3-force run synchronously to rest with a seeded random source, so the map is stable across reloads. `ArchiveMap.tsx` renders it as SVG with pan and zoom; every node is a focusable button. Note, link, and memory records gained optional `kind`, `archivedAt`, and thread `why` fields without a schema bump, because IndexedDB stores are schemaless and all readers treat the fields as optional.
+
 ## Determinism
 
 The Future Gallery and the Archive layout use a seeded PRNG (`mulberry32`) so the same inputs always render the same scene. This matters for trust: a "what if" simulator that shifts on refresh feels like a prediction; one that holds still feels like a model.
