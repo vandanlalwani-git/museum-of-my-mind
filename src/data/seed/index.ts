@@ -8,7 +8,7 @@ import { DEMO_MUSEUM_ID, demoMuseum, demoRecords } from './demo';
  * on boot when the stored version is older, so it always shows the latest
  * fiction. Own museums are never touched by this.
  */
-export const DEMO_SEED_VERSION = 2;
+export const DEMO_SEED_VERSION = 3;
 
 /** Seed or refresh the demo museum. Returns true if anything was written. */
 export async function ensureDemoSeeded(): Promise<boolean> {

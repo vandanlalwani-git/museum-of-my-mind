@@ -22,7 +22,7 @@ describe('museum store persistence', () => {
     expect(useMuseumStore.getState().hydrated).toBe(false);
 
     await useMuseumStore.getState().enter(DEMO_MUSEUM_ID);
-    expect(useMuseumStore.getState().records.goals).toHaveLength(5);
+    expect(useMuseumStore.getState().records.goals).toHaveLength(4);
     expect(await metaRepo.get(META_KEYS.activeMuseumId)).toBe(DEMO_MUSEUM_ID);
 
     // Simulate a browser restart: fresh store state, same database.
@@ -76,11 +76,11 @@ describe('import modes', () => {
     await importBackup(backup, 'merge');
     let goals = (await loadMuseumRecords(DEMO_MUSEUM_ID)).goals;
     expect(goals.find((g) => g.id === goal.id)?.title).toBe('Edited locally');
-    expect(goals).toHaveLength(5);
+    expect(goals).toHaveLength(4);
 
     await importBackup(backup, 'replace');
     goals = (await loadMuseumRecords(DEMO_MUSEUM_ID)).goals;
     expect(goals.find((g) => g.id === goal.id)?.title).toBe(goal.title);
-    expect(goals).toHaveLength(5);
+    expect(goals).toHaveLength(4);
   });
 });

@@ -57,7 +57,7 @@ export default function Settings() {
     try {
       await resetDemo();
       if (active?.id === DEMO_MUSEUM_ID) await enter(DEMO_MUSEUM_ID);
-      say('The Marrow Collection is as it was.');
+      say("Alex's museum is as it was.");
     } finally {
       setBusy(false);
     }

@@ -52,7 +52,7 @@ describe('backup', () => {
     expect(result.museums).toBe(1);
     const after = await loadMuseumRecords(DEMO_MUSEUM_ID);
     expect(after).toEqual(before);
-    expect((await museumRepo.get(DEMO_MUSEUM_ID))?.name).toBe('The Marrow Collection');
+    expect((await museumRepo.get(DEMO_MUSEUM_ID))?.name).toBe("Alex's Next Chapter");
   });
 
   it('rejects foreign files', () => {

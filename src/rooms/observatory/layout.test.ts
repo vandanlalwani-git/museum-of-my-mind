@@ -17,14 +17,14 @@ describe('layoutSky', () => {
     const goals = demoRecords.goals.map((g, i) => (i === 0 ? { ...g, state: 'released' as const } : g));
     const l = layoutSky(goals, demoRecords.projects);
     expect(l.goals.map((g) => g.id)).not.toContain(goals[0]!.id);
-    expect(l.projects.map((p) => p.id)).not.toContain('p-birdcount');
+    expect(l.projects.map((p) => p.id)).not.toContain('p-podcast');
   });
 
   it('places projects of a released goal adrift rather than dropping them', () => {
-    const goals = demoRecords.goals.map((g) => (g.id === 'g-fog-guide' ? { ...g, state: 'fulfilled' as const } : g));
+    const goals = demoRecords.goals.map((g) => (g.id === 'g-creativity' ? { ...g, state: 'fulfilled' as const } : g));
     const l = layoutSky(goals, demoRecords.projects);
-    const fogTax = l.projects.find((p) => p.id === 'p-fog-taxonomy');
-    expect(fogTax?.goalId).toBeNull();
+    const walks = l.projects.find((p) => p.id === 'p-photo-walks');
+    expect(walks?.goalId).toBeNull();
   });
 
   it('spreads goals apart', () => {
@@ -40,20 +40,21 @@ describe('layoutSky', () => {
 
 describe('nextForGoal', () => {
   it('finds the oldest open action of the freshest active project', () => {
-    const next = nextForGoal('g-tide-clock', demoRecords.projects, demoRecords.actions);
-    expect(next?.project.id).toBe('p-escapement');
-    expect(next?.action.text).toBe('Carve the wax master for the wheel');
+    const next = nextForGoal('g-side-project', demoRecords.projects, demoRecords.actions);
+    expect(next?.project.id).toBe('p-budget-app');
+    expect(next?.action.text).toBe('Add the category dropdown');
   });
   it('returns null when nothing is open', () => {
-    expect(nextForGoal('g-lighthouses', demoRecords.projects, demoRecords.actions.map((a) => ({ ...a, doneAt: 1 })))).toBeNull();
+    expect(nextForGoal('g-people', demoRecords.projects, demoRecords.actions.map((a) => ({ ...a, doneAt: 1 })))).toBeNull();
   });
 });
 
 describe('homeGoal', () => {
   it('lets a project orbit its second goal when the first leaves the sky', () => {
-    const goals = demoRecords.goals.map((g) => (g.id === 'g-tide-clock' ? { ...g, state: 'fulfilled' as const } : g));
-    const l = layoutSky(goals, demoRecords.projects);
-    expect(l.projects.find((p) => p.id === 'p-escapement')?.goalId).toBe('g-bronze');
-    expect(l.projects.find((p) => p.id === 'p-clock-case')?.goalId).toBeNull();
+    const projects = demoRecords.projects.map((p) => (p.id === 'p-meal-prep' ? { ...p, goalIds: ['g-health', 'g-people'] } : p));
+    const goals = demoRecords.goals.map((g) => (g.id === 'g-health' ? { ...g, state: 'fulfilled' as const } : g));
+    const l = layoutSky(goals, projects);
+    expect(l.projects.find((p) => p.id === 'p-meal-prep')?.goalId).toBe('g-people');
+    expect(l.projects.find((p) => p.id === 'p-5k')?.goalId).toBeNull();
   });
 });

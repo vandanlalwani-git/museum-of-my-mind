@@ -50,7 +50,7 @@ export function Entrance() {
     setBusy(true);
     try {
       await enter(m.id);
-      say(m.kind === 'demo' ? 'You are walking through a museum that is not yours. Touch anything.' : `Welcome back to ${m.name}.`);
+      say(m.kind === 'demo' ? "You are walking through Alex's museum. Alex is fictional. Touch anything." : `Welcome back to ${m.name}.`);
       navigate('/observatory');
     } finally {
       setBusy(false);
@@ -109,9 +109,9 @@ export function Entrance() {
           {demo && primary?.id !== demo.id && (
             <Doorway
               eyebrow="Visit the demo"
-              title="The Marrow Collection"
-              description={<>The museum of Ilse Marrow, a lighthouse-keeper turned astronomer. She is fictional. Everything in her rooms is possible in yours.</>}
-              footnote="Restoring a tide-clock · naming fogs · learning the winter sky"
+              title={demo.name}
+              description={<>Alex has a full-time job and is making slow, real progress on health, a side project, creativity, and the people they love. Alex is fictional. Everything in these rooms is possible in yours.</>}
+              footnote="A 5K plan · a budget app · photo walks · Sunday calls home"
               onOpen={() => void open(demo)}
             />
           )}

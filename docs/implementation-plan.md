@@ -9,7 +9,7 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] Design tokens, base styles, motion tokens, reduced-motion handling.
 - [x] IndexedDB schema v1 via `idb`; repositories for all seven record types plus museums and meta.
 - [x] Zustand stores: museum (hydrate, active museum, CRUD), ui (quiet messages), settings.
-- [x] Fictional demo seed (Ilse Marrow) with stable ids and timestamps.
+- [x] Fictional demo seed with stable ids and timestamps (Ilse Marrow originally; replaced by "Alex's Next Chapter" in Phase 2.5).
 - [x] App shell: top bar, compass, room transition, quiet-message region, error boundary, offline-safe fonts.
 - [x] Entrance: first-visit arrival, two doorways (Enter the demo / Build your own), returning-visitor greeting, museum switcher.
 - [x] Placeholder room routes (lazy) so the compass works end to end.
@@ -36,6 +36,11 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] Empty state invitation and three-line guide. No inferred connections anywhere; nothing links unless the keeper tags or threads it.
 - [x] Demo seed versioning: the fictional museum refreshes itself when its content changes (`DEMO_SEED_VERSION`).
 - [ ] Not built, by decision: AI interpretation of notes.
+
+## Phase 2.5 — Relatable demo collection (done 2026-09-14)
+
+- [x] Demo replaced with "Alex's Next Chapter": four everyday goals (health, a side project, creativity, people), twelve projects across every state, fifteen actions, eight notes and ideas, five links, five memories, thirteen threads with reasons. Short, plain language throughout.
+- [x] `DEMO_SEED_VERSION` bumped so returning visitors get the new demo; own museums untouched. Entrance, settings, docs, and tests updated.
 
 ## Phase 3 — Workshop
 

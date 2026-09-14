@@ -91,7 +91,7 @@ Import validates `format` and `schemaVersion`, runs migrations if older, and off
 
 ### Seed
 
-`data/seed/demo.ts` builds Ilse Marrow's museum from typed literal data with a fixed base timestamp, so ids and dates are stable across runs. The seed is applied only if no museum with `id === 'demo'` exists. "Reset demo" wipes and re-seeds.
+`data/seed/demo.ts` builds Alex's museum from typed literal data with a fixed base timestamp, so ids and dates are stable across runs. On boot the demo is seeded if missing, or re-seeded if the stored `demoSeedVersion` is older than `DEMO_SEED_VERSION`. "Restore the demo museum" in settings wipes and re-seeds on demand. Own museums are never touched.
 
 ## Routing
 

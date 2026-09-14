@@ -47,9 +47,9 @@ Everything carries `createdAt`, `updatedAt`, `lastVisitedAt`, and tags. The Cabi
 
 ## Demo museum
 
-The demo belongs to a fictional visitor, **Ilse Marrow**, a lighthouse-keeper turned amateur astronomer who is restoring a tide-clock, learning to cast bronze, writing a field guide to fog, and trying to visit every lighthouse on a stretch of coast. Her museum is warm, specific, and slightly melancholy. It is fiction; nothing in it references a real person.
+The demo belongs to **Alex**, a fictional person with a full-time job who is making gradual, real progress on four ordinary things: feeling stronger and more energetic (a beginner 5K plan, weekday meal prep), shipping a small side project (a personal budget app, early user notes), making more time for creativity (photo walks, a short story), and being more intentional with people (Sunday calls home, hosting friends). The material is warm and specific but written in short, everyday language so a first-time visitor understands what every item means within seconds. It is fiction; nothing in it references a real person.
 
-The demo is loaded into a separate, clearly labelled museum so the visitor can switch to their own without losing either.
+The demo is loaded into a separate, clearly labelled museum so the visitor can switch to their own without losing either. When the demo content changes, `DEMO_SEED_VERSION` is bumped and returning visitors get the refreshed demo; personal museums are never touched.
 
 ## Out of scope for v1
 
