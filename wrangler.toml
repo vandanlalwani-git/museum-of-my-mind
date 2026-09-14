@@ -1,0 +1,7 @@
+# Cloudflare Pages project settings. The Git integration reads the build
+# settings from the dashboard; this file makes `wrangler pages deploy dist`
+# work too and pins the Functions runtime date. No secrets belong here:
+# the reflection relay is bring-your-own-key.
+name = "museum-of-my-mind"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-01"
