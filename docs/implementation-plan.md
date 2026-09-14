@@ -42,11 +42,13 @@ Each phase ends with a runnable app. Phases are ordered so the durable core (dat
 - [x] Demo replaced with "Alex's Next Chapter": four everyday goals (health, a side project, creativity, people), twelve projects across every state, fifteen actions, eight notes and ideas, five links, five memories, thirteen threads with reasons. Short, plain language throughout.
 - [x] `DEMO_SEED_VERSION` bumped so returning visitors get the new demo; own museums untouched. Entrance, settings, docs, and tests updated.
 
-## Phase 3 — Workshop
+## Phase 3 — Workshop (done 2026-09-14)
 
-- Projects as artifacts on benches; dust derived from `lastVisitedAt`.
-- "Pick up" interaction: marks visited, shows next actions, lets you complete one.
-- R3F artifacts behind WebGL check.
+- [x] Projects as artifacts: a progress dial, a plaque, a lamp when in motion, dust proportional to days untouched, a cloth when set aside, a seal when finished. Each shows what it is, which goal it serves, state, progress, last touch, and the smallest next step.
+- [x] Shelves by state (on the bench, in motion, resting, ideas, finished, set aside) and a "worth picking up" table chosen by stated rules with reasons (`pickup.ts`, tested).
+- [x] Full lifecycle: start, edit (title, summary, state, progress, goals served, tags), rest, resume, finish, set aside, revisit, let go (with inline confirm; removes steps and threads). Steps: add, complete, undo, let go.
+- [x] One shared operations module (`store/ops.ts`) and shared `ActionList` / `ProjectEditor` components now serve the Observatory and Workshop, so no data is forked. Deep links: `/observatory?goal=`, `/archive?item=`, `/workshop?project=`.
+- [x] Empty bench invitation for a new personal museum. No 3D here: the 2D artifacts are fast and legible on phones.
 
 ## Phase 4 — Backup, settings, PWA polish
 

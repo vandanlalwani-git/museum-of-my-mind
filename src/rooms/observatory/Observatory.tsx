@@ -1,13 +1,14 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { makeAction, makeGoal, makeProject, touched } from '@/data/factories';
+import { useSearchParams } from 'react-router-dom';
 import { useMuseumStore } from '@/store/museum';
+import { useMuseumOps } from '@/store/ops';
 import { useUiStore } from '@/store/ui';
 import { useSettingsStore } from '@/store/settings';
 import { motionReduced } from '@/lib/motion';
 import { disableDomeForSession, domeDisabledBySession, lowPowerDevice, webglAvailable } from '@/lib/webgl';
-import type { Action, Goal, GoalState, Project, ProjectStatus } from '@/types';
+import type { Goal } from '@/types';
 import { GoalForm } from './GoalForm';
-import { GoalPanel, type GoalOps } from './GoalPanel';
+import { GoalPanel } from './GoalPanel';
 import { SkyCanvas } from './SkyCanvas';
 import { SkyIndex } from './SkyIndex';
 import { isInSky, layoutSky, nextForGoal } from './layout';
@@ -20,14 +21,14 @@ function domeWanted(): boolean {
 }
 
 export default function Observatory() {
-  const museumId = useMuseumStore((s) => s.activeMuseumId)!;
   const records = useMuseumStore((s) => s.records);
   const upsert = useMuseumStore((s) => s.upsert);
-  const remove = useMuseumStore((s) => s.remove);
   const say = useUiStore((s) => s.say);
+  const ops = useMuseumOps();
   const { goals, projects, actions } = records;
+  const [params] = useSearchParams();
 
-  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
+  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(() => params.get('goal'));
   const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
   const [canvasOk, setCanvasOk] = useState(true);
   const [dome, setDome] = useState<boolean>(() => domeWanted());
@@ -74,48 +75,8 @@ export default function Observatory() {
     setExpandedProjectId(id);
   }, [projects, skyGoals]);
 
-  const ops: GoalOps = useMemo(() => ({
-    async updateGoal(goal, patch) { await upsert('goals', touched(goal, patch)); },
-    async setGoalState(goal, state: GoalState) {
-      await upsert('goals', touched(goal, { state }));
-      say(state === 'fulfilled' ? 'Fulfilled. It stays in the record, beneath the horizon.' : state === 'released' ? 'Released. You can call it back any time.' : state === 'dormant' ? 'Resting. It dims but does not leave the sky.' : 'Back in the sky.');
-    },
-    async createProject(goalId, input) {
-      const p = makeProject(museumId, { ...input, goalIds: [goalId] });
-      await upsert('projects', p);
-      return p;
-    },
-    async updateProject(project, patch) { await upsert('projects', touched(project, patch)); },
-    async setProjectStatus(project, status: ProjectStatus) {
-      const patch: Partial<Project> = { status };
-      if (status === 'done') patch.progress = 1;
-      await upsert('projects', touched(project, patch));
-      if (status === 'done') say('Finished. It turns green and settles.');
-    },
-    async addAction(projectId, text) {
-      const a = makeAction(museumId, projectId, text);
-      await upsert('actions', a);
-      const p = projects.find((x) => x.id === projectId);
-      if (p) await upsert('projects', touched(p));
-    },
-    async toggleAction(action: Action) {
-      const now = Date.now();
-      if (action.doneAt) {
-        const { doneAt: _done, ...rest } = action;
-        await upsert('actions', { ...rest, updatedAt: now, lastVisitedAt: now });
-      } else {
-        await upsert('actions', touched(action, { doneAt: now }));
-      }
-      const p = projects.find((x) => x.id === action.projectId);
-      if (p) await upsert('projects', touched(p));
-      if (!action.doneAt) say('Done. The next point lights.');
-    },
-    async removeAction(action) { await remove('actions', action.id); },
-  }), [museumId, projects, upsert, remove, say]);
-
   const createGoal = async (v: { title: string; why: string; horizon: Goal['horizon'] }) => {
-    const g = makeGoal(museumId, v);
-    await upsert('goals', g);
+    const g = await ops.createGoal(v);
     setSelectedGoalId(g.id);
     say('A new constellation. Give it a project to orbit.');
   };
@@ -201,6 +162,7 @@ export default function Observatory() {
         {selectedGoal ? (
           <GoalPanel
             goal={selectedGoal}
+            goals={goals}
             projects={projects}
             actions={actions}
             expandedProjectId={expandedProjectId}

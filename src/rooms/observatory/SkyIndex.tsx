@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Instrument } from '@/components/Instrument';
-import type { Action, Goal, Project, ProjectStatus } from '@/types';
+import type { Action, Goal, Project } from '@/types';
 import { GoalForm } from './GoalForm';
 import { HORIZON_LABEL, STATE_LABEL, type GoalOps } from './GoalPanel';
 import { ProjectItem } from './ProjectItem';
@@ -85,14 +85,11 @@ export function SkyIndex({ goals, projects, actions, onSelect, onCreateGoal, exp
                 key={p.id}
                 project={p}
                 actions={actions.filter((a) => a.projectId === p.id)}
+                goals={goals}
                 isNext={false}
                 expanded={expandedProjectId === p.id}
                 onToggle={() => onExpandProject(expandedProjectId === p.id ? null : p.id)}
-                onUpdate={(patch) => ops.updateProject(p, patch)}
-                onStatus={(s: ProjectStatus) => ops.setProjectStatus(p, s)}
-                onAddAction={(t) => ops.addAction(p.id, t)}
-                onToggleAction={ops.toggleAction}
-                onRemoveAction={ops.removeAction}
+                ops={ops}
               />
             ))}
           </ul>

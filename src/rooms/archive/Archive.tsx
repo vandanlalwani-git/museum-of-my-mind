@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import { makeLink, makeMemory, makeNote, makeThread, touched } from '@/data/factories';
 import { useMuseumStore } from '@/store/museum';
 import { useUiStore } from '@/store/ui';
@@ -23,7 +23,8 @@ export default function Archive() {
   const remove = useMuseumStore((s) => s.remove);
   const say = useUiStore((s) => s.say);
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [params] = useSearchParams();
+  const [selectedId, setSelectedId] = useState<string | null>(() => params.get('item'));
   const [query, setQuery] = useState('');
   const [tagFilter, setTagFilter] = useState<string | null>(null);
 

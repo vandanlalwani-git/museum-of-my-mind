@@ -2,7 +2,8 @@ import { useState, type FormEvent } from 'react';
 import { Instrument } from '@/components/Instrument';
 import { TextArea, TextField } from '@/components/Field';
 import { relativeAge } from '@/lib/dates';
-import type { Action, Goal, GoalState, Horizon, Project, ProjectStatus } from '@/types';
+import type { Action, Goal, Horizon, GoalState, Project, ProjectStatus } from '@/types';
+import type { MuseumOps } from '@/store/ops';
 import { GoalForm } from './GoalForm';
 import { ProjectItem } from './ProjectItem';
 import { nextForGoal } from './layout';
@@ -10,19 +11,11 @@ import { nextForGoal } from './layout';
 export const HORIZON_LABEL: Record<Horizon, string> = { season: 'This season', year: 'This year', decade: 'This decade', lifetime: 'A lifetime' };
 export const STATE_LABEL: Record<GoalState, string> = { active: 'In the sky', dormant: 'Resting', fulfilled: 'Fulfilled', released: 'Released' };
 
-export interface GoalOps {
-  updateGoal: (goal: Goal, patch: Partial<Goal>) => Promise<void>;
-  setGoalState: (goal: Goal, state: GoalState) => Promise<void>;
-  createProject: (goalId: string, input: { title: string; summary: string }) => Promise<Project>;
-  updateProject: (project: Project, patch: Partial<Project>) => Promise<void>;
-  setProjectStatus: (project: Project, status: ProjectStatus) => Promise<void>;
-  addAction: (projectId: string, text: string) => Promise<void>;
-  toggleAction: (action: Action) => Promise<void>;
-  removeAction: (action: Action) => Promise<void>;
-}
+export type GoalOps = MuseumOps;
 
 interface Props {
   goal: Goal;
+  goals: Goal[];
   projects: Project[];
   actions: Action[];
   expandedProjectId: string | null;
@@ -31,7 +24,7 @@ interface Props {
   ops: GoalOps;
 }
 
-export function GoalPanel({ goal, projects, actions, expandedProjectId, onExpandProject, onBack, ops }: Props) {
+export function GoalPanel({ goal, goals, projects, actions, expandedProjectId, onExpandProject, onBack, ops }: Props) {
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
   const mine = projects.filter((p) => p.goalIds.includes(goal.id));
@@ -85,7 +78,7 @@ export function GoalPanel({ goal, projects, actions, expandedProjectId, onExpand
           {!adding && <Instrument tone="quiet" onClick={() => setAdding(true)}>Add a project</Instrument>}
         </div>
         {adding && (
-          <NewProject onCancel={() => setAdding(false)} onSubmit={async (v) => { const p = await ops.createProject(goal.id, v); setAdding(false); onExpandProject(p.id); }} />
+          <NewProject onCancel={() => setAdding(false)} onSubmit={async (v) => { const p = await ops.createProject({ ...v, goalIds: [goal.id] }); setAdding(false); onExpandProject(p.id); }} />
         )}
         {inOrbit.length === 0 && !adding && (
           <p className="panel__empty">No projects orbit this goal yet. A project is a bounded piece of work with an end.</p>
@@ -96,14 +89,11 @@ export function GoalPanel({ goal, projects, actions, expandedProjectId, onExpand
               key={p.id}
               project={p}
               actions={actions.filter((a) => a.projectId === p.id)}
+              goals={goals}
               isNext={next?.project.id === p.id}
               expanded={expandedProjectId === p.id}
               onToggle={() => onExpandProject(expandedProjectId === p.id ? null : p.id)}
-              onUpdate={(patch) => ops.updateProject(p, patch)}
-              onStatus={(s) => ops.setProjectStatus(p, s)}
-              onAddAction={(t) => ops.addAction(p.id, t)}
-              onToggleAction={ops.toggleAction}
-              onRemoveAction={ops.removeAction}
+              ops={ops}
             />
           ))}
         </ul>
@@ -118,14 +108,11 @@ export function GoalPanel({ goal, projects, actions, expandedProjectId, onExpand
                 key={p.id}
                 project={p}
                 actions={actions.filter((a) => a.projectId === p.id)}
+                goals={goals}
                 isNext={false}
                 expanded={expandedProjectId === p.id}
                 onToggle={() => onExpandProject(expandedProjectId === p.id ? null : p.id)}
-                onUpdate={(patch) => ops.updateProject(p, patch)}
-                onStatus={(s) => ops.setProjectStatus(p, s)}
-                onAddAction={(t) => ops.addAction(p.id, t)}
-                onToggleAction={ops.toggleAction}
-                onRemoveAction={ops.removeAction}
+                ops={ops}
               />
             ))}
           </ul>
