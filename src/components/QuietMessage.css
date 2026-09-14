@@ -1,0 +1,14 @@
+.quiet {
+  position: fixed;
+  left: var(--space-6);
+  bottom: var(--space-5);
+  z-index: 40;
+  pointer-events: none;
+}
+.quiet__text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-lg);
+  color: var(--parchment-dim);
+  max-width: 40ch;
+}

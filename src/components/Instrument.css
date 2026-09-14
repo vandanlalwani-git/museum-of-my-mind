@@ -1,0 +1,24 @@
+.instrument {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  color: var(--parchment);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  background: transparent;
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.instrument:hover { border-color: var(--gold); color: var(--gold); }
+.instrument:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.instrument--primary { border-color: var(--gold-dim); color: var(--gold); }
+.instrument--primary:hover { background: var(--gold); color: var(--obsidian); border-color: var(--gold); }
+
+.instrument--quiet { border-color: transparent; color: var(--parchment-dim); padding-inline: 0.4rem; }
+.instrument--quiet:hover { color: var(--gold); border-color: transparent; }
+
+.instrument--ember { border-color: rgba(168, 85, 63, 0.4); color: var(--ember); }
+.instrument--ember:hover { border-color: var(--ember); color: var(--ember); }
