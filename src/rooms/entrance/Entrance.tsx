@@ -51,7 +51,7 @@ export function Entrance() {
     try {
       await enter(m.id);
       say(m.kind === 'demo' ? "You are walking through Alex's museum. Alex is fictional. Touch anything." : `Welcome back to ${m.name}.`, undefined, { quiet: true });
-      navigate('/observatory');
+      navigate('/');
     } finally {
       setBusy(false);
     }
@@ -64,7 +64,7 @@ export function Entrance() {
       const m = await createOwnMuseum(name, visitor);
       await enter(m.id);
       say('The doors are yours now. Nothing leaves this browser.');
-      navigate('/observatory');
+      navigate('/');
     } finally {
       setBusy(false);
     }

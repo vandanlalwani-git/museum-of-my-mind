@@ -22,4 +22,6 @@ export const META_KEYS = {
   schemaVersion: 'schemaVersion',
   demoSeedVersion: 'demoSeedVersion',
   lastBackupAt: 'lastBackupAt',
+  /** Per museum: `focusGoal:<museumId>`, the goal pinned on Today. */
+  focusGoal: (museumId: string) => `focusGoal:${museumId}`,
 } as const;

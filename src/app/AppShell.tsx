@@ -18,7 +18,7 @@ export function AppShell() {
   const roomsVisited = useUiStore((s) => s.roomsVisited);
   const noteRoomVisit = useUiStore((s) => s.noteRoomVisit);
   const say = useUiStore((s) => s.say);
-  const isEntrance = location.pathname === '/';
+  const isEntrance = location.pathname === '/welcome';
 
   useEffect(() => {
     const onPrompt = (e: Event) => { e.preventDefault(); setInstallPrompt(e as BeforeInstallPromptEvent); };
@@ -47,7 +47,7 @@ export function AppShell() {
     <div className={`shell ${isEntrance ? 'shell--entrance' : ''}`}>
       <a href="#room" className="visually-hidden">Skip to room</a>
       <header className="shell__bar">
-        <Link to="/" className="shell__brand">
+        <Link to={active ? "/" : "/welcome"} className="shell__brand">
           <span className="shell__name display">The Museum of My Mind</span>
           {active && <span className="plaque shell__museum">{active.name}</span>}
         </Link>
@@ -57,7 +57,7 @@ export function AppShell() {
             <Instrument tone="quiet" onClick={install}>Keep this museum</Instrument>
           )}
           {active && (
-            <Link to="/settings" className="shell__settings plaque">Keeper's desk</Link>
+            <Link to="/explore" className="shell__settings plaque">Explore</Link>
           )}
         </div>
       </header>

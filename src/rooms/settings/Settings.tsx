@@ -93,13 +93,13 @@ export default function Settings() {
       const name = active.name;
       await deleteMuseum(active.id);
       say(`${name} is gone. The other museums are untouched.`, undefined, { quiet: true });
-      navigate('/');
+      navigate('/welcome');
     } finally {
       setBusy(false);
     }
   };
 
-  const exit = async () => { await leave(); navigate('/'); };
+  const exit = async () => { await leave(); navigate('/welcome'); };
   const isDemo = active?.kind === 'demo';
 
   return (
@@ -174,7 +174,7 @@ export default function Settings() {
         <h2 className="settings__h2">Housekeeping</h2>
         <div className="settings__row">
           {isDemo && <Instrument onClick={() => void reloadDemo()} disabled={busy}>Reload the demo collection</Instrument>}
-          <Instrument tone="quiet" onClick={() => void exit()}>Leave through the entrance</Instrument>
+          <Instrument tone="quiet" onClick={() => void exit()}>Switch museum</Instrument>
         </div>
         {isDemo && <p className="settings__p">Reloading puts Alex's museum back exactly as it was seeded. Your own museums are never touched.</p>}
 

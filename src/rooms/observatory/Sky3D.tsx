@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, type RefObject } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { hashString, mulberry32 } from '@/lib/rng';
+import { stableDpr } from '@/lib/surface';
 import type { Goal, Project } from '@/types';
 import { ORBIT_SQUASH, ORBIT_SPEED, resolvePositions, skyTime, type SkyLayout } from './layout';
 
@@ -38,7 +39,9 @@ export default function Sky3D(props: Sky3DProps) {
       className="sky3d"
       orthographic
       camera={{ position: [0, 0, 500], near: 0.1, far: 2000, zoom: 1 }}
-      dpr={[1, 1.5]}
+      // A fixed, zoom-independent ratio: R3F must not reallocate the WebGL
+      // drawing buffer when iOS reports a larger ratio during a pinch.
+      dpr={Math.min(stableDpr(), 1.5)}
       gl={{ alpha: true, antialias: false, powerPreference: 'low-power', premultipliedAlpha: true, preserveDrawingBuffer: import.meta.env.DEV }}
       frameloop="always"
       onCreated={({ gl }) => {

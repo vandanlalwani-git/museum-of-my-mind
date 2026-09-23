@@ -87,3 +87,14 @@ See docs/deploy.md.
 ## Decisions needed from the owner
 
 See the session summary. Notable: font licensing/self-hosting choice, whether the demo museum and own museum can co-exist (planned: yes), and whether the Future Gallery may reference dates.
+
+## Phase 9 — Daily-use simplification (done 2026-09-23)
+
+- [x] **Today** is the new home (`/`), answering four questions and nothing else: what matters most (one goal, switchable), the next small thing (one step: done, not today, or choose another), one frictionless capture field with a single optional follow-up, and one forgotten thing with a one-line reason (still matters, make it a step, hide, or show another). Selection rules live in `rooms/today/selection.ts` and are tested.
+- [x] Adding a first step never requires learning what a project is: if the focus goal has none, a holder project is created quietly behind the interface. The data model is unchanged; only the vocabulary is.
+- [x] Navigation is **Today, Library, Settings**, with Explore one quiet step away. The entrance moved to `/welcome` and is now only the museum chooser.
+- [x] **Library** (`/library`): one searchable list of goals, projects, notes, links, and memories, with inline creation of a goal or project. Rows open the room that knows the item best.
+- [x] **Explore** (`/explore`): Observatory, the wall, Workshop, Future Gallery, and the Cabinet, all intact, plus Ask my AI shown as off and unobtrusive. The Observatory is also linked from Today as "See the bigger picture".
+- [x] **Mobile zoom crash fixed.** `lib/surface.ts` gives every canvas an absolute pixel budget, divides pinch zoom out of the device ratio, coalesces resize bursts into one frame, and skips reallocation when the buffer would not change. Verified on the Observatory: a simulated 3x pinch produces an identical buffer and 40 rapid resizes cause zero reallocations.
+- [x] The home route no longer pulls in the heavy rooms, so the first-load bundle fell from 133KB to 118KB gzipped.
+- Nothing was deleted: every room, record type, and feature from Phases 0 through 8 still exists behind the simpler surface.

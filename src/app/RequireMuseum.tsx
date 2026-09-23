@@ -6,6 +6,6 @@ export function RequireMuseum() {
   const status = useMuseumStore((s) => s.status);
   const hydrated = useMuseumStore((s) => s.hydrated);
   if (status !== 'ready') return null;
-  if (!hydrated) return <Navigate to="/" replace />;
+  if (!hydrated) return <Navigate to="/welcome" replace />;
   return <Outlet />;
 }

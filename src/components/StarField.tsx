@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { hashString, mulberry32 } from '@/lib/rng';
 import { prefersReducedMotion } from '@/lib/motion';
+import { applySurface, observeSurface, type Surface } from '@/lib/surface';
 
 interface Props {
   seed?: string;
@@ -30,12 +31,10 @@ export function StarField({ seed = 'entrance', density = 0.9, className }: Props
     const reduced = prefersReducedMotion();
     const t0 = performance.now();
 
-    const build = () => {
-      const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = rect.width; h = rect.height;
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
+    const build = (surface: Surface) => {
+      dpr = surface.dpr;
+      w = surface.width; h = surface.height;
+      applySurface(canvas, surface);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const rng = mulberry32(hashString(seed));
       const n = Math.floor((w * h) / 10_000 * density);
@@ -76,11 +75,12 @@ export function StarField({ seed = 'entrance', density = 0.9, className }: Props
       if (!reduced) raf = requestAnimationFrame(draw);
     };
 
-    build();
+    const stop = observeSurface(canvas, (surface) => {
+      build(surface);
+      if (reduced) draw(performance.now());
+    });
     draw(performance.now());
-    const ro = new ResizeObserver(() => { build(); if (reduced) draw(performance.now()); });
-    ro.observe(canvas);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+    return () => { cancelAnimationFrame(raf); stop(); };
   }, [seed, density]);
 
   return <canvas ref={ref} className={className} aria-hidden="true" />;

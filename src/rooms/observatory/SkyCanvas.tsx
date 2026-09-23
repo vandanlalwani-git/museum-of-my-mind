@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from 'react';
 import { hashString, mulberry32 } from '@/lib/rng';
 import { motionReduced } from '@/lib/motion';
+import { applySurface, observeSurface, type Surface } from '@/lib/surface';
 import type { Action, Goal, Project } from '@/types';
 import type { SkyLayout } from './layout';
 import { ORBIT_SQUASH, nextActionFor, resolvePositions, skyTime } from './layout';
@@ -56,12 +57,10 @@ export function SkyCanvas(props: Props) {
     let w = 0, h = 0, dpr = 1, raf = 0;
     let bg: { x: number; y: number; r: number; a: number; depth: number }[] = [];
 
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = rect.width; h = rect.height;
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
+    const resize = (surface: Surface) => {
+      dpr = surface.dpr;
+      w = surface.width; h = surface.height;
+      applySurface(canvas, surface);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const rng = mulberry32(hashString('observatory-bg'));
       const n = Math.floor((w * h) / 10_000 * 0.7);
@@ -228,10 +227,11 @@ export function SkyCanvas(props: Props) {
       if (!reduced) raf = requestAnimationFrame(draw);
     };
 
-    resize();
+    const stopObserving = observeSurface(canvas, (surface) => {
+      resize(surface);
+      if (reduced) draw(performance.now());
+    });
     draw(performance.now());
-    const ro = new ResizeObserver(() => { resize(); if (reduced) draw(performance.now()); });
-    ro.observe(canvas);
     void document.fonts?.ready.then(() => { if (reduced) draw(performance.now()); });
 
     let redraw: (() => void) | undefined;
@@ -239,7 +239,7 @@ export function SkyCanvas(props: Props) {
       redraw = () => draw(performance.now());
       (canvas as HTMLCanvasElement & { __redraw?: () => void }).__redraw = redraw;
     }
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+    return () => { cancelAnimationFrame(raf); stopObserving(); };
   }, [onUnsupported]);
 
   // Under reduced motion there is no loop, so redraw when data changes.

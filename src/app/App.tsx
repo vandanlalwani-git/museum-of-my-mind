@@ -1,9 +1,10 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from './AppShell';
 import { ErrorBoundary } from './ErrorBoundary';
 import { RequireMuseum } from './RequireMuseum';
 import { Entrance } from '@/rooms/entrance/Entrance';
+import Today from '@/rooms/today/Today';
 import { useMuseumStore } from '@/store/museum';
 import { useSettingsStore } from '@/store/settings';
 
@@ -14,6 +15,8 @@ const FutureGallery = lazy(() => import('@/rooms/future/FutureGallery'));
 const Cabinet = lazy(() => import('@/rooms/cabinet/Cabinet'));
 const Settings = lazy(() => import('@/rooms/settings/Settings'));
 const Reflect = lazy(() => import('@/rooms/reflect/Reflect'));
+const Library = lazy(() => import('@/rooms/library/Library'));
+const Explore = lazy(() => import('@/rooms/explore/Explore'));
 
 function Booting() {
   return (
@@ -57,8 +60,11 @@ export function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<AppShell />}>
-            <Route index element={<Entrance />} />
+            <Route path="/welcome" element={<Entrance />} />
             <Route element={<RequireMuseum />}>
+              <Route index element={<Today />} />
+              <Route path="/library" element={<Suspense fallback={<Booting />}><Library /></Suspense>} />
+              <Route path="/explore" element={<Suspense fallback={<Booting />}><Explore /></Suspense>} />
               <Route path="/observatory" element={<Suspense fallback={<Booting />}><Observatory /></Suspense>} />
               <Route path="/archive" element={<Suspense fallback={<Booting />}><Archive /></Suspense>} />
               <Route path="/workshop" element={<Suspense fallback={<Booting />}><Workshop /></Suspense>} />
@@ -67,7 +73,7 @@ export function App() {
               <Route path="/settings" element={<Suspense fallback={<Booting />}><Settings /></Suspense>} />
               <Route path="/reflect" element={<Suspense fallback={<Booting />}><Reflect /></Suspense>} />
             </Route>
-            <Route path="*" element={<Entrance />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
       </BrowserRouter>
