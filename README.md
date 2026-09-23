@@ -12,7 +12,7 @@ A private, local-first museum for one person's goals, ideas, notes, links, proje
 ## Run it
 
 ```bash
-npm ci --legacy-peer-deps
+npm ci
 npm run dev
 ```
 
@@ -30,4 +30,4 @@ npm run dev
 
 ## Deploy
 
-See `docs/deploy.md`. It is a static site plus one Cloudflare Pages Function, and runs on the free plan.
+Live at <https://museum-of-my-mind.pages.dev>, built from `main` on Cloudflare Pages' free plan: a static site plus one Pages Function for the optional reflection relay. See `docs/deploy.md`.
