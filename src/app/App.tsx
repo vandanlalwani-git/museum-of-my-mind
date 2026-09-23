@@ -47,9 +47,11 @@ export function App() {
       <main style={{ padding: 'var(--space-10)', maxWidth: 'var(--measure)' }}>
         <span className="plaque">The doors are stuck</span>
         <h1 style={{ fontSize: 'var(--text-2xl)', marginTop: 'var(--space-3)' }}>The museum could not open its storage.</h1>
-        <p style={{ color: 'var(--parchment-dim)', marginTop: 'var(--space-4)' }}>
-          This usually means the browser is in a private window or has storage disabled. {error}
+        <p style={{ color: 'var(--parchment-dim)', marginTop: 'var(--space-4)' }}>{error}</p>
+        <p style={{ color: 'var(--parchment-faint)', marginTop: 'var(--space-4)', fontSize: 'var(--text-sm)' }}>
+          A private window with storage disabled will also do this. Your collection is not lost; it is waiting in this browser.
         </p>
+        <button type="button" className="instrument instrument--primary" style={{ marginTop: 'var(--space-6)' }} onClick={() => location.reload()}>Try again</button>
       </main>
     );
   }

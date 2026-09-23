@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { isBlockedByAnotherTab, withOpenTimeout } from '@/data/db';
 import { museumRepo } from '@/data/repo/museums';
 import { META_KEYS, metaRepo } from '@/data/repo/meta';
 import { loadMuseumRecords, repos } from '@/data/repo/records';
@@ -46,15 +47,25 @@ export const useMuseumStore = create<MuseumState>((set, get) => ({
     if (get().status !== 'idle') return;
     set({ status: 'booting' });
     try {
-      await ensureDemoSeeded();
-      const museums = await museumRepo.list();
-      const activeMuseumId = (await metaRepo.get<string>(META_KEYS.activeMuseumId)) ?? null;
-      const active = museums.find((m) => m.id === activeMuseumId) ?? null;
-      if (active) await get().enter(active.id);
-      else set({ museums, activeMuseumId: null, active: null });
+      // Opening can never settle while another tab holds the database, so the
+      // whole boot is bounded rather than spinning on "Unlocking the doors".
+      await withOpenTimeout((async () => {
+        await ensureDemoSeeded();
+        const museums = await museumRepo.list();
+        const activeMuseumId = (await metaRepo.get<string>(META_KEYS.activeMuseumId)) ?? null;
+        const active = museums.find((m) => m.id === activeMuseumId) ?? null;
+        if (active) await get().enter(active.id);
+        else set({ museums, activeMuseumId: null, active: null });
+      })());
       set({ status: 'ready' });
     } catch (e) {
-      set({ status: 'error', error: e instanceof Error ? e.message : String(e) });
+      const unavailable = e instanceof Error && e.message === 'database-unavailable';
+      set({
+        status: 'error',
+        error: unavailable || isBlockedByAnotherTab()
+          ? 'Another tab has this museum open, or the browser is still clearing its storage. Close the other tabs and reload.'
+          : e instanceof Error ? e.message : String(e),
+      });
     }
   },
 

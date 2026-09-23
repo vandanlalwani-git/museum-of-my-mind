@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { IDBFactory } from 'fake-indexeddb';
-import { closeDB } from '@/data/db';
+import { closeDB, withOpenTimeout } from '@/data/db';
 import { loadMuseumRecords } from '@/data/repo/records';
 import { META_KEYS, metaRepo } from '@/data/repo/meta';
 import { makeGoal, makeProject, makeAction, touched } from '@/data/factories';
@@ -82,5 +82,28 @@ describe('import modes', () => {
     goals = (await loadMuseumRecords(DEMO_MUSEUM_ID)).goals;
     expect(goals.find((g) => g.id === goal.id)?.title).toBe(goal.title);
     expect(goals).toHaveLength(4);
+  });
+});
+
+describe('boot resilience', () => {
+  it('bounds an open that never settles instead of hanging', async () => {
+    const never = new Promise<never>(() => {});
+    await expect(withOpenTimeout(never, 50)).rejects.toThrow('database-unavailable');
+  });
+
+  it('passes a normal open straight through', async () => {
+    await expect(withOpenTimeout(Promise.resolve('open'), 1000)).resolves.toBe('open');
+  });
+
+  it('ends in a reported error, never stuck on booting, when storage is unusable', async () => {
+    await closeDB();
+    globalThis.indexedDB = { open() { throw new DOMException('denied', 'SecurityError'); }, databases: async () => [] } as unknown as IDBFactory;
+    useMuseumStore.setState({ status: 'idle', museums: [], activeMuseumId: null, active: null, hydrated: false });
+
+    await useMuseumStore.getState().boot();
+
+    expect(useMuseumStore.getState().status).toBe('error');
+    expect(useMuseumStore.getState().error).toBeTruthy();
+    expect(useMuseumStore.getState().hydrated).toBe(false);
   });
 });
