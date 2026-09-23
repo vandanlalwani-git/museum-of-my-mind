@@ -7,7 +7,11 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      // Updates install themselves. With 'prompt' the notice renders inside the
+      // app, so anyone stuck on a failing boot could never reach the fix that
+      // unsticks them. This is a single-person journal; there is no shared
+      // session to disrupt by activating a new worker.
+      registerType: 'autoUpdate',
       includeAssets: ['fonts/*', 'icons/*'],
       manifest: {
         name: 'The Museum of My Mind',
@@ -28,6 +32,9 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,ico}'],
         navigateFallback: '/index.html',
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
       },
     }),
   ],
