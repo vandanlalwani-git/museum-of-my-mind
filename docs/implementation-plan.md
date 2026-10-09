@@ -107,3 +107,41 @@ See the session summary. Notable: font licensing/self-hosting choice, whether th
 - [x] Touch screens get 44px touch zones on every control, without moving anything, and wrapped rows are spaced so neighbouring zones never overlap.
 - [x] The confirmation message has its own backing instead of printing over links; the hours slider shows hours, not a percent.
 - [x] `scripts/pointer-audit.js` checks every screen and open form for blocked controls, zoom-triggering fields, and small touch zones. All 25 demo states and 8 empty-museum states pass at phone and desktop sizes.
+
+## The mind-first redesign (Phases 10–17, approved 2026-10-10)
+
+The museum is for seeing, sorting and walking through thoughts. Goals give them direction; tracking is a quiet room at the back and must never dominate. Full plan: https://claude.ai/artifact/PgPfEkuRyKHzdD4kvj1dfK. Approved by the owner:
+
+- Goal → Project → Step. A goal is a direction (star), a project is something you can finish or keep up (planet), a step is something you can do in one sitting.
+- One museum with galaxies. Existing museums become galaxies. The demo becomes a scroll-through guided tour that moves to Settings once the owner has their own museum.
+- Dock: Sky · Today · Capture · Journal · Search, opening on the Sky. Settings sit behind a gear. The same dock and words on laptop and phone.
+- Workshop, Future Gallery, Cabinet, the wall and the Library close. Their useful parts move to goal and project pages, Today, the Journal and the weekly review.
+- Open questions and Clear my mind are added. The weekly review is built on the device with no AI.
+- Every phase is committed, pushed and deployed on its own, so any phase can be reverted. Data changes are not undone by a code revert, so any migration keeps the old records and saves a backup first.
+- QR-paired, end-to-end encrypted sync, plus the backup file, as two ways to move data. The rule changes it needs are deferred to Phase 17.
+
+**Project shapes** (the first three came from the owner's first examples; the rest were added at their request):
+
+| Shape | Done when | Example |
+|---|---|---|
+| Finish a list | every step is ticked | Learn the basic chords |
+| Reach a number | a count hits its target; repeating steps add to it | Learn 50 songs |
+| Keep a habit | never; it is kept or not, week by week | Improve cardio: run 4 times a week |
+| Get ready for a day | the day arrives; steps lead up to it, with a gentle countdown | Play at a friend's birthday on 8 November |
+| Climb in levels | the last level is reached; each level opens the next | Run 10, then 20, then 30 minutes |
+| Explore a question | you write down what you concluded; progress is what you have learned, as linked thoughts and links | Explore whether a four-day week would suit me |
+
+**Step kinds:** one-off; repeating (daily, chosen weekdays, weekly, every N days); a session with an amount, such as "practise 20 minutes", which feeds number and habit projects; waiting on someone, which is parked and never nags; someday, which stays on the project page and never reaches Today; and a milestone, a marker on the planet's ring. Only due steps reach Today, and at most one per focus goal.
+
+### Phase 10 — Design direction prototype (in progress)
+- [x] Moving prototype of the three hero moments (arriving, going closer, letting go of a thought) in real 3D, laptop and phone: https://claude.ai/artifact/FmWLWxbWrGgvYRroBbrxKi
+- [ ] Owner approves the look, or gives notes
+- [ ] `docs/design-system.md` rewritten for depth layers, plates, the dock and the motion language, from the approved prototype
+
+### Phase 11 — Foundations: model, migration, backups
+### Phase 12 — Shell, dock, capture, Unsorted, Clear my mind, Search
+### Phase 13 — The 3D sky: galaxies, solar systems, thoughts, List view
+### Phase 14 — Goal pages, project pages (all six shapes and every step kind), Today
+### Phase 15 — Journal and the weekly review
+### Phase 16 — Guided demo tour, retire old rooms, full release checks
+### Phase 17 — Encrypted QR sync (needs the deferred rule change)
