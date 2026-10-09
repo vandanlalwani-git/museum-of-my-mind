@@ -133,13 +133,39 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
 
 **Step kinds:** one-off; repeating (daily, chosen weekdays, weekly, every N days); a session with an amount, such as "practise 20 minutes", which feeds number and habit projects; waiting on someone, which is parked and never nags; someday, which stays on the project page and never reaches Today; and a milestone, a marker on the planet's ring. Only due steps reach Today, and at most one per focus goal.
 
-### Phase 10 — Design direction prototype (in progress)
+### Phase 10 — Design direction prototype (done 2026-10-10)
 - [x] Moving prototype of the three hero moments (arriving, going closer, letting go of a thought) in real 3D, laptop and phone: https://claude.ai/artifact/FmWLWxbWrGgvYRroBbrxKi
-- [ ] Owner approves the look, or gives notes
-- [ ] `docs/design-system.md` rewritten for depth layers, plates, the dock and the motion language, from the approved prototype
+- [x] The owner approved the look, with notes, all applied:
+  - Galaxy centres made quiet and goal stars the brightest points.
+  - Any number of galaxies, laid out to fit the screen, with a "+ New galaxy" place.
+  - Galaxies, stars and planets are tappable as objects, not only by their labels.
+  - A planet opens its own project page.
+- [x] Design changes made under the owner's design licence:
+  - Labels get a dark halo so they read over bright arms.
+  - Planets and moons nearly stop under the pointer or a finger, so they are easy to tap.
+  - A planet stops orbiting while its page is open.
+  - Star glow scales with distance.
+  - Hovering shows a pointer and lights the matching label.
+  - Sky comes first in the dock.
+- [x] `docs/design-system.md`: "The sky and its plates" (light hierarchy, galaxy hues, zoom levels, plates, dock, motion, laptop and phone)
 
-### Phase 11 — Foundations: model, migration, backups
-### Phase 12 — Shell, dock, capture, Unsorted, Clear my mind, Search
+### Phase 11 — Foundations: model, migration, backups (done 2026-10-10)
+- [x] `src/mind/types.ts`: one museum with galaxies. Goals carry a why, a horizon and a state. Projects have six shapes. Steps have six kinds, with repeat rules, amounts and a completion log. Thoughts can be unsorted, kept or let go, with an open-question flag and an answer. Also connections, journal entries, reviews, and legacy records for retired rooms. Every record carries a `deletedAt` marker, ready for sync.
+- [x] `src/mind/recurrence.ts`: when a repeating step is due (every day, chosen weekdays, a weekday, every N days, N times a week). Nothing ever becomes overdue, and waiting, someday and milestone steps never reach Today.
+- [x] `src/mind/shapes.ts`: progress for all six shapes, this week's tally and the last six weeks for habits, the keeper's recent pace, and the "if you keep this pace" what-if date.
+- [x] `src/mind/migrate.ts`: a pure function that moves the old rooms into one mind.
+  - Own museums become galaxies; the demo is left out.
+  - Ids are kept.
+  - The hidden holder projects become visible "First steps" projects.
+  - Notes and links become thoughts. Wall threads either give a thought its home or stay connections.
+  - Memories become journal entries; Future Gallery what-ifs are kept as legacy records.
+  - It produces a plain-language report.
+- [x] `src/mind/backup.ts`: backup format 4 (whole minds). Version 1 to 3 backups still import, migrating on the way in. Structural problems are refused and loose references only warn.
+- [x] 16 tests, including a proof that every old record lands exactly once and a clean migration of the full demo seed.
+- [x] Mind-first rules written into the product brief and CLAUDE.md.
+- Deliberately not in this phase: the database schema change and the live migration of the keeper's data. Reverting a commit cannot undo stored data, so both land in Phase 12 together with the screens that use them, after an automatic backup.
+### Phase 12 — Shell, dock, capture, Unsorted, Clear my mind, Search, and the switch-over
+- Database version 4 adds the new stores beside the old ones, which stay untouched. On first open, an automatic backup is saved, then `migrateToMind` runs, then the new shell takes over. The app shows "your museum has moved in" with the plain-language report.
 ### Phase 13 — The 3D sky: galaxies, solar systems, thoughts, List view
 ### Phase 14 — Goal pages, project pages (all six shapes and every step kind), Today
 ### Phase 15 — Journal and the weekly review

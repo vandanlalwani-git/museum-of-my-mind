@@ -1,5 +1,54 @@
 # The Museum of My Mind — Product Brief
 
+## Mind first (direction from Phase 10 onwards, approved 2026-10-10)
+
+**This is a museum for one person's mind.** It is a place to see, sort and walk through thoughts, ideas, goals, plans and ambitions, especially when life feels crowded or confusing. Goals give thoughts direction. Tasks and tracking are a useful extra, kept in a quiet room at the back, and must never take over. If a screen starts to feel like a to-do app, it is wrong.
+
+The owner's test: someone in a transitional, confusing period should come away calmer and clearer, never more confused, never pressured.
+
+### The model
+
+- **Galaxies:** areas of life, as many as the keeper wants (Personal, Career, Family, Creativity…). All of them live in one museum.
+- **Goals (stars):** directions measured in years, each with a one-line reason why it matters.
+- **Projects (planets):** something you can finish, keep up, or explore. A project has one of six shapes:
+  - a list to finish
+  - a number to reach
+  - a habit to keep
+  - getting ready for a day
+  - a climb in levels
+  - a question to explore
+- **Steps:** something you can do in one sitting. A step is one of six kinds:
+  - one-off
+  - repeating
+  - a session with an amount
+  - waiting on someone
+  - someday
+  - a milestone
+- **Thoughts:** ideas, questions, worries and links. They wait in Unsorted until given a home. Thoughts linked to a goal circle it as moons. An open question flickers until it is answered.
+- **Journal:** what happened and how it felt, kept apart from goals, with "On this day".
+- **Weekly review:** a Sunday check-in made on the device with no AI. It shows what moved and what went quiet, and you choose one or two goals to focus on next week.
+
+### Mind-first rules
+
+1. Thoughts are the most visible things in the museum. Steps are the least visible, and never appear in the sky.
+2. Progress is shown as light, not numbers, until you open a project.
+3. A goal's page leads with why it matters, then the thoughts around it, then its projects.
+4. Today stays small: a thought first, then at most two focus goals with one step each.
+5. There are no streaks, red counts, badges, notifications, or "overdue". Words such as task, to-do, deadline and productivity never appear on screen.
+6. Capturing never asks for a decision. Everything can wait in Unsorted.
+7. "Clear my mind" lets the keeper pour out many thoughts at once and sort them later.
+
+### Places
+
+The dock holds **Sky · Today · Capture · Journal · Search**, with Settings behind a gear. The Sky is the visual home (see `design-system.md`, "The sky and its plates"). The Workshop, Future Gallery, Cabinet, the Archive wall and the Library are retired in Phase 16. Their useful parts move to goal and project pages, Today, the Journal and the weekly review.
+
+### Demo
+
+The demo becomes a guided tour you scroll through once, using the fictional Alex's museum. Once the keeper has a museum of their own, the tour moves to Settings.
+
+The sections below describe the original room model. It stays live until the new shell replaces it in Phase 12, and its code is retired in Phase 16.
+
+
 ## One line
 
 A local-first, game-like digital museum for one person's goals, ideas, notes, links, projects, and memories. It should feel like walking through a private observatory at night, not like opening a SaaS dashboard.

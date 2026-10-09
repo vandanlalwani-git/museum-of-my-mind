@@ -6,12 +6,22 @@ Read `docs/product-brief.md`, `docs/design-system.md`, and `docs/architecture.md
 
 A polished, portfolio-quality, local-first, game-like digital museum for one person's goals, ideas, notes, links, projects, and memories. It must feel cinematic, quietly magical, and deeply personal. It is not a SaaS dashboard.
 
+**Mind first, never a task tracker.** The museum exists to see, sort and walk through thoughts, ideas, goals and ambitions. Tracking is a quiet extra and must never dominate. Follow the mind-first rules in `docs/product-brief.md`:
+- Thoughts are the most visible things; steps never appear in the sky.
+- Progress shows as light, not numbers.
+- Goal pages lead with why it matters.
+- Today stays small.
+- No streaks, red counts, badges, notifications or "overdue".
+- Never use the words task, to-do, deadline or productivity on screen.
+
 ## Visual direction (never dilute)
 
 - Dark academic observatory: obsidian, deep navy, old gold, parchment, muted green. Tokens live in `src/styles/tokens.css`; never hard-code colours in components.
 - Precise typography, spatial depth, beautiful motion. Subtle sound is optional and off by default.
 - No generic dashboard cards. No stock imagery. No unnecessary gradients. No "AI app" clichés (sparkles, neon, glass blur cards, rainbow gradients).
-- Use 3D only where it creates wonder (Observatory sky, Workshop artifacts). Everything else is 2D, fast, and legible. 3D lazy-loads and never touches the entrance path.
+- The redesigned museum stands on one living 3D sky (galaxies, goal stars, project planets, drifting thoughts). Pages are 2D plates held in front of it; see "The sky and its plates" in `docs/design-system.md`. Text and controls are always 2D, fast, and legible. 3D lazy-loads, never blocks first paint, and falls back to a calm 2D sky.
+- Goal stars are the brightest points in the sky, and galaxy centres stay quiet. Everything in the sky can be tapped as an object, not only by its label.
+- Laptop and phone are one app, with the same dock, words and sky arranged for the screen, never two designs.
 - Corner radius is 2px. Emoji are never UI icons.
 
 ## Technical rules (never break)
@@ -27,13 +37,20 @@ A polished, portfolio-quality, local-first, game-like digital museum for one per
 - PWA install experience is required.
 - Deterministic rendering for the Archive layout and Future Gallery (seeded PRNG). The Future Gallery is a "what if?" simulator, not a prediction engine, and its copy must say so.
 
-## Rooms
+## Places
 
-Entrance, Observatory, Archive, Workshop, Future Gallery, Cabinet of Curiosities. See the product brief for what each is for.
+The redesign (Phases 10–17 in `docs/implementation-plan.md`) has a dock of **Sky · Today · Capture · Journal · Search**, with Settings behind a gear.
+- One museum holds any number of galaxies.
+- Goal → Project → Step. Projects come in six shapes and steps in six kinds; the model is in `src/mind/types.ts`.
+- The old rooms (Entrance, Observatory, Archive, Workshop, Future Gallery, Cabinet) stay live until the new shell replaces them in Phase 12, and their code is retired in Phase 16.
 
 ## Working conventions
 
 - Repositories are the only code that touches IndexedDB. Stores call repositories. Components call stores.
+- Every phase is committed, pushed and deployed on its own, so it can be reverted. Reverting code does not undo stored data. So any change to the database schema or the stored records must:
+  - keep the old records untouched;
+  - save a backup first;
+  - land in the same phase as the screens that use it.
 - Every room is lazy-loaded behind `AppShell`.
 - Keep the entrance chunk small; it is the first impression.
 - Honour `prefers-reduced-motion` in every animation.
