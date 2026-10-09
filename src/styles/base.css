@@ -128,3 +128,77 @@ html[data-reduce-motion='on'] *, html[data-reduce-motion='on'] *::before, html[d
   animation: booting-fade var(--dur-slow) var(--ease) both;
 }
 @keyframes booting-fade { from { opacity: 0 } to { opacity: 1 } }
+
+/*
+ * Touch screens: every control gets a touch zone at least 44px tall, Apple's
+ * minimum for a fingertip. Small text links and tabs grow an invisible zone
+ * centred on themselves, so nothing on screen moves or changes shape; boxed
+ * buttons simply grow to 44px.
+ */
+@media (pointer: coarse) {
+  .instrument { min-height: 44px; }
+  input:not([type=checkbox]):not([type=radio]):not([type=range]), select { min-height: 44px; }
+
+  /* Touch zones must never overlap, or a tap on one control triggers its
+     neighbour. Rows that wrap get enough space between them. */
+  /* `html` raises specificity: room styles load later and would otherwise win. */
+  html .card__actions, html .form-actions, html .drawer__actions { row-gap: var(--space-4); }
+
+  /* The nav row scrolls sideways, which clips anything outside its box;
+     give it room so the links' touch zones are not cut off. */
+  html .compass { padding-block: 10px; margin-block: -10px; }
+
+  .compass__point, .linky, .panel__back, .capture2__link, .thread__edit,
+  .rf__forget, .fg__assume, .shell__settings, .lib__filter, .shelf, .capture__kind,
+  .shell__brand, .today__bigger, .lib__link, .explore__quiet, .thread__target,
+  .ws-goal, .tag,
+  .action__check, .action__remove, .thread__remove, .fg-saved__remove {
+    position: relative;
+  }
+  .compass__point::after, .linky::after, .panel__back::after, .capture2__link::after, .thread__edit::after,
+  .rf__forget::after, .fg__assume::after, .shell__settings::after, .lib__filter::after, .shelf::after,
+  .capture__kind::after, .shell__brand::after, .today__bigger::after, .lib__link::after,
+  .explore__quiet::after, .thread__target::after, .ws-goal::after, .tag::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+  /* Small round controls: a touch zone of exactly 44 by 44, centred, so it
+     fills a 44px row without spilling into the next one. */
+  .action__check::after, .action__remove::after, .thread__remove::after, .fg-saved__remove::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+  html .thread__tools { gap: var(--space-4); }
+
+  /* A link that wraps across two lines has no usable box for a touch zone;
+     keep each one a single unit that wraps inside itself instead. */
+  .thread__target, .ws-goal { display: inline-block; max-width: 100%; }
+
+  /* Each step is its own 44px row, so neighbouring checkboxes never share
+     a touch zone. */
+  html .actions { gap: 0; }
+  html .action { min-height: 44px; align-items: center; }
+  html .action__check { margin-top: 0; }
+
+  /* Tag chips wrap onto several rows; space the rows so zones do not touch. */
+  html .tags { row-gap: 18px; }
+
+  /* Sliders: a 44px tall control that still draws a hairline track. */
+  html .field__range {
+    height: 44px;
+    background: linear-gradient(var(--hairline), var(--hairline)) center / 100% 1px no-repeat;
+    margin-block: 0;
+  }
+  html .field__range::-webkit-slider-thumb { width: 22px; height: 22px; }
+  html .field__range::-moz-range-thumb { width: 22px; height: 22px; }
+}

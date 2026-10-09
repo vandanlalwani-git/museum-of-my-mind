@@ -18,7 +18,7 @@
 .action-add { display: flex; gap: var(--space-2); align-items: center; }
 .action-add input {
   flex: 1; background: transparent; border: 0; border-bottom: 1px solid var(--hairline-soft);
-  padding: var(--space-2) 0; font-size: var(--text-sm); color: var(--parchment); border-radius: 0;
+  padding: var(--space-2) 0; font-size: var(--text-base); color: var(--parchment); border-radius: 0;
 }
 .action-add input::placeholder { color: var(--parchment-faint); }
 .action-add input:focus { outline: none; border-bottom-color: var(--gold); }

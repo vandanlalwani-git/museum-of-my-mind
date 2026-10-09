@@ -44,6 +44,9 @@
 .obs__invite {
   position: absolute;
   inset: 0;
+  /* Above the star canvas (z-index 1). Without this every tap on the form
+     landed on the sky and the form could only be reached with the keyboard. */
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -135,7 +138,7 @@
   .obs { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .obs__sky { position: relative; top: 0; height: 58vh; min-height: 22rem; }
   .obs--empty .obs__sky { height: auto; min-height: 0; }
-  .obs--empty .obs__invite { position: relative; inset: auto; padding: var(--space-8) var(--space-5); }
+  .obs--empty .obs__invite { position: relative; inset: auto; z-index: 2; padding: var(--space-8) var(--space-5); }
   .obs--empty .sky { position: absolute; inset: 0; }
   .obs__panel { border-left: 0; border-top: 1px solid var(--hairline-soft); }
   .obs__legend { display: none; }

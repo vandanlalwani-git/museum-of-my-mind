@@ -33,10 +33,10 @@ export function SelectField({ label, hint, className = '', children, ...rest }: 
   );
 }
 
-export function RangeField({ label, hint, className = '', value, ...rest }: Common & InputHTMLAttributes<HTMLInputElement>) {
+export function RangeField({ label, hint, className = '', value, unit = '%', ...rest }: Common & InputHTMLAttributes<HTMLInputElement> & { unit?: string }) {
   return (
     <label className={`field ${className}`}>
-      <span className="plaque">{label} <span className="tabular">{value}%</span></span>
+      <span className="plaque">{label} <span className="tabular">{value}{unit}</span></span>
       <input type="range" className="field__range" value={value} {...rest} />
       {hint && <span className="field__hint">{hint}</span>}
     </label>

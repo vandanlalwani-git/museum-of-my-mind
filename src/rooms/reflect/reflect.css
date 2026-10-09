@@ -15,7 +15,7 @@
 .rf__mode-title { font-size: var(--text-lg); line-height: 1.2; }
 .rf__mode-desc { font-size: var(--text-sm); color: var(--parchment-dim); }
 .rf__pick-head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
-.rf__search { background: transparent; border: 0; border-bottom: 1px solid var(--hairline-soft); padding: var(--space-2) 0; font-size: var(--text-sm); color: var(--parchment); border-radius: 0; -webkit-appearance: none; appearance: none; }
+.rf__search { background: transparent; border: 0; border-bottom: 1px solid var(--hairline-soft); padding: var(--space-2) 0; font-size: var(--text-base); color: var(--parchment); border-radius: 0; -webkit-appearance: none; appearance: none; }
 .rf__search:focus { outline: none; border-bottom-color: var(--gold); }
 .rf__pick { display: flex; flex-direction: column; gap: var(--space-5); max-height: 34rem; overflow-y: auto; padding-right: var(--space-2); }
 .rf__group ul { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: flex; flex-direction: column; }

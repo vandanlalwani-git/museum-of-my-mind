@@ -52,6 +52,22 @@ This uploads directly and bypasses the Git build, which is useful for a quick pu
 - Browser devtools → Network: ordinary use makes no request to `/api/reflect`.
 - Keeper's desk → turn on "Ask my AI" → choose items → preview: the flow stops at the key field and explains what will be sent; go back without sending.
 
+## Release check: can a finger reach everything?
+
+Scripted clicks go straight to an element and ignore anything drawn on top of it, which is how a star canvas covering the Observatory's first-goal form shipped unnoticed. Before every release, run the pointer check in the dev server at a phone size and a desktop size:
+
+```js
+const a = await import('/scripts/pointer-audit.js');
+await a.tourDemo();   // every screen and open form, demo museum
+await a.tourEmpty();  // the same in a brand-new empty museum
+```
+
+Ship only when every screen reports no `blocked` controls, no `iosZoom` fields (text under 16px makes iPhone zoom the page), and on a touch screen no `tooSmall` touch zones (under 44px). Then confirm the most important forms with real clicks: create a museum, add a first goal in the Observatory, add a step, capture a thought.
+
+## Updates while the app is open
+
+Each deploy renames the room files. A page opened before a deploy still asks for the old names, and Cloudflare answers a missing file with the homepage, so opening a room used to crash with "Failed to fetch dynamically imported module" (Safari: "Importing a module script failed"). `src/app/updates.ts` now reloads once to fetch the new version, guarded against loops, and a new service worker waits for a safe moment (moving between screens, or leaving the app) and never reloads while unsaved words sit in a text field.
+
 ## Custom domain
 
 Not needed. A custom domain is free to attach on Pages if you own one, but nothing here requires it.

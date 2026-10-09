@@ -1,4 +1,5 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazyRoom } from '@/app/updates';
 import { useSearchParams } from 'react-router-dom';
 import { useMuseumStore } from '@/store/museum';
 import { useMuseumOps } from '@/store/ops';
@@ -14,7 +15,7 @@ import { SkyIndex } from './SkyIndex';
 import { isInSky, layoutSky, nextForGoal } from './layout';
 import './observatory.css';
 
-const Sky3D = lazy(() => import('./Sky3D'));
+const Sky3D = lazyRoom(() => import('./Sky3D'));
 
 function domeWanted(): boolean {
   return webglAvailable() && !motionReduced() && !lowPowerDevice() && !domeDisabledBySession();

@@ -91,7 +91,7 @@ export default function FutureGallery() {
               <SelectField label="Looking at" value={goalId} onChange={(e) => { setGoalId(e.target.value); setDirty(true); }}>
                 {inSky.map((g) => <option key={g.id} value={g.id}>{g.title}</option>)}
               </SelectField>
-              <RangeField label="Hours a week" min={0} max={20} step={1} value={controls.hoursPerWeek} onChange={(e) => set({ hoursPerWeek: Number(e.target.value) })} hint={hoursHint(controls.hoursPerWeek)} />
+              <RangeField label="Hours a week" unit=" h" min={0} max={20} step={1} value={controls.hoursPerWeek} onChange={(e) => set({ hoursPerWeek: Number(e.target.value) })} hint={hoursHint(controls.hoursPerWeek)} />
               <RangeField label="Consistency" min={0} max={100} step={5} value={Math.round(controls.consistency * 100)} onChange={(e) => set({ consistency: Number(e.target.value) / 100 })} hint={consistencyHint(controls.consistency)} />
               <RangeField label="Focus" min={0} max={100} step={5} value={Math.round(controls.focus * 100)} onChange={(e) => set({ focus: Number(e.target.value) / 100 })} hint={focusHint(controls.focus, outlook.workedCount, outlook.candidateCount)} />
               <RangeField label="Rest and recovery" min={0} max={100} step={5} value={Math.round(controls.rest * 100)} onChange={(e) => set({ rest: Number(e.target.value) / 100 })} hint={restHint(controls.rest)} />

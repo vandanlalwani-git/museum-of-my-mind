@@ -38,4 +38,7 @@ Entrance, Observatory, Archive, Workshop, Future Gallery, Cabinet of Curiosities
 - Keep the entrance chunk small; it is the first impression.
 - Honour `prefers-reduced-motion` in every animation.
 - Commit messages: imperative, present tense, one line under 72 chars, body if needed.
+- Before any release, run `scripts/pointer-audit.js` (see docs/deploy.md) at phone and desktop sizes and confirm key forms with real clicks. Scripted `.click()` calls bypass whatever is drawn on top of a control and are not proof that a person can use it.
+- Load rooms with `lazyRoom` from `src/app/updates.ts`, never bare `React.lazy`, so a page left open across a deploy recovers instead of crashing.
+- Every text field and dropdown is at least 16px, and every control has a 44px touch zone on touch screens.
 - Do not deploy without explicit approval.

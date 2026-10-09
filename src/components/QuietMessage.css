@@ -1,7 +1,7 @@
 .quiet {
   position: fixed;
   left: var(--space-6);
-  bottom: var(--space-5);
+  bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
   z-index: 40;
   pointer-events: none;
 }
@@ -9,6 +9,16 @@
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--text-lg);
-  color: var(--parchment-dim);
+  color: var(--parchment);
   max-width: 40ch;
+  /* A solid backing so it never sits on top of other words unreadably. */
+  padding: var(--space-2) var(--space-4);
+  background: rgba(10, 11, 16, 0.94);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-deep);
+}
+@media (max-width: 720px) {
+  .quiet { left: var(--space-4); right: var(--space-4); }
+  .quiet__text { max-width: none; font-size: var(--text-base); }
 }

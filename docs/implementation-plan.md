@@ -98,3 +98,12 @@ See the session summary. Notable: font licensing/self-hosting choice, whether th
 - [x] **Mobile zoom crash fixed.** `lib/surface.ts` gives every canvas an absolute pixel budget, divides pinch zoom out of the device ratio, coalesces resize bursts into one frame, and skips reallocation when the buffer would not change. Verified on the Observatory: a simulated 3x pinch produces an identical buffer and 40 rapid resizes cause zero reallocations.
 - [x] The home route no longer pulls in the heavy rooms, so the first-load bundle fell from 133KB to 118KB gzipped.
 - Nothing was deleted: every room, record type, and feature from Phases 0 through 8 still exists behind the simpler surface.
+
+## Phase 9.1 — Bug fixes from first real use (done 2026-10-10)
+
+- [x] **Observatory first-goal form could not be clicked or tapped.** The star canvas was drawn above the form since the 3D sky was added; only the keyboard could reach the fields. The form now sits above the sky. Proven with real clicks: each field focuses and "Set it in the sky" creates the goal.
+- [x] **Opening a room right after a deploy crashed the app.** A page left open across a deploy asked for room files that no longer existed. Rooms now load through `lazyRoom`, which reloads once into the new version; the error screen recognises this case; service-worker updates wait for a safe moment and never wipe unsaved typing. Proven by deploying a second build underneath an open page and opening the Observatory: it reloaded once and opened on the new build.
+- [x] Every text field and dropdown is at least 16px so iPhone no longer zooms the page on tap.
+- [x] Touch screens get 44px touch zones on every control, without moving anything, and wrapped rows are spaced so neighbouring zones never overlap.
+- [x] The confirmation message has its own backing instead of printing over links; the hours slider shows hours, not a percent.
+- [x] `scripts/pointer-audit.js` checks every screen and open form for blocked controls, zoom-triggering fields, and small touch zones. All 25 demo states and 8 empty-museum states pass at phone and desktop sizes.

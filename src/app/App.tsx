@@ -1,4 +1,5 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
+import { lazyRoom } from './updates';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from './AppShell';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -8,15 +9,15 @@ import Today from '@/rooms/today/Today';
 import { useMuseumStore } from '@/store/museum';
 import { useSettingsStore } from '@/store/settings';
 
-const Observatory = lazy(() => import('@/rooms/observatory/Observatory'));
-const Archive = lazy(() => import('@/rooms/archive/Archive'));
-const Workshop = lazy(() => import('@/rooms/workshop/Workshop'));
-const FutureGallery = lazy(() => import('@/rooms/future/FutureGallery'));
-const Cabinet = lazy(() => import('@/rooms/cabinet/Cabinet'));
-const Settings = lazy(() => import('@/rooms/settings/Settings'));
-const Reflect = lazy(() => import('@/rooms/reflect/Reflect'));
-const Library = lazy(() => import('@/rooms/library/Library'));
-const Explore = lazy(() => import('@/rooms/explore/Explore'));
+const Observatory = lazyRoom(() => import('@/rooms/observatory/Observatory'));
+const Archive = lazyRoom(() => import('@/rooms/archive/Archive'));
+const Workshop = lazyRoom(() => import('@/rooms/workshop/Workshop'));
+const FutureGallery = lazyRoom(() => import('@/rooms/future/FutureGallery'));
+const Cabinet = lazyRoom(() => import('@/rooms/cabinet/Cabinet'));
+const Settings = lazyRoom(() => import('@/rooms/settings/Settings'));
+const Reflect = lazyRoom(() => import('@/rooms/reflect/Reflect'));
+const Library = lazyRoom(() => import('@/rooms/library/Library'));
+const Explore = lazyRoom(() => import('@/rooms/explore/Explore'));
 
 function Booting() {
   return (

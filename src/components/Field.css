@@ -15,14 +15,14 @@
 .field__input:focus { outline: none; border-bottom-color: var(--gold); }
 .field__textarea {
   font-family: var(--font-body);
-  font-size: var(--text-sm);
+  font-size: var(--text-base); /* 16px or more, or iOS zooms the page on tap */
   line-height: 1.6;
   resize: vertical;
   min-height: 4.5rem;
 }
 .field__select {
   font-family: var(--font-body);
-  font-size: var(--text-sm);
+  font-size: var(--text-base); /* 16px or more, or iOS zooms the page on tap */
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;

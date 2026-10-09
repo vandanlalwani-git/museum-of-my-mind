@@ -8,6 +8,7 @@ import { useMuseumStore } from '@/store/museum';
 import { useUiStore, type BeforeInstallPromptEvent } from '@/store/ui';
 import { EASE_OUT_QUINT } from '@/lib/motion';
 import { installSoundGesture, playDoor } from '@/lib/sound';
+import { reloadIfUpdatePending } from './updates';
 import './AppShell.css';
 
 export function AppShell() {
@@ -30,6 +31,7 @@ export function AppShell() {
   const firstRoute = useRef(true);
   useEffect(() => {
     if (firstRoute.current) { firstRoute.current = false; return; }
+    if (reloadIfUpdatePending()) return;
     playDoor();
   }, [location.pathname]);
 
