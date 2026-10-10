@@ -8,3 +8,6 @@ dev-dist
 
 # Local Cloudflare dev state (local test database, build scratch)
 .wrangler
+
+# TypeScript incremental build caches
+*.tsbuildinfo
