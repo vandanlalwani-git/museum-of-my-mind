@@ -9,7 +9,9 @@
 .skylbl { position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0; transition: opacity 0.6s var(--ease); white-space: nowrap; text-align: center; will-change: transform; }
 .skylbl.on { opacity: 1; pointer-events: auto; }
 .skylbl.clash { opacity: 0 !important; pointer-events: none !important; }
-.skylbl button { display: grid; justify-items: center; gap: 1px; padding: 8px 10px; min-height: 44px; touch-action: manipulation; }
+.skylbl button { display: grid; justify-items: center; gap: 1px; padding: 8px 10px; min-height: 44px; touch-action: manipulation; position: relative; isolation: isolate; }
+/* A soft dark glow behind each name. Invisible on open sky; it only shows where a name crosses bright arms. */
+.skylbl button::before { content: ''; position: absolute; inset: -4px -16px; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, var(--label-glow), transparent); }
 .skylbl .n { font-family: var(--font-display); font-weight: 500; color: var(--parchment); line-height: 1.15; text-shadow: var(--halo); transition: font-size 0.6s var(--ease), color 0.3s; }
 .skylbl .c { font-size: 0.66rem; letter-spacing: 0.06em; color: var(--parchment-dim); text-shadow: var(--halo); }
 .skylbl.galaxy .n { font-size: 1.75rem; letter-spacing: 0.01em; color: var(--tint, var(--parchment)); }

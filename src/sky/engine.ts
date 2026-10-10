@@ -38,16 +38,31 @@ interface GoalObj { data: SkyGoal; star: Group; halo: Sprite; core: Sprite; flar
 interface MoteObj { sprite: Sprite; a: number; b: number; c: number; ph: number; sp: number }
 interface GalaxyObj { data: SkyGalaxy; group: Group; disk: Points; haze: Points; coreGlow: Sprite; neb: Group; cloud: Points; motes: MoteObj[]; goals: GoalObj[]; questions: { id: string; sprite: Sprite; label: Label }[]; label: Label; nebLabel: Label }
 
-const VS = `
+/** Up to this many goal stars per galaxy get a clearing in the arms around them. */
+const MAX_CLEAR = 12;
+/** Arms keep this much of their light at a goal's star, rising back to full between these distances. */
+const CLEAR_KEEP = 0.6, CLEAR_IN = 3.5, CLEAR_OUT = 11;
+const VS = `#define MAX_CLEAR ${MAX_CLEAR}
+#define CLEAR_IN ${CLEAR_IN.toFixed(1)}
+#define CLEAR_OUT ${CLEAR_OUT.toFixed(1)}
+
 attribute float aSize; attribute float aPhase; attribute float aAlpha; attribute vec3 aColor;
 uniform float uTime, uPixel, uScale, uFade, uTwinkle, uMax;
+uniform vec3 uClear[MAX_CLEAR]; uniform float uClearN, uClearK, uClearS;
 varying vec3 vColor; varying float vAlpha;
 void main(){
   vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  // A calm clearing in the arms around each goal's star, so the star and its name read clearly.
+  vec3 wp = (modelMatrix * vec4(position, 1.0)).xyz;
+  float keep = 1.0;
+  for (int i = 0; i < MAX_CLEAR; i++) {
+    if (float(i) >= uClearN) break;
+    keep = min(keep, mix(uClearK, 1.0, smoothstep(CLEAR_IN * uClearS, CLEAR_OUT * uClearS, distance(wp, uClear[i]))));
+  }
   gl_Position = projectionMatrix * mv;
   float s = aSize * uPixel * uScale / max(-mv.z, 0.01);
   float tw = 1.0 - uTwinkle * 0.45 * (0.5 + 0.5 * sin(uTime * (0.5 + fract(aPhase * 7.13) * 1.7) + aPhase));
-  vAlpha = aAlpha * tw * uFade * clamp(s, 0.0, 1.0);
+  vAlpha = aAlpha * tw * uFade * keep * clamp(s, 0.0, 1.0);
   gl_PointSize = clamp(s, 1.0, uMax * uPixel);
   vColor = aColor;
 }`;
@@ -153,7 +168,7 @@ export class SkyEngine {
   }
   private pointsMat(scale: number, max: number, twinkle: number): ShaderMaterial {
     return new ShaderMaterial({
-      uniforms: { uTime: this.U.uTime, uPixel: this.U.uPixel, uScale: { value: scale }, uFade: { value: 1 }, uTwinkle: { value: this.reduce ? 0 : twinkle }, uMax: { value: max } },
+      uniforms: { uTime: this.U.uTime, uPixel: this.U.uPixel, uScale: { value: scale }, uFade: { value: 1 }, uTwinkle: { value: this.reduce ? 0 : twinkle }, uMax: { value: max }, uClear: { value: Array.from({ length: MAX_CLEAR }, () => new Vector3()) }, uClearN: { value: 0 }, uClearK: { value: CLEAR_KEEP }, uClearS: { value: 1 } },
       vertexShader: VS, fragmentShader: FS, transparent: true, depthWrite: false, blending: AdditiveBlending,
     });
   }
@@ -290,6 +305,18 @@ export class SkyEngine {
       text: () => { const n = G.data.unsorted.length, k = G.data.goals.length; return [G.data.name, `${k} ${k === 1 ? 'goal' : 'goals'}${n ? ` · ${n} unsorted` : ''}`]; },
       visible: () => this.view.level === 'mind' || (this.view.level === 'galaxy' && this.view.galaxyId !== data.id), click: () => this.cb.select({ kind: 'galaxy', id: data.id }) });
     this.galaxies.push(G);
+  }
+
+  /** Tells a galaxy's arms where its goal stars are, so they thin out around them. */
+  private clearAround(G: GalaxyObj, scale: number, damp: number) {
+    for (const m of [G.disk.material, G.haze.material] as ShaderMaterial[]) {
+      const at = m.uniforms.uClear!.value as Vector3[];
+      const n = Math.min(MAX_CLEAR, G.goals.length);
+      for (let i = 0; i < n; i++) G.goals[i]!.star.getWorldPosition(at[i]!);
+      m.uniforms.uClearN!.value = n;
+      // From far away the clearing is wider, so it still reaches past the star's name.
+      const sc = m.uniforms.uClearS!; sc.value += (scale - sc.value) * damp * 0.6;
+    }
   }
 
   private buildGoal(G: GalaxyObj, goal: SkyGoal) {
@@ -655,6 +682,7 @@ export class SkyEngine {
       const ft = rest ? 0.55 : lv === 'mind' ? 1 : lv === 'galaxy' ? (this.view.galaxyId === G.data.id ? 0.85 : 0.5) : this.view.galaxyId === G.data.id ? 0.2 : 0.22;
       const u = (G.disk.material as ShaderMaterial).uniforms.uFade!; u.value += (ft - u.value) * damp * 0.6;
       (G.haze.material as ShaderMaterial).uniforms.uFade!.value = u.value;
+      this.clearAround(G, lv === 'mind' ? 1.7 : 1, damp);
       (G.coreGlow.material as SpriteMaterial).opacity = 0.07 * u.value;
       const cl = (G.cloud.material as ShaderMaterial).uniforms.uFade!; cl.value += ((close ? 0.3 : rest ? 0.5 : 1) - cl.value) * damp * 0.6;
       G.motes.forEach((m) => this.drift3(m, t));
