@@ -13,6 +13,9 @@ const ClearMind = lazyRoom(() => import('@/places/clear/ClearMind'));
 const Search = lazyRoom(() => import('@/places/search/Search'));
 const MindSettings = lazyRoom(() => import('@/places/settings/MindSettings'));
 const Soon = lazyRoom(() => import('@/places/soon/Soon'));
+const GoalPage = lazyRoom(() => import('@/places/goal/GoalPage'));
+const ProjectPage = lazyRoom(() => import('@/places/project/ProjectPage'));
+const TodayPlace = lazyRoom(() => import('@/places/today/TodayPlace'));
 
 function Booting() {
   return (
@@ -69,10 +72,11 @@ export function App() {
               <Route path="/clear" element={lazy(<ClearMind />)} />
               <Route path="/search" element={lazy(<Search />)} />
               <Route path="/settings" element={lazy(<MindSettings />)} />
-              <Route path="/today" element={lazy(<Soon title="Today" note="Today will open with a thought, then at most two focus goals with one step each." />)} />
+              <Route path="/today" element={lazy(<TodayPlace />)} />
               <Route path="/journal" element={lazy(<Soon title="Journal" note="What happened, and how it felt, with On this day." />)} />
-              <Route path="/goal/:id" element={lazy(<Soon title="A goal's page" note="Why it matters, the thoughts around it, and its projects." />)} />
-              <Route path="/project/:id" element={lazy(<Soon title="A project's page" note="Its shape, its steps, and its light." />)} />
+              <Route path="/goal/:id" element={lazy(<GoalPage />)} />
+              <Route path="/project/:id" element={lazy(<ProjectPage />)} />
+              <Route path="/review" element={lazy(<Soon title="Your week" note="A two-minute Sunday check-in, made on your device." />)} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

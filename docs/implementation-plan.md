@@ -194,7 +194,26 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
   - sound, motion, Ask my AI, and switching, resetting or deleting museums.
 - [x] The old rooms are out of the navigation; their code is removed in Phase 16.
 - Order change: goal pages, project pages and Today come next (Phase 13), then the 3D sky (Phase 14), because the list already needs pages to open.
-### Phase 13 — Goal pages, project pages (all six shapes and every step kind), Today
+### Phase 13 — Goal pages, project pages (all six shapes and every step kind), Today (done 2026-10-11)
+- [x] Goal page. In order:
+  - why it matters, which leads the page and can be written in place;
+  - the thoughts around it, open questions first, which can be answered in place;
+  - its projects, with light rings and words rather than numbers, and a new-project form that asks only what the chosen shape needs;
+  - its journal entries;
+  - focus this week; edit; reached, resting or active again.
+- [x] Project page:
+  - progress in each shape's own terms (steps, count, this week, days to go, level, thoughts gathered);
+  - "If you keep this pace" from the keeper's real recent pace plus what-ifs, labelled as a what-if;
+  - the habit's last six weeks, where partial weeks still count;
+  - the levels ladder, and a written conclusion that closes an exploration;
+  - steps of every kind: tick and undo, a note after a counted tick, edit, remove; someday and done steps folded away;
+  - the "so far" log, thoughts, and finish, pause, drop, change shape, or move it to another goal.
+- [x] Today (`src/mind/today.ts`, tested):
+  - a thought to begin with (an open question, else something forgotten), the same all day, and it can be answered, rested for a week, or let go;
+  - at most two focus goals with one step each: a due repeating step first, then the next one-off from the liveliest project;
+  - choosing this week's focus; a quiet count of Unsorted;
+  - on Sunday and Monday, "Your week is ready".
+- [x] The top bar gets a dark band so scrolled text never collides with the breadcrumbs.
 ### Phase 14 — The 3D sky: galaxies, solar systems, thoughts, List view
 ### Phase 15 — Journal and the weekly review
 ### Phase 16 — Guided demo tour, retire old rooms, full release checks

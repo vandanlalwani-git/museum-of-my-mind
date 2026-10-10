@@ -123,3 +123,6 @@ button.chip:hover, a.chip:hover, .chip:hover > span { color: var(--parchment); t
 @media (pointer: coarse) {
   .chip > span, button.chip, a.chip, .linkish, .quiet-btn, .back-link, .place__h2 a, .place__h2 button { min-height: 44px; }
 }
+/* A dark band behind the top bar, so words that scroll under it never collide with the breadcrumbs. */
+.mshell__hud::before { content: ''; position: absolute; inset: 0 0 -24px; z-index: -1; pointer-events: none; background: linear-gradient(var(--obsidian) 55%, rgba(10, 11, 16, 0)); }
+.mshell__hud { isolation: isolate; }

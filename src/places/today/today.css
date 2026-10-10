@@ -1,0 +1,19 @@
+.today2__review { display: grid; gap: var(--space-1); padding: var(--space-4); border: 1px solid var(--gold-dim); border-radius: var(--radius); background: rgba(201, 169, 97, 0.05); color: var(--parchment); }
+.today2__review:hover { text-decoration: none; border-color: var(--gold); }
+.today2__review-text { font-family: var(--font-display); font-size: 1.2rem; }
+.today2__thought { display: grid; gap: var(--space-2); padding-bottom: var(--space-5); border-bottom: 1px solid var(--hairline-soft); }
+.today2__thought-text { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 1.9rem); line-height: 1.25; display: flex; gap: var(--space-3); align-items: baseline; text-wrap: balance; }
+.today2__thought-text .glyph-thought { transform: translateY(-0.2em); }
+.today2__focus { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-3); }
+.focuscard { display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--hairline-soft); border-radius: var(--radius); background: rgba(16, 18, 26, 0.6); align-content: start; }
+.focuscard__goal { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: var(--space-3); align-items: start; color: var(--parchment); }
+.focuscard__goal:hover { text-decoration: none; }
+.focuscard__goal:hover .focuscard__title { color: var(--gold); }
+.focuscard__title { display: block; font-family: var(--font-display); font-size: 1.35rem; line-height: 1.2; transition: color var(--dur-fast); }
+.focuscard__why { display: block; font-family: var(--font-display); font-style: italic; color: var(--parchment-dim); }
+.focuscard__step { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: var(--space-2); align-items: start; border-top: 1px solid var(--hairline-soft); padding-top: var(--space-2); }
+.focuscard__step > span { display: grid; gap: 2px; padding-top: 10px; }
+.focuscard__step .meta a { color: var(--parchment-dim); }
+.focuscard__none { font-size: var(--text-sm); color: var(--parchment-dim); border-top: 1px solid var(--hairline-soft); padding-top: var(--space-3); }
+.today2__choose { display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px dashed var(--hairline); border-radius: var(--radius); }
+.today2__quiet { font-size: var(--text-sm); color: var(--parchment-dim); }
