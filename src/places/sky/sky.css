@@ -36,3 +36,17 @@
 @media (max-width: 699px) {
   .goalrow__projects { padding-left: var(--space-5); }
 }
+
+/* Plates over the living sky */
+.skypeek {
+  position: fixed; z-index: 20; right: var(--space-5); bottom: calc(108px + env(safe-area-inset-bottom, 0px)); width: min(360px, calc(100vw - 32px));
+  padding: var(--space-5); display: grid; gap: var(--space-3); animation: peekin var(--dur-base) var(--ease);
+}
+.skypeek--first { width: min(420px, calc(100vw - 32px)); }
+.skypeek__title { font-size: 1.6rem; line-height: 1.12; text-wrap: balance; }
+.skypeek__why { font-family: var(--font-display); font-style: italic; font-size: 1.15rem; line-height: 1.3; }
+@keyframes peekin { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (max-width: 699px) {
+  .skypeek, .skypeek--first { left: var(--space-3); right: var(--space-3); width: auto; bottom: calc(var(--dock-h, 72px) + 12px + env(safe-area-inset-bottom, 0px)); padding: var(--space-4); }
+  .skypeek__title { font-size: 1.4rem; }
+}

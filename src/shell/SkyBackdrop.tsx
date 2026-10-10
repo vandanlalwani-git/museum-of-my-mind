@@ -1,6 +1,15 @@
+import { Suspense, useCallback, useState } from 'react';
 import { StarField } from '@/components/StarField';
+import { lazyRoom } from '@/app/updates';
+import { webglAvailable } from '@/lib/webgl';
 
-/** The sky behind every place. A calm 2D field until the 3D sky arrives. */
+const SkyStage = lazyRoom(() => import('@/sky/SkyStage'));
+
+/** The sky behind every place: the living 3D sky, or a calm 2D field when 3D cannot be drawn. */
 export function SkyBackdrop() {
-  return <StarField seed="mind" density={1.1} />;
+  const [ok, setOk] = useState(() => webglAvailable());
+  const fail = useCallback(() => setOk(false), []);
+  const calm = <StarField seed="mind" density={1.1} />;
+  if (!ok) return calm;
+  return <Suspense fallback={calm}><SkyStage onFail={fail} /></Suspense>;
 }

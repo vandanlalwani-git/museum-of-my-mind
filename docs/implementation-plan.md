@@ -214,7 +214,24 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
   - choosing this week's focus; a quiet count of Unsorted;
   - on Sunday and Monday, "Your week is ready".
 - [x] The top bar gets a dark band so scrolled text never collides with the breadcrumbs.
-### Phase 14 — The 3D sky: galaxies, solar systems, thoughts, List view
+### Phase 14 — The 3D sky: galaxies, solar systems, thoughts, List view (done 2026-10-11)
+- [x] `src/sky/engine.ts`: the approved prototype ported to TypeScript on plain three.js, with its look unchanged:
+  - quiet galaxy centres, goal stars as the brightest points, planets lit by their star with rings of light;
+  - thought moons, flickering open questions, clouds of unsorted thoughts;
+  - camera flights, parallax, drag to look, pinch or scroll out to go back, and orbits that slow under a pointer or finger;
+  - galaxies seeded from their ids, so a rebuild redraws exactly the same sky;
+  - it respects the existing pixel budget (`lib/surface.ts`) that prevents the iPhone zoom crash.
+- [x] `src/sky/model.ts`: real data becomes the sky, with deterministic positions. Only structural changes rebuild; progress, names and brightness update in place.
+- [x] Routes drive the camera (`src/sky/route.ts`):
+  - `/` is every galaxy; `/?galaxy=` one galaxy; `/?goal=` a solar system with a peek plate;
+  - `/goal/:id` and `/project/:id` show the page as a plate beside the star or planet on a laptop, and under it on a phone;
+  - other places keep the sky resting behind them.
+- [x] Tapping anything in the sky works: galaxies, stars, planets, moons, questions, clouds and "+ New galaxy". Thoughts and questions open small plates, and a question can be answered right there.
+- [x] Sky and List switch on the home screen (remembered). The list is the full text alternative.
+- [x] Captured thoughts fly into the real sky: to the galaxy's cloud, the goal's star, or the project's planet.
+- [x] New museums see a "Your first star" plate.
+- [x] Lazy-loaded: three.js is a separate 146KB chunk, and the first load stays at 125KB. When 3D cannot be drawn, a calm 2D sky and the list take over.
+- [x] Fixed during testing: the router's changing `navigate` was recreating the engine on every route change. It now lives for the whole visit.
 ### Phase 15 — Journal and the weekly review
 ### Phase 16 — Guided demo tour, retire old rooms, full release checks
 ### Phase 17 — Encrypted QR sync (needs the deferred rule change)

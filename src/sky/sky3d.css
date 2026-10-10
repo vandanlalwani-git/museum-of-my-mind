@@ -1,0 +1,42 @@
+/* The 3D sky and its labels. The look is the approved Phase 10 prototype. */
+.skystage { position: absolute; inset: 0; overflow: hidden; overflow: clip; }
+.skystage__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.skystage__canvas.hot { cursor: pointer; }
+.skystage__canvas:active { cursor: grabbing; }
+.skystage--rest .skystage__canvas, .skystage--rest .skystage__labels { pointer-events: none; }
+.skystage__labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; overflow: clip; }
+
+.skylbl { position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0; transition: opacity 0.6s var(--ease); white-space: nowrap; text-align: center; will-change: transform; }
+.skylbl.on { opacity: 1; pointer-events: auto; }
+.skylbl.clash { opacity: 0 !important; pointer-events: none !important; }
+.skylbl button { display: grid; justify-items: center; gap: 1px; padding: 8px 10px; min-height: 44px; touch-action: manipulation; }
+.skylbl .n { font-family: var(--font-display); font-weight: 500; color: var(--parchment); line-height: 1.15; text-shadow: var(--halo); transition: font-size 0.6s var(--ease), color 0.3s; }
+.skylbl .c { font-size: 0.66rem; letter-spacing: 0.06em; color: var(--parchment-dim); text-shadow: var(--halo); }
+.skylbl.galaxy .n { font-size: 1.75rem; letter-spacing: 0.01em; color: var(--tint, var(--parchment)); }
+.skylbl.galaxy .c { letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.62rem; }
+.skylbl.ghost .n { font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-dim); }
+.skylbl.goal .n { font-size: 1.08rem; }
+.skylbl.goal.faint .n { font-size: 0.95rem; color: var(--parchment-dim); }
+.skylbl.goal.faint .c { display: none; }
+.skylbl.goal.big .n { font-size: 1.6rem; }
+.skylbl.goal.dim .n { color: var(--parchment-dim); }
+.skylbl.question .n { font-style: italic; font-size: 1rem; color: var(--question); }
+.skylbl.nebula .n { font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--parchment-dim); }
+.skylbl.planet .n { font-family: var(--font-body); font-size: 0.78rem; }
+.skylbl.planet .c { font-size: 0.62rem; }
+.skylbl.moon .n { font-style: italic; font-size: 0.92rem; color: var(--parchment-dim); max-width: 15rem; white-space: normal; }
+.skylbl.moon.q .n { color: var(--question); }
+.skylbl:hover .n, .skylbl.hot .n { color: var(--gold); }
+
+.skyintro { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 10px; pointer-events: none; opacity: 0; }
+.skyintro h1 { margin: 0; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; letter-spacing: 0.01em; text-shadow: var(--halo); }
+.skyintro h1 em { color: var(--gold); font-style: italic; }
+.skyintro p { margin: 0 auto; font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--parchment-dim); }
+.skyintro--play { animation: skyintro 3.4s var(--ease) forwards; }
+@keyframes skyintro { 0% { opacity: 0; transform: translateY(8px); } 25% { opacity: 1; transform: none; } 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
+
+@media (max-width: 699px) {
+  .skylbl.galaxy .n { font-size: 1.4rem; }
+  .skylbl.goal.big .n { font-size: 1.3rem; }
+  .skylbl.moon .n { max-width: 11rem; font-size: 0.85rem; }
+}

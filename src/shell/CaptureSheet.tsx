@@ -4,6 +4,8 @@ import { mindOps } from '@/mind/ops';
 import { useMind } from '@/mind/store';
 import { motionReduced } from '@/lib/motion';
 import { useUiStore } from '@/store/ui';
+import { useSky } from '@/sky/store';
+import type { MoteTarget } from '@/sky/engine';
 import { useCapture, useFocus, type CaptureKind } from './focus';
 import { HomePicker, type Target } from './HomePicker';
 import './capture.css';
@@ -105,7 +107,11 @@ export function CaptureSheet() {
           ? `Saved. It waits in Unsorted until you are ready${kind === 'step' ? ' to give it a project' : ''}.`
           : where.kind === 'galaxy' ? `Kept in ${where.title}.` : `Saved. It now circles ${where.title}.`;
       }
-      fly(formRef.current, kind === 'memory' ? 'journal' : 'sky');
+      const mote: MoteTarget | null = kind === 'memory' ? null
+        : where.kind === 'goal' ? { kind: 'goal', id: where.id }
+        : where.kind === 'project' ? { kind: 'project', id: where.id }
+        : inGalaxy ? { kind: 'galaxy', id: inGalaxy } : { kind: 'drift' };
+      fly(formRef.current, kind === 'memory' ? 'journal' : 'sky', mote);
       closeCapture();
       say(message);
     } finally {
@@ -192,8 +198,15 @@ export function CaptureSheet() {
 }
 
 /** A point of light leaves the sheet and settles into the sky, or into the journal. */
-function fly(from: HTMLElement | null, to: 'sky' | 'journal') {
+function fly(from: HTMLElement | null, to: 'sky' | 'journal', mote: MoteTarget | null) {
   if (!from || motionReduced()) return;
+  const sky = useSky.getState();
+  const onSky = location.pathname === '/' || /^\/(goal|project)\//.test(location.pathname);
+  if (mote && sky.live && sky.launch && onSky && !(location.pathname === '/' && sky.mode === 'list')) {
+    const r = from.getBoundingClientRect();
+    sky.launch(r.left + r.width / 2, r.top + Math.min(r.height * 0.3, 110), mote);
+    return;
+  }
   const target = document.querySelector<HTMLElement>(`[data-dock="${to}"]`);
   if (!target) return;
   const a = from.getBoundingClientRect(), b = target.getBoundingClientRect();

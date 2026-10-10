@@ -126,3 +126,22 @@ button.chip:hover, a.chip:hover, .chip:hover > span { color: var(--parchment); t
 /* A dark band behind the top bar, so words that scroll under it never collide with the breadcrumbs. */
 .mshell__hud::before { content: ''; position: absolute; inset: 0 0 -24px; z-index: -1; pointer-events: none; background: linear-gradient(var(--obsidian) 55%, rgba(10, 11, 16, 0)); }
 .mshell__hud { isolation: isolate; }
+
+/* Sky or list */
+.skytoggle { display: flex; border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; background: rgba(10, 11, 16, 0.7); margin-right: var(--space-1); }
+.skytoggle button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 var(--space-3); font-size: var(--text-xs); letter-spacing: 0.06em; color: var(--parchment-dim); }
+.skytoggle button svg { width: 15px; height: 15px; }
+.skytoggle button[aria-pressed='true'] { color: var(--gold); background: rgba(201, 169, 97, 0.08); }
+@media (pointer: coarse) { .skytoggle button { min-height: 44px; } }
+
+/* Goal and project pages stand beside the sky (laptop) or under it (phone), so the star stays in view. */
+.mshell__main--side { pointer-events: none; overflow: hidden; }
+.mshell__main--side > .place {
+  pointer-events: auto; position: absolute; margin: 0; top: calc(68px + env(safe-area-inset-top, 0px)); right: var(--space-4); bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  width: min(560px, 46vw); overflow-y: auto; overscroll-behavior: contain; animation: sidein 0.9s var(--ease);
+}
+@keyframes sidein { from { clip-path: inset(0 0 0 100%); opacity: 0.4; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@media (max-width: 699px) {
+  .mshell__main--side > .place { top: 34vh; left: 0; right: 0; width: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); border-left: 0; border-right: 0; border-bottom: 0; animation-name: sideup; }
+  @keyframes sideup { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+}

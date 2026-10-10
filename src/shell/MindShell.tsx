@@ -7,7 +7,10 @@ import { CaptureSheet } from './CaptureSheet';
 import { Crumbs } from './Crumbs';
 import { Dock } from './Dock';
 import { useCapture } from './focus';
-import { GearIcon } from './icons';
+import { GearIcon, ListIcon, SkyIcon } from './icons';
+import { useMind } from '@/mind/store';
+import { parentRoute } from '@/sky/route';
+import { useSky } from '@/sky/store';
 import { MovedIn } from './MovedIn';
 import { SkyBackdrop } from './SkyBackdrop';
 import '@/components/Field.css';
@@ -23,6 +26,13 @@ export function MindShell() {
   const openCapture = useCapture((s) => s.openCapture);
   const captureOpen = useCapture((s) => s.open);
   const isSky = location.pathname === '/';
+  const isSide = /^\/(goal|project)\//.test(location.pathname);
+  const skyLive = useSky((s) => s.live);
+  const skyMode = useSky((s) => s.mode);
+  const setSkyMode = useSky((s) => s.setMode);
+  const peekOpen = useSky((s) => s.peek !== null);
+  const setPeek = useSky((s) => s.setPeek);
+  const skyInteractive = isSky && skyLive && skyMode === 'sky';
 
   useEffect(() => installSoundGesture(), []);
   const firstRoute = useRef(true);
@@ -35,12 +45,18 @@ export function MindShell() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (captureOpen || typing(e.target) || e.altKey) return;
+      if (e.key === 'Escape') {
+        if (peekOpen) { setPeek(null); return; }
+        const to = parentRoute(location.pathname, location.search, useMind.getState().snap);
+        if (to && (isSky || isSide)) { e.preventDefault(); navigate(to); }
+        return;
+      }
       if ((e.key === 'n' || e.key === 'N') && !e.metaKey && !e.ctrlKey) { e.preventDefault(); openCapture(); }
       else if (e.key === '/' || (e.key.toLowerCase() === 'k' && (e.metaKey || e.ctrlKey))) { e.preventDefault(); navigate('/search'); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [captureOpen, openCapture, navigate]);
+  }, [captureOpen, openCapture, navigate, location.pathname, location.search, isSky, isSide, peekOpen, setPeek]);
 
   return (
     <div className="mshell">
@@ -50,10 +66,16 @@ export function MindShell() {
       <header className="mshell__hud">
         <Crumbs />
         <div className="mshell__tools">
+          {isSky && skyLive && (
+            <div className="skytoggle" role="group" aria-label="Show the sky as">
+              <button type="button" aria-pressed={skyMode === 'sky'} onClick={() => setSkyMode('sky')}><SkyIcon />Sky</button>
+              <button type="button" aria-pressed={skyMode === 'list'} onClick={() => setSkyMode('list')}><ListIcon />List</button>
+            </div>
+          )}
           <Link to="/settings" className="iconlink" aria-label="Settings"><GearIcon /></Link>
         </div>
       </header>
-      <main id="place" className={`mshell__main ${isSky ? 'mshell__main--sky' : ''}`} key={location.pathname}>
+      <main id="place" className={`mshell__main ${skyInteractive ? 'mshell__main--sky' : ''} ${isSide && skyLive ? 'mshell__main--side' : ''}`} key={location.pathname}>
         <Outlet />
       </main>
       <Dock />

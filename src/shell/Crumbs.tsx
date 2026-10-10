@@ -20,7 +20,8 @@ export function Crumbs() {
   const goal = (id: string | null | undefined) => { const g = snap.goals.find((x) => x.id === id); if (g) { galaxy(g.galaxyId); crumbs.push({ label: g.title, to: `/goal/${g.id}` }); } return g; };
 
   const [, first, id] = pathname.split('/');
-  if (pathname === '/' && params.get('galaxy')) galaxy(params.get('galaxy'));
+  if (pathname === '/' && params.get('goal')) { const g = goal(params.get('goal')); if (g) crumbs[crumbs.length - 1] = { label: g.title }; }
+  else if (pathname === '/' && params.get('galaxy')) galaxy(params.get('galaxy'));
   else if (first === 'goal') goal(id);
   else if (first === 'project') {
     const p = snap.projects.find((x) => x.id === id);
