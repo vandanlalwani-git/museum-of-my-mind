@@ -397,6 +397,7 @@ The sky is a hand-written three.js engine (`src/sky/engine.ts`). It is not a sce
 - **Routes drive the camera.** `/`, `?galaxy=`, `?goal=`, `/goal/:id` and `/project/:id` each map to a view. Changing the URL starts an eased **camera flight**. When a page opens beside the sky, the engine shifts the projection with `setViewOffset`, so the star sits in the open space beside the page on a laptop and above the sheet on a phone. The back button flies you back.
 - **Picking** uses screen-space distance rather than raycasting, so small, far-off stars are still easy to hit with a finger. Orbits **slow down** under a pointer or finger.
 - **Labels** are real DOM text (crisp, selectable and translatable), positioned each frame, with a collision pass that hides lower-priority labels when they would overlap.
+- **Legibility over bright arms.** Each name has a soft dark glow behind it, which is invisible on open sky. The point shader also thins a galaxy's arms to 60% around each goal star, with a wider clearing when seen from afar, so a star and its name always sit in calm space.
 - **Motion** honours `prefers-reduced-motion`: flights become cuts, and drift stops.
 - **Fallbacks.** Without WebGL the museum shows a plain star field and the List view. Nothing depends on 3D.
 
@@ -591,7 +592,7 @@ More detail is in [`docs/deploy.md`](docs/deploy.md).
 - **Browser storage can be cleared** by the browser, especially in Safari for sites you don't visit. Installing the app and keeping a recent backup or sync avoids losing anything.
 - **English only** for now, including the stemmer behind suggestions and search.
 - **No images or attachments yet.** Thoughts can hold links.
-- **Under discussion:** stronger contrast for labels over the brightest parts of a galaxy, and a light theme for daytime use.
+- **Under discussion:** a light theme for daytime use.
 
 ---
 

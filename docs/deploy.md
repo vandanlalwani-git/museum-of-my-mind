@@ -1,6 +1,6 @@
 # Deploying to Cloudflare Pages (free plan)
 
-The museum is a static site plus one Pages Function. Nothing here costs money on the free plan, and no secret is ever configured on the server.
+The museum is a static site plus two Pages Functions: the encrypted sync mailbox (`/api/sync`, backed by D1) and the optional "Ask my AI" relay (`/api/reflect`). Nothing here costs money on the free plan, and no secret is ever configured on the server.
 
 ## One-time setup in the Cloudflare dashboard
 
@@ -16,7 +16,7 @@ The museum is a static site plus one Pages Function. Nothing here costs money on
    | Build output directory | `dist` |
    | Root directory | `/` |
 
-4. Environment variables (build): **none required**. The repository commits an `.npmrc` with `legacy-peer-deps=true`, so Cloudflare's plain `npm ci` installs cleanly. (Without it the install aborts, because `@react-three/fiber` declares a peer range below React 19.3 while the app runs 19.3. No `NPM_FLAGS` variable is needed.)
+4. Environment variables (build): **none required**. The repository commits an `.npmrc` with `legacy-peer-deps=true`, so Cloudflare's plain `npm ci` installs cleanly. (It was added because `@react-three/fiber` declared a peer range below React 19.3. That package has since been removed, so the setting may no longer be needed; check with a plain `npm ci` before dropping it. No `NPM_FLAGS` variable is needed.)
 5. Save and deploy. The site appears at `https://museum-of-my-mind.pages.dev` (or a similar `*.pages.dev` name if that one is taken).
 
 **Current status:** this is already set up. The project `museum-of-my-mind` is connected to the GitHub repository, builds from `main`, and serves at <https://museum-of-my-mind.pages.dev>. Pushing to `main` triggers a new production build.
@@ -25,10 +25,11 @@ Do **not** add an Anthropic key anywhere in Cloudflare. "Ask my AI" is bring-you
 
 ## What the repository already contains
 
-- `public/_redirects` — SPA fallback so every room URL (`/observatory`, `/archive`, …) loads on refresh.
+- `public/_redirects` — SPA fallback so every place URL (`/today`, `/goal/…`, …) loads on refresh.
 - `public/_headers` — strict Content-Security-Policy and security headers; `/api/*` is `no-store` and `noindex`.
-- `public/_routes.json` — only `/api/reflect` invokes a Pages Function. Every other path is static. If the free Functions quota is ever exhausted, only "Ask my AI" is affected; the museum itself keeps working.
+- `public/_routes.json` — only `/api/reflect` and `/api/sync` invoke a Pages Function. Every other path is static. If the free Functions quota is ever exhausted, only "Ask my AI" and sync pause; the museum itself keeps working.
 - `functions/api/reflect.ts` — the relay. Same-origin only (plus localhost), body limit, key-shape check, one forwarded request, validated result, short error codes, no logging.
+- `functions/api/sync.ts` and `migrations/` — the encrypted sync mailbox. It stores only ciphertext under random ids, keeps a hash of each vault's token, enforces size limits, and logs nothing. The D1 database is bound as `SYNC_DB` (see `wrangler.toml`); apply new migrations with `npx wrangler d1 migrations apply museum-sync --remote`.
 - `.npmrc` — `legacy-peer-deps=true`, so `npm ci` succeeds on Cloudflare, in CI, and in a fresh clone with no flags.
 - `wrangler.toml` — output directory and Functions compatibility date, for CLI deploys.
 - The service worker (`vite-plugin-pwa`) precaches the app shell and fonts so the museum opens offline after the first visit.
