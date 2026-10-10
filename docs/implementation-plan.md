@@ -274,4 +274,6 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
 - [x] The device derives everything from a 128-bit pairing code (`src/sync`): mailbox id, access token, AES-GCM key, hidden item ids. Records are sent individually, newest edit wins, and deletions travel as markers.
 - [x] Settings › Your devices: turn on, QR code and typed code, join by camera or typing (`/join` for new devices), stop, replace the code for a lost device. Background sync runs on start, after changes, on return and once a minute.
 - [x] 6 tests, including two devices converging through a simulated server. A local two-device test joined successfully over a real local D1.
-- [ ] Still to check: a real Mac and iPhone pair on the live site, and an edit travelling back from device B to A in the local test.
+- [x] Local two-device round trip (2026-10-11): a thought and a goal edit made on device B reached A; A then linked the thought to the goal, and B received that too.
+- [x] Live: the function answers on museum-of-my-mind.pages.dev with its database bound (unknown mailboxes and other origins are refused).
+- [ ] For the owner: pair a real Mac and iPhone on the live site.
