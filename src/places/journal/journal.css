@@ -1,0 +1,15 @@
+.jwrite { display: grid; gap: var(--space-3); }
+.jwrite__text {
+  width: 100%; min-height: 96px; resize: vertical; background: transparent; border: 0; border-bottom: 1px solid var(--hairline);
+  color: var(--parchment); font-family: var(--font-display); font-size: 1.4rem; line-height: 1.4; padding: var(--space-2) 0;
+}
+.jwrite__text::placeholder { color: var(--parchment-faint); }
+.jwrite__text:focus { outline: none; border-bottom-color: var(--gold); }
+.echo { display: grid; gap: var(--space-2); padding: var(--space-4); border-left: 1px solid var(--gold); background: rgba(201, 169, 97, 0.04); }
+.echo__text { font-family: var(--font-display); font-style: italic; font-size: 1.25rem; line-height: 1.35; }
+.jentry { display: grid; gap: var(--space-1); padding: var(--space-4) 0; transition: background var(--dur-slow); }
+.jentry--found { background: rgba(201, 169, 97, 0.06); }
+.jentry__date { font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--parchment-dim); }
+.jentry__title { font-family: var(--font-display); font-size: 1.3rem; line-height: 1.3; }
+.jentry__body { color: var(--parchment-dim); white-space: pre-wrap; }
+.jentry .meta a { color: var(--gold); }

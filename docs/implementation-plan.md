@@ -232,6 +232,24 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
 - [x] New museums see a "Your first star" plate.
 - [x] Lazy-loaded: three.js is a separate 146KB chunk, and the first load stays at 125KB. When 3D cannot be drawn, a calm 2D sky and the list take over.
 - [x] Fixed during testing: the router's changing `navigate` was recreating the engine on every route change. It now lives for the whole visit.
-### Phase 15 — Journal and the weekly review
+### Phase 15 — Journal and the weekly review (done 2026-10-11)
+- [x] Journal:
+  - write with ⌘Enter; the first line is the entry, the rest is the body;
+  - entries grouped by month, showing their goal or project, with edit and remove;
+  - "On this day" brings back what was written a month, three months, six months or a year ago;
+  - Search lands on the entry it found.
+- [x] Weekly review (`src/mind/week.ts`, tested), built on the device:
+  - what moved, with number projects shown as before and after (4 → 5 of 10);
+  - captured and journal counts;
+  - what went quiet (no movement for over ten days), Unsorted, and open questions, each with a gentle way in;
+  - next week's focus (one or two goals) and one optional line, which goes to the journal.
+  - Closing the week sets Today's focus. Today offers it on Sunday and Monday.
+- [x] Ask my AI now lives inside the review, still off by default:
+  - three ways to ask about the week;
+  - the exact items to be sent are listed with their size before anything leaves;
+  - the key is kept in tab memory only;
+  - the existing relay is used unchanged;
+  - only the reflection you choose to keep is stored.
+- [x] Plates are more opaque, so the sky shows around them and never through them.
 ### Phase 16 — Guided demo tour, retire old rooms, full release checks
 ### Phase 17 — Encrypted QR sync (needs the deferred rule change)
