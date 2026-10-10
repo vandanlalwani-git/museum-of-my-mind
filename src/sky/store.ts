@@ -10,6 +10,8 @@ const saved = (): SkyMode | null => { try { const v = localStorage.getItem(KEY);
 interface SkyState {
   /** True once the 3D sky is drawing; false when this browser cannot draw it. */
   live: boolean;
+  /** Set when the 3D sky could not start; the list takes over everywhere. */
+  failed: boolean;
   mode: SkyMode;
   peek: SkyPeek;
   launch: ((x: number, y: number, t: MoteTarget) => void) | null;
@@ -21,6 +23,7 @@ interface SkyState {
 
 export const useSky = create<SkyState>((set) => ({
   live: false,
+  failed: false,
   mode: saved() ?? 'sky',
   peek: null,
   launch: null,

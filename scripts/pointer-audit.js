@@ -10,8 +10,11 @@
  * In the dev server (`npm run dev`), from the browser console:
  *   const a = await import('/scripts/pointer-audit.js');
  *   a.auditPointers();          // the current screen
- *   await a.tourDemo();         // every screen and open form, demo museum
+ *   await a.tourDemo();         // every place and open form, in Alex's museum (open it first)
  *   await a.tourEmpty();        // the same for a brand-new empty museum
+ *
+ * Names floating in the 3D sky can sit behind a plate or the dock by design;
+ * they are counted as `skyLabels` and are not failures.
  *
  * A release is ready when, on every screen, `blocked`, `iosZoom` and (on a
  * touch screen) `tooSmall` are all empty. Fields under 16px make iPhone zoom
@@ -32,15 +35,15 @@ function labelOf(el) {
 function visible(el) {
   const r = el.getBoundingClientRect();
   const cs = getComputedStyle(el);
-  return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none'
-    && !el.closest('[hidden], [aria-hidden="true"], .visually-hidden');
+  return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && cs.pointerEvents !== 'none'
+    && !el.closest('[hidden], [inert], [aria-hidden="true"], .visually-hidden, .skylbl:not(.on), .skylbl.clash');
 }
 
 export function auditPointers() {
   const all = [...document.querySelectorAll(CONTROLS)].filter(visible);
-  // Nodes on the archive wall can overlap by design; report them separately.
-  const wallNodes = all.filter((e) => e.closest('svg.wall'));
-  const controls = all.filter((e) => !e.closest('svg.wall'));
+  // Names in the sky float behind plates by design; report them separately.
+  const skyLabels = all.filter((e) => e.closest('.skylbl'));
+  const controls = all.filter((e) => !e.closest('.skylbl'));
   const blocked = [];
   const iosZoom = [];
   for (const el of controls) {
@@ -61,7 +64,7 @@ export function auditPointers() {
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) && typesItZooms && parseFloat(getComputedStyle(el).fontSize) < 16) iosZoom.push(labelOf(el));
   }
   window.scrollTo(0, 0);
-  return { controls: controls.length, wallNodes: wallNodes.length, blocked, iosZoom };
+  return { controls: controls.length, skyLabels: skyLabels.length, blocked, iosZoom };
 }
 
 async function go(path) {
@@ -84,10 +87,21 @@ async function pick(selector) {
   return true;
 }
 
+/**
+ * Jump every running animation to its end, so a check measures the settled
+ * screen. A background tab does not advance animations at all, which would
+ * otherwise leave entrances half-revealed and closing sheets half-faded.
+ */
+async function settle() {
+  for (const a of document.getAnimations?.() ?? []) { try { a.finish(); } catch { /* endless ambient loops cannot finish */ } }
+  await sleep(120);
+}
+
 async function run(steps) {
   const out = {};
   for (const [name, action] of steps) {
     const reached = await action();
+    await settle();
     out[name] = reached === false
       ? { skipped: 'state not reachable here' }
       : { ...auditPointers(), tooSmall: matchMedia('(pointer: coarse)').matches ? auditTouchTargets().tooSmall : [] };
@@ -95,48 +109,45 @@ async function run(steps) {
   return out;
 }
 
-/** Every screen and every open form, in the demo museum. */
+/** Every place and every open form, in Alex's museum. */
 export function tourDemo() {
   return run([
-    ['today', () => go('/')],
-    ['today: change focus', () => press('Focus on something else')],
-    ['today: choose another step', async () => { await go('/'); return press('Choose another'); }],
-    ['library', () => go('/library')],
-    ['library: new goal', () => press('New goal')],
-    ['library: new project', async () => { await press('New goal'); return press('New project'); }],
-    ['explore', () => go('/explore')],
-    ['observatory', () => go('/observatory')],
-    ['observatory: goal open', () => press('Ship a small side project')],
-    ['observatory: project open', () => pick('.project__head')],
-    ['observatory: edit goal', () => press('Edit')],
-    ['observatory: add project', async () => { await press('Cancel'); return press('Add a project'); }],
-    ['archive', () => go('/archive')],
-    ['archive: item open', () => pick('.item')],
-    ['archive: tags', () => press('Tags')],
-    ['archive: connect', async () => { await press('Cancel'); return press('Connect'); }],
-    ['archive: edit item', async () => { await press('Cancel'); return press('Edit'); }],
-    ['workshop', () => go('/workshop')],
-    ['workshop: project open', () => pick('.ws__shelves .artifact')],
-    ['workshop: start a project', () => press('Start a project')],
-    ['future', () => go('/future')],
-    ['future: assumptions', () => press('Show the assumptions')],
-    ['cabinet', () => go('/cabinet')],
+    ['sky: every galaxy', () => go('/')],
+    ['sky: one galaxy', () => go('/?galaxy=d-gx-app')],
+    ['sky: a goal up close', () => go('/?goal=d-g-app')],
+    ['sky: as a list', async () => { await go('/'); return press('List'); }],
+    ['sky: back to the sky', () => press('Sky')],
+    ['capture', () => pick('[data-dock="capture"]')],
+    ['capture: somewhere else', () => press('Somewhere else')],
+    ['today', async () => { await pick('.capture__cancel'); return go('/today'); }],
+    ['today: choose focus', () => press('Choose')],
+    ['unsorted', () => go('/unsorted')],
+    ['unsorted: give it a home', () => press('Give it a home')],
+    ['clear my mind', () => go('/clear')],
+    ['search', () => go('/search')],
+    ['goal page', () => go('/goal/d-g-app')],
+    ['goal: a new project', () => press('A new project')],
+    ['goal: edit', async () => { await press('Close'); return press('Edit'); }],
+    ['project page', () => go('/project/d-p-users')],
+    ['project: add a step', () => press('Add a step')],
+    ['project: change its shape', async () => { await press('Close'); return press('Change its shape'); }],
+    ['journal', () => go('/journal')],
+    ['your week', () => go('/review')],
     ['settings', () => go('/settings')],
-    ['ask my ai (off)', () => go('/reflect')],
   ]);
 }
 
-/** The same screens for a museum with nothing in it yet. */
+/** The same places for a museum with nothing in it yet. */
 export function tourEmpty() {
   return run([
-    ['today (empty)', () => go('/')],
-    ['observatory (empty)', () => go('/observatory')],
-    ['archive (empty)', () => go('/archive')],
-    ['workshop (empty)', () => go('/workshop')],
-    ['future (empty)', () => go('/future')],
-    ['cabinet (empty)', () => go('/cabinet')],
-    ['library (empty)', () => go('/library')],
-    ['library (empty): new goal', () => press('New goal')],
+    ['sky (empty): first star', () => go('/')],
+    ['sky (empty) as a list', () => press('List')],
+    ['today (empty)', () => go('/today')],
+    ['unsorted (empty)', () => go('/unsorted')],
+    ['search (empty)', () => go('/search')],
+    ['journal (empty)', () => go('/journal')],
+    ['your week (empty)', () => go('/review')],
+    ['settings (empty)', () => go('/settings')],
   ]);
 }
 
@@ -146,7 +157,7 @@ export function tourEmpty() {
  * touch zone means. Measures the real hit area, including invisible zones.
  */
 export function auditTouchTargets() {
-  const els = [...document.querySelectorAll(CONTROLS)].filter(visible).filter((e) => !e.closest('svg.wall') && !/^(checkbox|radio)$/.test(e.type));
+  const els = [...document.querySelectorAll(CONTROLS)].filter(visible).filter((e) => !e.closest('.skylbl') && !/^(checkbox|radio)$/.test(e.type));
   const tooSmall = [];
   for (const el of els) {
     el.scrollIntoView({ block: 'center', inline: 'center' });

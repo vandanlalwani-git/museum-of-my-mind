@@ -1,5 +1,37 @@
 # Architecture
 
+## Current architecture (the mind-first redesign, Phases 11–16)
+
+```
+src/
+  app/        App routes, error boundary, PWA, deploy-safe loading (lazyRoom)
+  mind/       the model and everything about it, all pure and tested
+    types.ts      galaxies, goals, projects (6 shapes), steps (6 kinds), thoughts, journal, reviews
+    migrate.ts    the old rooms → one mind (lossless, with a report)
+    switchover.ts the one-time move on first open (backup first, old stores untouched)
+    repo.ts       the only code touching the mind.* IndexedDB stores
+    store.ts      the open mind in memory (Zustand); ops.ts are the named actions
+    select.ts     shared views, search, suggested homes; today.ts, week.ts, shapes.ts, recurrence.ts
+    backup.ts     format 4, reads every older format; files.ts export, import, pre-move copy
+    demo.ts       Alex's Next Chapter
+  sky/        the 3D sky: engine.ts (three.js), model.ts, route.ts, SkyStage.tsx (lazy)
+  shell/      MindShell, dock, capture sheet, picker, breadcrumbs, glyphs
+  places/     sky (list view and overlays), today, unsorted, clear, search, goal, project,
+              journal, review, settings, welcome, tour
+  data/       the old room model's database and backups, kept so old data can always move in
+```
+
+- **Storage:** IndexedDB version 4. The `minds` and `mind.*` stores hold the model; the version 1–3 stores are kept read-only for history and migration.
+- **Routes:**
+  - `/` is the sky, or its list view (`?galaxy=`, `?goal=` move closer);
+  - `/goal/:id` and `/project/:id` are plates beside the star or planet;
+  - `/today`, `/unsorted`, `/clear`, `/search`, `/journal`, `/review`, `/settings`;
+  - `/welcome` is the tour on a first visit, otherwise the chooser; `/tour` is the tour.
+- **Sky:** routes drive the camera. Taps in the sky navigate. Only a structural change rebuilds the scene. When 3D is unavailable, a calm 2D field and the list view take over.
+
+The sections below describe the original room model and are kept for history.
+
+
 ## Stack
 
 | Concern | Choice | Why |

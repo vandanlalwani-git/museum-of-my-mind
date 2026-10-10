@@ -62,7 +62,10 @@ export default function Welcome() {
             <p className="place__eyebrow">Not sure yet?</p>
             <h2 className="welcome__demo-title">Look around Alex's museum</h2>
             <p className="meta">A fictional person with a full-time job, slowly making room for health, a side project, creativity and people. Touch anything; it resets itself.</p>
-            <button type="button" className="instrument" onClick={() => void open(DEMO_MIND_ID)} disabled={busy}>Look around</button>
+            <div className="form-actions">
+              <button type="button" className="instrument" onClick={() => navigate('/tour')}>Take the two-minute tour</button>
+              <button type="button" className="instrument instrument--quiet" onClick={() => void open(DEMO_MIND_ID)} disabled={busy}>Look around</button>
+            </div>
           </div>
         </div>
       </div>

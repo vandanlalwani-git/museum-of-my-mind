@@ -156,6 +156,7 @@ export default function MindSettings() {
             </>
           ) : (
             <>
+              <button type="button" className="instrument" onClick={() => navigate('/tour')}>Replay the tour</button>
               <button type="button" className="instrument" onClick={() => void enter(DEMO_MIND_ID).then(() => navigate('/'))}>Look around Alex's museum (the demo)</button>
               <button type="button" className="instrument instrument--quiet" onClick={() => void leave().then(() => navigate('/welcome'))}>Switch museum</button>
             </>

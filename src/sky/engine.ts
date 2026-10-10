@@ -87,6 +87,8 @@ export class SkyEngine {
   private view: SkyView = { level: 'rest' };
   private W = 1; private H = 1; private wide = true;
   private mindBox = { hw: 100, hh: 80 };
+  /** Shifts every view sideways (laptop) or upwards (phone), for when text sits beside the sky. */
+  private bias = { x: 0, y: 0 };
   private cam = { pos: new Vector3(0, 420, 1500), target: new Vector3(), sx: 0, sy: 0 };
   private flight: null | { from: { pos: Vector3; target: Vector3; sx: number; sy: number }; to: { pos: Vector3; target: Vector3; sx: number; sy: number }; t0: number; dur: number; lift: number; fn: (k: number) => number } = null;
   private yaw = 0; private yawT = 0; private pitch = 0; private pitchT = 0; private zoom = 1; private zoomT = 1;
@@ -447,6 +449,7 @@ export class SkyEngine {
     } else {
       center = new Vector3(0, -6, 0); dir = new Vector3(0, 0.28, 1).normalize(); hw = this.mindBox.hw; hh = this.mindBox.hh;
     }
+    if (this.bias.x || this.bias.y) { if (this.wide) { sx += this.bias.x; hw *= 1.5; } else { sy += this.bias.y; hh *= 1.5; } }
     const d = this.fitDist(hw, hh) + Math.min(hw, hh) * 0.3;
     return { pos: center.clone().addScaledVector(dir, d), target: center, sx, sy };
   }
@@ -456,6 +459,8 @@ export class SkyEngine {
     const dist = this.cam.pos.distanceTo(to.pos);
     this.flight = { from: { pos: this.cam.pos.clone(), target: this.cam.target.clone(), sx: this.cam.sx, sy: this.cam.sy }, to, t0: performance.now(), dur: dur ?? Math.min(2600, Math.max(1100, 900 + dist * 2.2)), lift: dist * 0.1, fn };
   }
+
+  setBias(x: number, y: number) { this.bias = { x, y }; if (this.flight) this.flight.to = this.viewFor(this.view); else this.flyTo(this.viewFor(this.view), 400); }
 
   setView(v: SkyView) {
     const same = v.level === this.view.level && v.galaxyId === this.view.galaxyId && v.goalId === this.view.goalId && v.projectId === this.view.projectId;

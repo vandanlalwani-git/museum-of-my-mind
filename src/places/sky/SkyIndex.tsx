@@ -34,8 +34,8 @@ export function SkyIndex() {
         <h1 className="skyindex__title">{only ? galaxies[0]?.name : snap.mind.name}</h1>
         <p className="skyindex__lede">
           {waiting > 0 ? <><Link to="/unsorted">{waiting} {waiting === 1 ? 'thought is' : 'thoughts are'} waiting in Unsorted</Link>. Nothing is lost there.</> : 'Nothing is waiting in Unsorted.'}
-          {only && <> · <button type="button" className="linkish" onClick={() => setParams({})}>Show every galaxy</button></>}
         </p>
+        {only && <button type="button" className="linkish skyindex__all" onClick={() => setParams({})}>Show every galaxy</button>}
       </header>
 
       {galaxies.map((g) => <GalaxySection key={g.id} galaxy={g} />)}

@@ -1,0 +1,40 @@
+/* The tour: the sky stays still behind; chapters scroll past on the left (laptop) or below (phone). */
+.tour { position: relative; min-height: 100dvh; overflow-x: hidden; background: var(--obsidian); }
+html:has(.tour) { scroll-behavior: smooth; }
+.tour__sky { position: fixed; inset: 0; }
+.tour__sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tour__canvas, .tour__labels { pointer-events: none !important; }
+.tour__labels .skylbl { pointer-events: none !important; }
+.tour__top { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: calc(var(--space-3) + env(safe-area-inset-top, 0px)) var(--space-5) var(--space-3); }
+.tour__top::before { content: ''; position: absolute; inset: 0 0 -20px; z-index: -1; background: linear-gradient(var(--obsidian) 50%, rgba(10, 11, 16, 0)); pointer-events: none; }
+.tour__brand { font-family: var(--font-display); font-size: 1.1rem; color: var(--parchment-dim); text-shadow: var(--halo); }
+.tour__skip { min-height: 44px; display: inline-flex; align-items: center; font-size: var(--text-sm); color: var(--gold); }
+.tour__chapters { position: relative; z-index: 2; width: min(480px, 42vw); margin-left: max(var(--space-6), 5vw); }
+.tour__hero, .tour__chapter { min-height: 100vh; min-height: 100dvh; display: grid; align-items: center; padding: var(--space-10) 0; }
+.tour__card { padding: var(--space-6); display: grid; gap: var(--space-3); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.tour__chapter .tour__card { opacity: 0.35; transform: translateY(16px); }
+.tour__chapter .tour__card--on, .tour__chapter--begin .tour__card { opacity: 1; transform: none; }
+.tour__card--hero { padding: 0; }
+.tour__over { font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--parchment-dim); }
+.tour__title { font-size: clamp(3rem, 8vw, 5.4rem); line-height: 1; text-shadow: var(--halo); }
+.tour__title em { color: var(--gold); font-style: italic; }
+.tour__lede { color: var(--parchment); font-size: 1.1rem; max-width: 40ch; text-shadow: var(--halo); }
+.tour__hint { font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--gold-dim); margin-top: var(--space-6); animation: hint 2.6s ease-in-out infinite; }
+@keyframes hint { 0%, 100% { transform: translateY(0); opacity: 0.6; } 50% { transform: translateY(6px); opacity: 1; } }
+.tour__num { display: inline-grid; place-items: center; width: 20px; height: 20px; border: 1px solid var(--gold-dim); border-radius: 50%; margin-right: 6px; font-size: 0.62rem; }
+.tour__h2 { font-size: clamp(1.8rem, 3.4vw, 2.4rem); line-height: 1.08; text-wrap: balance; }
+.tour__p { color: var(--parchment-dim); }
+.tour__list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2) var(--space-4); font-family: var(--font-display); font-size: 1.1rem; }
+.tour__list li::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); margin-right: 8px; vertical-align: middle; box-shadow: 0 0 8px var(--gold); }
+.tour__quote { margin: 0; font-family: var(--font-display); font-style: italic; font-size: 1.25rem; border-left: 1px solid var(--gold); padding-left: var(--space-4); }
+.tour__form { display: grid; gap: var(--space-3); }
+@media (max-width: 699px) {
+  .tour__chapters { width: auto; margin: 0 var(--space-3); }
+  .tour__hero { align-items: end; padding-bottom: 18vh; }
+  .tour__chapter { align-items: end; padding: 0 0 var(--space-6); }
+  .tour__card { padding: var(--space-5); }
+  .tour__card--hero { padding: 0 var(--space-2); }
+  .tour__chapter .tour__card { opacity: 0.2; }
+  .tour__top { padding-inline: var(--space-4); }
+}
+@media (prefers-reduced-motion: reduce) { html:has(.tour) { scroll-behavior: auto; } .tour__hint { animation: none; } }

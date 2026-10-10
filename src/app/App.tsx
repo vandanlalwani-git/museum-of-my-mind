@@ -8,6 +8,7 @@ import SkyPlace from '@/places/sky/SkyPlace';
 import { useSettingsStore } from '@/store/settings';
 
 const Welcome = lazyRoom(() => import('@/places/welcome/Welcome'));
+const Tour = lazyRoom(() => import('@/places/tour/Tour'));
 const Unsorted = lazyRoom(() => import('@/places/unsorted/Unsorted'));
 const ClearMind = lazyRoom(() => import('@/places/clear/ClearMind'));
 const Search = lazyRoom(() => import('@/places/search/Search'));
@@ -34,6 +35,12 @@ function RequireMind() {
 }
 
 const lazy = (el: React.ReactNode) => <Suspense fallback={null}>{el}</Suspense>;
+
+/** First visit: the guided tour. After that, the plain chooser; the tour lives in Settings. */
+function FrontDoor() {
+  const hasOwn = useMind((s) => s.minds.some((m) => m.kind === 'own'));
+  return hasOwn ? <Welcome /> : <Tour />;
+}
 
 export function App() {
   const boot = useMind((s) => s.boot);
@@ -65,7 +72,8 @@ export function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          <Route path="/welcome" element={lazy(<Welcome />)} />
+          <Route path="/welcome" element={lazy(<FrontDoor />)} />
+          <Route path="/tour" element={lazy(<Tour />)} />
           <Route element={<RequireMind />}>
             <Route element={<MindShell />}>
               <Route index element={<SkyPlace />} />

@@ -53,12 +53,14 @@ export default function TodayPlace() {
         <div className="today2__focus">{plan.focus.map((f) => <FocusCard key={f.goal.id} item={f} />)}</div>
       </section>
 
-      <p className="today2__quiet">
-        {plan.unsortedCount > 0
-          ? <><Link to="/unsorted">{plan.unsortedCount} {plan.unsortedCount === 1 ? 'thought is' : 'thoughts are'} waiting in Unsorted</Link>{plan.unsortedCount > 10 ? '. Five minutes of sorting might feel good.' : '.'}</>
-          : 'Nothing is waiting in Unsorted.'}
-        {' '}<Link to="/journal">Write a line about today</Link>.
-      </p>
+      <div className="today2__quiet">
+        <p>
+          {plan.unsortedCount > 0
+            ? <><Link to="/unsorted">{plan.unsortedCount} {plan.unsortedCount === 1 ? 'thought is' : 'thoughts are'} waiting in Unsorted</Link>{plan.unsortedCount > 10 ? '. Five minutes of sorting might feel good.' : '.'}</>
+            : 'Nothing is waiting in Unsorted.'}
+        </p>
+        <p><Link to="/journal">Write a line about today</Link></p>
+      </div>
     </div>
   );
 }

@@ -33,6 +33,9 @@ export function MindShell() {
   const peekOpen = useSky((s) => s.peek !== null);
   const setPeek = useSky((s) => s.setPeek);
   const skyInteractive = isSky && skyLive && skyMode === 'sky';
+  const movedIn = useMind((s) => !!s.movedIn && s.mind?.kind === 'own');
+  // While a modal is open, everything behind it is out of reach for fingers, keys and screen readers alike.
+  const behind = captureOpen || movedIn;
 
   useEffect(() => installSoundGesture(), []);
   const firstRoute = useRef(true);
@@ -63,7 +66,7 @@ export function MindShell() {
       <a href="#place" className="visually-hidden">Skip to content</a>
       <div className="mshell__sky"><SkyBackdrop /></div>
       <div className="mshell__vignette" aria-hidden="true" />
-      <header className="mshell__hud">
+      <header className="mshell__hud" inert={behind}>
         <Crumbs />
         <div className="mshell__tools">
           {isSky && skyLive && (
@@ -75,10 +78,10 @@ export function MindShell() {
           <Link to="/settings" className="iconlink" aria-label="Settings"><GearIcon /></Link>
         </div>
       </header>
-      <main id="place" className={`mshell__main ${skyInteractive ? 'mshell__main--sky' : ''} ${isSide && skyLive ? 'mshell__main--side' : ''}`} key={location.pathname}>
+      <main id="place" inert={behind} className={`mshell__main ${skyInteractive ? 'mshell__main--sky' : ''} ${isSide && skyLive ? 'mshell__main--side' : ''}`} key={location.pathname}>
         <Outlet />
       </main>
-      <Dock />
+      <div inert={behind}><Dock /></div>
       <CaptureSheet />
       <MovedIn />
       <QuietMessage />

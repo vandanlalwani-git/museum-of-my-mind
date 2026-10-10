@@ -50,3 +50,4 @@
   .skypeek, .skypeek--first { left: var(--space-3); right: var(--space-3); width: auto; bottom: calc(var(--dock-h, 72px) + 12px + env(safe-area-inset-bottom, 0px)); padding: var(--space-4); }
   .skypeek__title { font-size: 1.4rem; }
 }
+.skyindex__all { justify-self: start; margin-top: var(--space-2); }

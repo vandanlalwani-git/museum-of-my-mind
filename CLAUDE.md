@@ -33,16 +33,17 @@ A polished, portfolio-quality, local-first, game-like digital museum for one per
 - Static-site deployable to Cloudflare Pages. No server code.
 - No login, no subscriptions, no analytics, no telemetry, no external database, no third-party scripts.
 - Never put API keys in client-side code, the repo, `.env`, storage, backups, URLs, or logs. The optional "Ask my AI" feature is bring-your-own-key: the key lives in tab memory only and is relayed once per confirmed request through `functions/api/reflect.ts`, which stores and logs nothing. Never add a deployed secret for it.
-- The fictional demo museum ("Alex's Next Chapter": a person with a full-time job making gradual progress on health, a side project, creativity, and relationships) must always seed cleanly and make the app understandable within seconds with zero personal data. Use short, everyday language in seed content; no specialist crafts or invented lore. Never reference a real person. Bump `DEMO_SEED_VERSION` whenever the demo content changes so returning visitors get the refreshed demo; own museums are never touched by the seed.
+- The fictional demo museum ("Alex's Next Chapter": a person with a full-time job making gradual progress on health, a side project, creativity, and relationships) must always seed cleanly and make the app understandable within seconds with zero personal data. It lives in `src/mind/demo.ts` and drives the guided tour. Use short, everyday language in seed content; no specialist crafts or invented lore. Never reference a real person. Bump `DEMO_SEED_VERSION` there whenever the demo content changes so returning visitors get the refreshed demo; own museums are never touched by the seed.
 - PWA install experience is required.
-- Deterministic rendering for the Archive layout and Future Gallery (seeded PRNG). The Future Gallery is a "what if?" simulator, not a prediction engine, and its copy must say so.
+- Deterministic rendering: the sky is seeded from ids, so the same museum always draws the same sky. The "if you keep this pace" line is a what-if, never a prediction, and its copy must say so.
 
 ## Places
 
 The redesign (Phases 10–17 in `docs/implementation-plan.md`) has a dock of **Sky · Today · Capture · Journal · Search**, with Settings behind a gear.
 - One museum holds any number of galaxies.
 - Goal → Project → Step. Projects come in six shapes and steps in six kinds; the model is in `src/mind/types.ts`.
-- The old rooms (Entrance, Observatory, Archive, Workshop, Future Gallery, Cabinet) stay live until the new shell replaces them in Phase 12, and their code is retired in Phase 16.
+- The old rooms (Entrance, Observatory, Archive, Workshop, Future Gallery, Cabinet, Library) were retired in Phase 16. Only their data layer remains (`src/data`, `src/types`), so old databases and old backups can still be moved into the new model.
+- First visit: the guided tour (`/tour`). After the keeper has a museum, the tour and Alex's museum live in Settings.
 
 ## Working conventions
 
@@ -51,7 +52,7 @@ The redesign (Phases 10–17 in `docs/implementation-plan.md`) has a dock of **S
   - keep the old records untouched;
   - save a backup first;
   - land in the same phase as the screens that use it.
-- Every room is lazy-loaded behind `AppShell`.
+- Every place is lazy-loaded behind `MindShell` (`src/shell`). The 3D sky (`src/sky`) is its own lazy chunk and never blocks first paint.
 - Keep the entrance chunk small; it is the first impression.
 - Honour `prefers-reduced-motion` in every animation.
 - Commit messages: imperative, present tense, one line under 72 chars, body if needed.

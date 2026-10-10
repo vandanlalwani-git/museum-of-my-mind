@@ -54,15 +54,24 @@ This uploads directly and bypasses the Git build, which is useful for a quick pu
 
 ## Release check: can a finger reach everything?
 
-Scripted clicks go straight to an element and ignore anything drawn on top of it, which is how a star canvas covering the Observatory's first-goal form shipped unnoticed. Before every release, run the pointer check in the dev server at a phone size and a desktop size:
+Scripted clicks go straight to an element and ignore anything drawn on top of it, which is how a star canvas covering the first-goal form once shipped unnoticed. Before every release, run the pointer check in the dev server at a phone size and a desktop size. Open Alex's museum for the first tour and a brand-new museum for the second:
 
 ```js
-const a = await import('/scripts/pointer-audit.js');
-await a.tourDemo();   // every screen and open form, demo museum
+const a = await import('/scripts/pointer-audit.js?t=' + Date.now());  // the query avoids a stale cached copy
+await a.tourDemo();   // every place and open form, in Alex's museum
 await a.tourEmpty();  // the same in a brand-new empty museum
 ```
 
-Ship only when every screen reports no `blocked` controls, no `iosZoom` fields (text under 16px makes iPhone zoom the page), and on a touch screen no `tooSmall` touch zones (under 44px). Then confirm the most important forms with real clicks: create a museum, add a first goal in the Observatory, add a step, capture a thought.
+Ship only when every state reports:
+- no `blocked` controls;
+- no `iosZoom` fields (text under 16px makes iPhone zoom the page);
+- on a touch screen, no `tooSmall` touch zones (under 44px).
+
+Names floating in the 3D sky are counted separately as `skyLabels`; they may sit behind a plate by design.
+
+If the browser tab is in the background, load the page with `?forceframes=1` (development only). The check also jumps running animations to their end before measuring. A background tab still freezes the animation library's own slide-ins, which can show the Capture sheet's Save button 24px lower than it really sits. Confirm that one on screen.
+
+Then confirm the most important forms with real clicks: create a museum, set a first star, capture a thought, give it a home, tick a step, close a week.
 
 ## Updates while the app is open
 

@@ -23,4 +23,5 @@
 @media (max-width: 699px) {
   .capture { left: 0; right: 0; top: auto; bottom: 0; width: auto; translate: none; border-left: 0; border-right: 0; border-bottom: 0; max-height: 88dvh; padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); }
   .capture__hint { display: none; }
+  .capture__foot { justify-content: flex-end; }
 }

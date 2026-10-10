@@ -33,6 +33,15 @@ export function CaptureSheet() {
   const [busy, setBusy] = useState(false);
   const ref = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const scrimRef = useRef<HTMLDivElement>(null);
+  // A closing sheet must never catch a tap, even while it fades (or if its fade stalls in a background tab).
+  useEffect(() => {
+    // Reopening quickly can revive the sheet that was still fading out, so lift the block again.
+    for (const el of [formRef.current, scrimRef.current]) {
+      if (open) el?.style.removeProperty('pointer-events');
+      else el?.style.setProperty('pointer-events', 'none');
+    }
+  }, [open]);
 
   // Suggested places: what the keeper is looking at, then what they visited most recently.
   const chips = useMemo<Target[]>(() => {
@@ -125,7 +134,7 @@ export function CaptureSheet() {
     <AnimatePresence>
       {open && (
         <>
-          <motion.div key="scrim" className="capture-scrim" onClick={closeCapture} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} />
+          <motion.div key="scrim" ref={scrimRef} className="capture-scrim" onClick={closeCapture} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} />
           <motion.form
             key="sheet"
             ref={formRef}

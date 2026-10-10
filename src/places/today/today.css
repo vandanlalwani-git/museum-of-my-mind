@@ -16,4 +16,4 @@
 .focuscard__step .meta a { color: var(--parchment-dim); }
 .focuscard__none { font-size: var(--text-sm); color: var(--parchment-dim); border-top: 1px solid var(--hairline-soft); padding-top: var(--space-3); }
 .today2__choose { display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px dashed var(--hairline); border-radius: var(--radius); }
-.today2__quiet { font-size: var(--text-sm); color: var(--parchment-dim); }
+.today2__quiet { font-size: var(--text-sm); color: var(--parchment-dim); display: grid; gap: var(--space-5); }

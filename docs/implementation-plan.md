@@ -251,5 +251,22 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
   - the existing relay is used unchanged;
   - only the reflection you choose to keep is stored.
 - [x] Plates are more opaque, so the sky shows around them and never through them.
-### Phase 16 — Guided demo tour, retire old rooms, full release checks
+### Phase 16 — Guided demo tour, retire old rooms, full release checks (done 2026-10-11)
+- [x] The guided tour (`/tour`):
+  - one scroll through Alex's museum while the real 3D sky acts out each of ten chapters: a mind, a thought arriving (it flies in), Unsorted, a home, stars and planets, six shapes, questions, Today, the journal, Sunday;
+  - it ends with "Open my museum" or "Wander Alex's museum first".
+  - It is the front door on a first visit. Afterwards it lives in Settings ("Replay the tour") and on the chooser.
+- [x] Old rooms retired:
+  - removed: Observatory, Archive, Workshop, Future Gallery, Cabinet, Library, Explore, the old Today and Reflect, the old shell and stores, and unused components;
+  - dependencies dropped: `@react-three/fiber`, `d3-force`;
+  - kept: the old data layer, so old databases and backups always move in.
+- [x] Modals now make the page behind them inert. A closing sheet stops catching taps the moment it starts to fade.
+- [x] Touch: every text link has an invisible 44px zone, and neighbouring links are spaced so their zones never overlap.
+- [x] The home screen waits quietly for the 3D sky instead of flashing the list; if the sky fails, the list takes over.
+- [x] `scripts/pointer-audit.js` was rewritten for the new places:
+  - it lets animations settle before measuring and skips controls that cannot be tapped;
+  - Alex's museum: 22 of 22 states clean on laptop and phone;
+  - a brand-new museum: 8 of 8 clean on both;
+  - one known background-tab artifact (Capture's Save button) was confirmed on screen.
+- [x] Docs: CLAUDE.md, architecture, deploy and the product brief all describe the new museum.
 ### Phase 17 — Encrypted QR sync (needs the deferred rule change)

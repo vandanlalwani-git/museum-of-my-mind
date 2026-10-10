@@ -145,3 +145,14 @@ button.chip:hover, a.chip:hover, .chip:hover > span { color: var(--parchment); t
   .mshell__main--side > .place { top: 34vh; left: 0; right: 0; width: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); border-left: 0; border-right: 0; border-bottom: 0; animation-name: sideup; }
   @keyframes sideup { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
 }
+
+/* Touch screens: words that are links get an invisible 44px zone, so a thumb finds them without anything moving. */
+@media (pointer: coarse) {
+  html :is(.skyindex__lede, .today2__quiet, .focuscard__step .meta, .unsorted__text, .jentry .meta, .moved .meta, .thoughtrow__body, .place__empty, .skypeek .meta) a { position: relative; }
+  html :is(.skyindex__lede, .today2__quiet, .focuscard__step .meta, .unsorted__text, .jentry .meta, .moved .meta, .thoughtrow__body, .place__empty, .skypeek .meta) a::after {
+    content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%);
+  }
+  html a.moved__title { display: inline-flex; align-items: center; min-height: 44px; }
+  html .moved { gap: 8px; }
+  html .capture__foot .instrument { min-height: 48px; }
+}
