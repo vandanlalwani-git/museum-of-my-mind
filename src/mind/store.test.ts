@@ -68,6 +68,30 @@ describe('the switch-over', () => {
   });
 });
 
+describe('where a visitor lands', () => {
+  it('someone who was only looking at the old demo starts at the tour, not inside the demo', async () => {
+    await museumRepo.put({ id: 'demo', name: 'Demo', kind: 'demo', createdAt: T, lastEnteredAt: T });
+    await metaRepo.set(META_KEYS.activeMuseumId, 'demo');
+    await useMind.getState().boot();
+    expect(useMind.getState().mind).toBeNull();
+    expect(await metaRepo.get(META_KEYS.activeMindId)).toBeUndefined();
+  });
+
+  it('an earlier version that left the demo open is corrected until the tour has been seen', async () => {
+    await useMind.getState().boot();
+    await metaRepo.set(META_KEYS.activeMindId, DEMO_MIND_ID);
+    useMind.setState({ status: 'idle', mind: null, snap: null });
+    await useMind.getState().boot();
+    expect(useMind.getState().mind).toBeNull();
+
+    await useMind.getState().markTourSeen();
+    await metaRepo.set(META_KEYS.activeMindId, DEMO_MIND_ID);
+    useMind.setState({ status: 'idle', mind: null, snap: null });
+    await useMind.getState().boot();
+    expect(useMind.getState().mind?.id).toBe(DEMO_MIND_ID); // chosen on purpose after the tour, so it stays
+  });
+});
+
 describe('living in a mind', () => {
   it('captures, sorts, completes and undoes, writing through to storage', async () => {
     await useMind.getState().boot();

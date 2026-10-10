@@ -39,6 +39,8 @@ interface MindState {
   reload: () => Promise<void>;
   /** Takes the museum's own row from a paired device. */
   applyMindRow: (mind: Mind) => Promise<void>;
+  /** Notes that this browser has shown the guided tour. */
+  markTourSeen: () => Promise<void>;
 }
 
 export const useMind = create<MindState>((set, get) => ({
@@ -59,7 +61,11 @@ export const useMind = create<MindState>((set, get) => ({
         const minds = await mindRepo.list();
         const activeId = (await metaRepo.get<string>(META_KEYS.activeMindId)) ?? null;
         set({ minds, movedIn });
-        if (activeId && minds.some((m) => m.id === activeId)) await get().enter(activeId);
+        // Never drop someone into the demo before they have seen the tour and had the
+        // chance to begin their own museum (an earlier version could leave the demo open).
+        const stuckInDemo = activeId === DEMO_MIND_ID && !minds.some((m) => m.kind === 'own') && !(await metaRepo.get<boolean>(META_KEYS.tourSeen));
+        if (stuckInDemo) await metaRepo.remove(META_KEYS.activeMindId);
+        else if (activeId && minds.some((m) => m.id === activeId)) await get().enter(activeId);
       })());
       set({ status: 'ready' });
     } catch (e) {
@@ -141,6 +147,10 @@ export const useMind = create<MindState>((set, get) => ({
       for (const r of list as { id: string }[]) byId.set(r.id, r);
       return { snap: { ...s.snap, [c]: [...byId.values()] } };
     });
+  },
+
+  async markTourSeen() {
+    await metaRepo.set(META_KEYS.tourSeen, true);
   },
 
   async applyMindRow(row) {

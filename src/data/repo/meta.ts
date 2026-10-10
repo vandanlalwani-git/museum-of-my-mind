@@ -33,6 +33,8 @@ export const META_KEYS = {
   /** The "your museum has moved in" note, shown once. */
   movedInNote: 'movedInNote',
   demoMindVersion: 'demoMindVersion',
+  /** Set once this browser has shown the guided tour. */
+  tourSeen: 'tourSeen',
   /** This device's pairing (Phase 17). Never exported in backups. */
   sync: 'sync',
 } as const;

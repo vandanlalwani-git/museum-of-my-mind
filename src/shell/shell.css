@@ -156,3 +156,11 @@ button.chip:hover, a.chip:hover, .chip:hover > span { color: var(--parchment); t
   html .moved { gap: 8px; }
   html .capture__foot .instrument { min-height: 48px; }
 }
+
+/* Looking around Alex's museum: a quiet, always-there way to your own. */
+.demonotice { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; margin-right: var(--space-2); padding: 4px 4px 4px var(--space-3); border: 1px solid var(--hairline); border-radius: var(--radius); background: rgba(10, 11, 16, 0.85); }
+.demonotice__text { font-size: var(--text-xs); color: var(--parchment-dim); white-space: nowrap; }
+.demonotice__btn { min-height: 32px; padding: 0 var(--space-3); border-radius: var(--radius); background: var(--gold); color: var(--obsidian); font-size: var(--text-xs); font-weight: 500; letter-spacing: 0.04em; white-space: nowrap; }
+.demonotice__btn:hover { filter: brightness(1.08); }
+@media (pointer: coarse) { .demonotice__btn { min-height: 44px; } }
+@media (max-width: 699px) { .demonotice__text { display: none; } .demonotice { padding: 0; border: 0; background: none; } }

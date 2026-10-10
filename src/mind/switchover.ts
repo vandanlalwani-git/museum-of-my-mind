@@ -34,11 +34,11 @@ export async function runSwitchover(now = Date.now()): Promise<SwitchoverRecord 
     }
   }
 
-  // Whoever was inside a museum before keeps being inside: theirs, or the demo.
+  // Whoever was inside their own museum before keeps being inside it. Someone who
+  // was only looking at the old demo starts at the tour instead, where they can begin their own.
   const wasActive = await metaRepo.get<string>(META_KEYS.activeMuseumId);
   const activeOld = museums.find((m) => m.id === wasActive);
   if (activeOld?.kind === 'own' && record.mindId) await metaRepo.set(META_KEYS.activeMindId, record.mindId);
-  else if (activeOld?.kind === 'demo') await metaRepo.set(META_KEYS.activeMindId, 'demo');
 
   await metaRepo.set(META_KEYS.mindSwitchover, record);
   return record;

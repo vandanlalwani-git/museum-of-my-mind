@@ -45,6 +45,14 @@ export default function Tour() {
   const [galaxy, setGalaxy] = useState('Personal');
   const [busy, setBusy] = useState(false);
   const model = useMemo(() => buildSkyModel(buildDemoSnapshot()), []);
+  const markTourSeen = useMind((s) => s.markTourSeen);
+  useEffect(() => { void markTourSeen(); }, [markTourSeen]);
+  // Arriving with #begin (from "Make my own") goes straight to the form.
+  useEffect(() => {
+    if (location.hash !== '#begin') return;
+    const t = window.setTimeout(() => document.getElementById('begin')?.scrollIntoView({ block: 'start' }), 150);
+    return () => window.clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current, layer = layerRef.current;

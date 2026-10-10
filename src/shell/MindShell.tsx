@@ -13,6 +13,7 @@ import { parentRoute } from '@/sky/route';
 import { useSky } from '@/sky/store';
 import { useAutoSync } from '@/sync/useAutoSync';
 import { MovedIn } from './MovedIn';
+import { DemoNotice } from './DemoNotice';
 import { SkyBackdrop } from './SkyBackdrop';
 import '@/components/Field.css';
 import '@/components/Instrument.css';
@@ -70,6 +71,7 @@ export function MindShell() {
       <div className="mshell__vignette" aria-hidden="true" />
       <header className="mshell__hud" inert={behind}>
         <Crumbs />
+        <DemoNotice />
         <div className="mshell__tools">
           {isSky && skyLive && (
             <div className="skytoggle" role="group" aria-label="Show the sky as">
