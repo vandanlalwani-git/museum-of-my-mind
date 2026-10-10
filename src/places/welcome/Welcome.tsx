@@ -57,6 +57,7 @@ export default function Welcome() {
             <label className="field"><span className="plaque">Your first galaxy</span><input className="field__input" value={galaxy} onChange={(e) => setGalaxy(e.target.value)} /></label>
             <p className="meta">A galaxy is an area of your life. You can add more any time. Everything stays in this browser.</p>
             <button type="submit" className="instrument instrument--primary" disabled={busy}>Open my museum</button>
+            <button type="button" className="linkish" onClick={() => navigate('/join')}>Or join a museum from another device</button>
           </form>
           <div className="welcome__card plate welcome__demo">
             <p className="place__eyebrow">Not sure yet?</p>

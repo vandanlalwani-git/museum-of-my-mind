@@ -131,6 +131,7 @@ export default function Tour() {
                 <button type="button" className="instrument" onClick={() => void wander()} disabled={busy}>Wander Alex’s museum first</button>
               </div>
               <p className="meta">Everything stays in this browser. No account, nothing to install. The tour and Alex’s museum are always in Settings.</p>
+              <button type="button" className="linkish" onClick={() => navigate('/join')}>Already have a museum on another device? Join it</button>
             </form>
           </div>
         </section>

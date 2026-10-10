@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { onRequest, onRequestPost, originAllowed } from '../functions/api/reflect';
+import { onRequest, onRequestPost } from '../functions/api/reflect';
+import { originAllowed } from '../shared/origin';
 
 const KEY = 'sk-ant-test-0123456789abcdefghijklmnop';
 const goodBody = { mode: 'themes', model: 'claude-sonnet-5', items: [{ id: 'n-1', kind: 'note', title: 'T', body: 'B', tags: ['x'] }] };

@@ -27,10 +27,10 @@ A polished, portfolio-quality, local-first, game-like digital museum for one per
 ## Technical rules (never break)
 
 - React + TypeScript + Vite. Strict TypeScript.
-- IndexedDB (via `idb`) is the only database. No hosted database, ever.
+- IndexedDB (via `idb`) is the museum's database. The only hosted store is the encrypted sync mailbox (Cloudflare D1, `functions/api/sync.ts`): it holds ciphertext it cannot read, keyed by random ids. No hosted database may ever hold readable museum data. The pairing code lives only on paired devices, never in backups, URLs or logs.
 - Must work after refresh, after browser restart, and offline after first load.
 - Import/export backup is a first-class feature and must round-trip losslessly.
-- Static-site deployable to Cloudflare Pages. No server code.
+- Static-site deployable to Cloudflare Pages. The only server code is `functions/api/reflect.ts` and `functions/api/sync.ts`.
 - No login, no subscriptions, no analytics, no telemetry, no external database, no third-party scripts.
 - Never put API keys in client-side code, the repo, `.env`, storage, backups, URLs, or logs. The optional "Ask my AI" feature is bring-your-own-key: the key lives in tab memory only and is relayed once per confirmed request through `functions/api/reflect.ts`, which stores and logs nothing. Never add a deployed secret for it.
 - The fictional demo museum ("Alex's Next Chapter": a person with a full-time job making gradual progress on health, a side project, creativity, and relationships) must always seed cleanly and make the app understandable within seconds with zero personal data. It lives in `src/mind/demo.ts` and drives the guided tour. Use short, everyday language in seed content; no specialist crafts or invented lore. Never reference a real person. Bump `DEMO_SEED_VERSION` there whenever the demo content changes so returning visitors get the refreshed demo; own museums are never touched by the seed.

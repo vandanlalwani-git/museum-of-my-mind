@@ -34,6 +34,8 @@ export interface Mind {
   visitorName?: string;
   createdAt: number;
   lastEnteredAt: number;
+  /** Set when the museum itself changes (its name), so the change can travel to paired devices. */
+  updatedAt?: number;
 }
 
 /** Galaxy colours come from the design system, never free hex values. */

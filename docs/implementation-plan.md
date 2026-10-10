@@ -269,4 +269,9 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
   - a brand-new museum: 8 of 8 clean on both;
   - one known background-tab artifact (Capture's Save button) was confirmed on screen.
 - [x] Docs: CLAUDE.md, architecture, deploy and the product brief all describe the new museum.
-### Phase 17 — Encrypted QR sync (needs the deferred rule change)
+### Phase 17 — Encrypted QR sync (built 2026-10-11; owner approved the rule change)
+- [x] Free D1 database `museum-sync` (no card asked), with the schema in `migrations/`. `functions/api/sync.ts` is a mailbox that stores only ciphertext.
+- [x] The device derives everything from a 128-bit pairing code (`src/sync`): mailbox id, access token, AES-GCM key, hidden item ids. Records are sent individually, newest edit wins, and deletions travel as markers.
+- [x] Settings › Your devices: turn on, QR code and typed code, join by camera or typing (`/join` for new devices), stop, replace the code for a lost device. Background sync runs on start, after changes, on return and once a minute.
+- [x] 6 tests, including two devices converging through a simulated server. A local two-device test joined successfully over a real local D1.
+- [ ] Still to check: a real Mac and iPhone pair on the live site, and an edit travelling back from device B to A in the local test.

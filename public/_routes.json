@@ -1,6 +1,9 @@
 {
   "version": 1,
-  "description": "Only the reflection relay runs as a Pages Function. Every other path is served as a static asset and never invokes a function, so the museum stays up even if the free Functions quota is exhausted.",
-  "include": ["/api/reflect"],
+  "description": "Only the reflection relay and the encrypted sync mailbox run as Pages Functions. Every other path is served as a static asset and never invokes a function, so the museum stays up even if the free Functions quota is exhausted.",
+  "include": [
+    "/api/reflect",
+    "/api/sync"
+  ],
   "exclude": []
 }

@@ -37,6 +37,8 @@ interface MindState {
   put: <C extends MindCollection>(c: C, records: RecordOf<C> | RecordOf<C>[]) => Promise<void>;
   /** Replaces the open mind with a snapshot (after an import). */
   reload: () => Promise<void>;
+  /** Takes the museum's own row from a paired device. */
+  applyMindRow: (mind: Mind) => Promise<void>;
 }
 
 export const useMind = create<MindState>((set, get) => ({
@@ -124,7 +126,7 @@ export const useMind = create<MindState>((set, get) => ({
   async renameMind(name) {
     const mind = get().mind;
     if (!mind || !name.trim()) return;
-    const updated = { ...mind, name: name.trim() };
+    const updated = { ...mind, name: name.trim(), updatedAt: Date.now() };
     await mindRepo.put(updated);
     set((s) => ({ mind: updated, snap: s.snap ? { ...s.snap, mind: updated } : s.snap, minds: s.minds.map((m) => (m.id === updated.id ? updated : m)) }));
   },
@@ -139,6 +141,14 @@ export const useMind = create<MindState>((set, get) => ({
       for (const r of list as { id: string }[]) byId.set(r.id, r);
       return { snap: { ...s.snap, [c]: [...byId.values()] } };
     });
+  },
+
+  async applyMindRow(row) {
+    await mindRepo.put(row);
+    set((s) => ({
+      minds: s.minds.some((m) => m.id === row.id) ? s.minds.map((m) => (m.id === row.id ? row : m)) : [...s.minds, row],
+      ...(s.mind?.id === row.id ? { mind: row, snap: s.snap ? { ...s.snap, mind: row } : s.snap } : {}),
+    }));
   },
 
   async reload() {

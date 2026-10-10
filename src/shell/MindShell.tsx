@@ -11,6 +11,7 @@ import { GearIcon, ListIcon, SkyIcon } from './icons';
 import { useMind } from '@/mind/store';
 import { parentRoute } from '@/sky/route';
 import { useSky } from '@/sky/store';
+import { useAutoSync } from '@/sync/useAutoSync';
 import { MovedIn } from './MovedIn';
 import { SkyBackdrop } from './SkyBackdrop';
 import '@/components/Field.css';
@@ -38,6 +39,7 @@ export function MindShell() {
   const behind = captureOpen || movedIn;
 
   useEffect(() => installSoundGesture(), []);
+  useAutoSync();
   const firstRoute = useRef(true);
   useEffect(() => {
     if (firstRoute.current) { firstRoute.current = false; return; }

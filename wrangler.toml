@@ -5,3 +5,11 @@
 name = "museum-of-my-mind"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-09-01"
+
+# Encrypted sync (Phase 17). The database stores only scrambled data; the
+# keys never leave the paired devices. The id below is not a secret.
+[[d1_databases]]
+binding = "SYNC_DB"
+database_name = "museum-sync"
+database_id = "c567104f-ed1e-48c3-a712-4553277dca6c"
+migrations_dir = "migrations"

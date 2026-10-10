@@ -13,7 +13,11 @@ import { GALAXY_HUES, type Galaxy } from '@/mind/types';
 import { hueVar } from '@/shell/Glyphs';
 import { useSettingsStore } from '@/store/settings';
 import { useUiStore } from '@/store/ui';
+import { Suspense } from 'react';
+import { lazyRoom } from '@/app/updates';
 import './settings.css';
+
+const Devices = lazyRoom(() => import('./Devices'));
 
 export default function MindSettings() {
   const navigate = useNavigate();
@@ -118,6 +122,8 @@ export default function MindSettings() {
           </p>
         )}
       </section>
+
+      <Suspense fallback={null}><Devices /></Suspense>
 
       <section className="place__section">
         <h2 className="place__h2">Atmosphere</h2>

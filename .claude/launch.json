@@ -26,6 +26,19 @@
         "--strictPort"
       ],
       "port": 4173
+    },
+    {
+      "name": "museum-pages",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "pages",
+        "dev",
+        "dist",
+        "--port",
+        "8788"
+      ],
+      "port": 8788
     }
   ]
 }

@@ -9,6 +9,7 @@ import { useSettingsStore } from '@/store/settings';
 
 const Welcome = lazyRoom(() => import('@/places/welcome/Welcome'));
 const Tour = lazyRoom(() => import('@/places/tour/Tour'));
+const JoinPage = lazyRoom(() => import('@/places/join/JoinPage'));
 const Unsorted = lazyRoom(() => import('@/places/unsorted/Unsorted'));
 const ClearMind = lazyRoom(() => import('@/places/clear/ClearMind'));
 const Search = lazyRoom(() => import('@/places/search/Search'));
@@ -74,6 +75,7 @@ export function App() {
         <Routes>
           <Route path="/welcome" element={lazy(<FrontDoor />)} />
           <Route path="/tour" element={lazy(<Tour />)} />
+          <Route path="/join" element={lazy(<JoinPage />)} />
           <Route element={<RequireMind />}>
             <Route element={<MindShell />}>
               <Route index element={<SkyPlace />} />

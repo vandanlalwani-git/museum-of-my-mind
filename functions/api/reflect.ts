@@ -1,3 +1,4 @@
+import { originAllowed } from '../../shared/origin';
 import { LIMITS, RESULT_TOOL, SYSTEM_PROMPT, buildUserMessage, validateRequest, validateResult, type ReflectError, type ReflectResponse } from '../../shared/reflect-schema';
 
 /**
@@ -27,16 +28,6 @@ const json = (body: ReflectResponse, status = 200): Response =>
   });
 
 const fail = (error: ReflectError, status: number): Response => json({ ok: false, error }, status);
-
-export function originAllowed(request: Request): boolean {
-  const origin = request.headers.get('Origin');
-  if (!origin) return false;
-  let o: URL;
-  try { o = new URL(origin); } catch { return false; }
-  const self = new URL(request.url);
-  if (o.host === self.host && o.protocol === self.protocol) return true;
-  return /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(o.host);
-}
 
 export async function onRequestPost({ request, env }: Ctx): Promise<Response> {
   if (!originAllowed(request)) return fail('forbidden_origin', 403);
