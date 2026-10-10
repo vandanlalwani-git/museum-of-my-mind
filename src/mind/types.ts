@@ -152,6 +152,8 @@ export interface Thought extends MindRecord {
   projectId?: string;
   /** Why it was linked, carried over from an old wall thread. */
   link?: { kind: ThreadKind; why?: string };
+  /** Captured as a step with no project yet; it waits in Unsorted until it gets one. */
+  intent?: 'step';
 }
 
 /** A line drawn between any two things that is not a thought finding its home. */

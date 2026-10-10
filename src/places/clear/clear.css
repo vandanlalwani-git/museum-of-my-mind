@@ -1,0 +1,9 @@
+.clear__text {
+  width: 100%; min-height: 42vh; resize: vertical; background: transparent; border: 0; border-top: 1px solid var(--hairline-soft); border-bottom: 1px solid var(--hairline);
+  color: var(--parchment); font-family: var(--font-display); font-size: 1.4rem; line-height: 1.75; padding: var(--space-3) 0;
+  background-image: linear-gradient(transparent calc(1.75em - 1px), var(--hairline-soft) calc(1.75em - 1px));
+  background-size: 100% 1.75em; background-attachment: local; background-position: 0 var(--space-3);
+}
+.clear__text::placeholder { color: var(--parchment-faint); }
+.clear__text:focus { outline: none; border-bottom-color: var(--gold); }
+.clear__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-3); }

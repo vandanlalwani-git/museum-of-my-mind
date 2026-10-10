@@ -1,0 +1,24 @@
+.picker { display: grid; gap: var(--space-3); }
+.picker__prompt { font-size: var(--text-sm); color: var(--parchment-dim); }
+.picker__search {
+  width: 100%; min-height: 44px; padding: 0 var(--space-3); font-size: var(--text-base);
+  background: var(--obsidian); border: 1px solid var(--hairline); border-radius: var(--radius); color: var(--parchment);
+}
+.picker__search:focus { outline: none; border-color: var(--gold); }
+.picker__list, .picker__list ul { list-style: none; margin: 0; padding: 0; }
+.picker__list { max-height: min(46vh, 420px); overflow-y: auto; overscroll-behavior: contain; display: grid; gap: var(--space-2); }
+.picker__list ul ul { padding-left: var(--space-5); }
+.picker__galaxy > ul { padding-left: var(--space-3); }
+.picker__heading, .picker__sub { display: block; font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--tint, var(--parchment-dim)); padding: var(--space-2) 0 var(--space-1); }
+.picker__sub { color: var(--parchment-faint); text-transform: none; letter-spacing: 0; font-size: var(--text-sm); }
+.picker__row {
+  width: 100%; min-height: 44px; display: flex; align-items: center; gap: var(--space-3); text-align: left;
+  padding: var(--space-2) var(--space-2); border-radius: var(--radius); color: var(--parchment); font-size: var(--text-sm);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast);
+}
+.picker__row:hover, .picker__row:focus-visible { background: rgba(201, 169, 97, 0.07); color: var(--gold); }
+.picker__row--galaxy { font-family: var(--font-display); font-size: 1.15rem; color: var(--tint, var(--parchment)); }
+.picker__row--goal { font-family: var(--font-display); font-size: 1.08rem; }
+.picker__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--tint, var(--gold)); box-shadow: 0 0 10px var(--tint, var(--gold)); flex: none; margin-inline: 5px; }
+.picker__empty { font-size: var(--text-sm); color: var(--parchment-faint); }
+.picker__cancel { justify-self: start; min-height: 44px; color: var(--parchment-dim); font-size: var(--text-sm); }

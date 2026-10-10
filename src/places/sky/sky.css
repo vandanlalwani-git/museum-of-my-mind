@@ -1,0 +1,38 @@
+.skyindex__head { display: grid; gap: var(--space-2); }
+.skyindex__title { font-size: clamp(2.1rem, 4.4vw, 2.8rem); line-height: 1.05; text-wrap: balance; }
+.skyindex__lede { color: var(--parchment-dim); font-size: var(--text-sm); }
+
+.galaxy { display: grid; gap: var(--space-3); padding-top: var(--space-5); border-top: 1px solid var(--hairline-soft); }
+.galaxy__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-3); }
+.galaxy__mark { width: 10px; height: 10px; border-radius: 50%; background: var(--tint); box-shadow: 0 0 14px 2px var(--tint); align-self: center; }
+.galaxy__name { font-size: 1.7rem; color: var(--tint); }
+.galaxy__empty { color: var(--parchment-faint); font-size: var(--text-sm); }
+.galaxy__goals { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); }
+.galaxy__add { justify-self: start; }
+
+.goalrow__link { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: var(--space-3); align-items: center; padding: var(--space-2) 0; min-height: 52px; color: var(--parchment); }
+.goalrow__link:hover { text-decoration: none; }
+.goalrow__link:hover .goalrow__title { color: var(--gold); }
+.goalrow__text { display: grid; gap: 2px; min-width: 0; }
+.goalrow__title { font-family: var(--font-display); font-size: 1.3rem; line-height: 1.2; transition: color var(--dur-fast); }
+.goalrow__why { font-family: var(--font-display); font-style: italic; color: var(--parchment-dim); font-size: 1rem; }
+.goalrow--resting .goalrow__title, .goalrow--reached .goalrow__title { color: var(--parchment-dim); }
+.goalrow__projects { list-style: none; margin: 0 0 var(--space-2); padding: 0 0 0 calc(30px + var(--space-3)); display: grid; }
+.projrow { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: var(--space-3); align-items: center; min-height: 44px; color: var(--parchment); font-size: var(--text-sm); }
+.projrow:hover { text-decoration: none; color: var(--gold); }
+.projrow__title { min-width: 0; }
+.projrow--loose { padding-left: 0; }
+
+.skyindex__newgalaxy { display: grid; gap: var(--space-2); padding-top: var(--space-5); border-top: 1px solid var(--hairline-soft); }
+.inline-add { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.inline-add input {
+  flex: 1 1 220px; min-height: 44px; padding: 0 var(--space-3); font-size: var(--text-base);
+  background: var(--obsidian); border: 1px solid var(--hairline); border-radius: var(--radius); color: var(--parchment);
+}
+.inline-add input:focus { outline: none; border-color: var(--gold); }
+.goalform { display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px dashed var(--hairline); border-radius: var(--radius); }
+.form-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+@media (max-width: 699px) {
+  .goalrow__projects { padding-left: var(--space-5); }
+}

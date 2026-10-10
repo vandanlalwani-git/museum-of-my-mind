@@ -1,0 +1,11 @@
+.search__input {
+  width: 100%; min-height: 56px; padding: 0; background: transparent; border: 0; border-bottom: 1px solid var(--hairline);
+  font-family: var(--font-display); font-size: 1.9rem; color: var(--parchment);
+}
+.search__input::placeholder { color: var(--parchment-faint); }
+.search__input:focus { outline: none; border-bottom-color: var(--gold); }
+.hit { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px var(--space-3); align-items: center; padding: var(--space-3) 0; min-height: 52px; color: var(--parchment); }
+.hit:hover { text-decoration: none; }
+.hit:hover .hit__title, .hit:hover .thought-text { color: var(--gold); }
+.hit__title { font-family: var(--font-display); font-size: 1.18rem; grid-column: 1 / -1; }
+.hit .meta { grid-column: 1 / -1; }

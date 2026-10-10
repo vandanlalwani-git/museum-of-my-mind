@@ -240,8 +240,18 @@ export function migrateToMind(data: LegacyData, opts: MigrationOptions = {}): Mi
 export function describeReport(r: MigrationReport): string[] {
   const lines: string[] = [];
   const n = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
-  lines.push(`${n(r.galaxies, 'galaxy', 'galaxies')}, ${n(r.goals, 'goal', 'goals')}, ${n(r.projects, 'project', 'projects')} and ${n(r.steps, 'step', 'steps')} moved in.`);
-  lines.push(`${n(r.thoughts, 'thought', 'thoughts')}: ${r.thoughtsPlaced} already have a home, the rest wait in Unsorted.`);
+  const parts = [n(r.galaxies, 'galaxy', 'galaxies')];
+  if (r.goals) parts.push(n(r.goals, 'goal', 'goals'));
+  if (r.projects) parts.push(n(r.projects, 'project', 'projects'));
+  if (r.steps) parts.push(n(r.steps, 'step', 'steps'));
+  const list = parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0]!;
+  lines.push(`${list} moved in. Each museum you had is now a galaxy.`);
+  if (r.thoughts) {
+    const waiting = r.thoughts - r.thoughtsPlaced;
+    lines.push(r.thoughtsPlaced === 0 ? `${n(r.thoughts, 'thought waits', 'thoughts wait')} in Unsorted for a home.`
+      : waiting === 0 ? `${n(r.thoughts, 'thought', 'thoughts')} kept ${r.thoughts === 1 ? 'its' : 'their'} home.`
+      : `${n(r.thoughts, 'thought', 'thoughts')}: ${r.thoughtsPlaced} already ${r.thoughtsPlaced === 1 ? 'has' : 'have'} a home, ${waiting} ${waiting === 1 ? 'waits' : 'wait'} in Unsorted.`);
+  }
   if (r.journal) lines.push(`${n(r.journal, 'memory is', 'memories are')} now in your Journal.`);
   if (r.holdersRenamed) lines.push(`${n(r.holdersRenamed, 'hidden project', 'hidden projects')} that held your first steps ${r.holdersRenamed === 1 ? 'is' : 'are'} now visible as "${HOLDER_TITLE}".`);
   if (r.connections) lines.push(`${n(r.connections, 'link', 'links')} from the wall ${r.connections === 1 ? 'is' : 'are'} kept.`);

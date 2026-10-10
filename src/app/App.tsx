@@ -1,23 +1,18 @@
 import { Suspense, useEffect } from 'react';
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { lazyRoom } from './updates';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { AppShell } from './AppShell';
 import { ErrorBoundary } from './ErrorBoundary';
-import { RequireMuseum } from './RequireMuseum';
-import { Entrance } from '@/rooms/entrance/Entrance';
-import Today from '@/rooms/today/Today';
-import { useMuseumStore } from '@/store/museum';
+import { useMind } from '@/mind/store';
+import { MindShell } from '@/shell/MindShell';
+import SkyPlace from '@/places/sky/SkyPlace';
 import { useSettingsStore } from '@/store/settings';
 
-const Observatory = lazyRoom(() => import('@/rooms/observatory/Observatory'));
-const Archive = lazyRoom(() => import('@/rooms/archive/Archive'));
-const Workshop = lazyRoom(() => import('@/rooms/workshop/Workshop'));
-const FutureGallery = lazyRoom(() => import('@/rooms/future/FutureGallery'));
-const Cabinet = lazyRoom(() => import('@/rooms/cabinet/Cabinet'));
-const Settings = lazyRoom(() => import('@/rooms/settings/Settings'));
-const Reflect = lazyRoom(() => import('@/rooms/reflect/Reflect'));
-const Library = lazyRoom(() => import('@/rooms/library/Library'));
-const Explore = lazyRoom(() => import('@/rooms/explore/Explore'));
+const Welcome = lazyRoom(() => import('@/places/welcome/Welcome'));
+const Unsorted = lazyRoom(() => import('@/places/unsorted/Unsorted'));
+const ClearMind = lazyRoom(() => import('@/places/clear/ClearMind'));
+const Search = lazyRoom(() => import('@/places/search/Search'));
+const MindSettings = lazyRoom(() => import('@/places/settings/MindSettings'));
+const Soon = lazyRoom(() => import('@/places/soon/Soon'));
 
 function Booting() {
   return (
@@ -27,20 +22,24 @@ function Booting() {
   );
 }
 
+/** Places need an open museum; without one, the front door. */
+function RequireMind() {
+  const mind = useMind((s) => s.mind);
+  if (!mind) return <Navigate to="/welcome" replace />;
+  return <Outlet />;
+}
+
+const lazy = (el: React.ReactNode) => <Suspense fallback={null}>{el}</Suspense>;
+
 export function App() {
-  const boot = useMuseumStore((s) => s.boot);
-  const status = useMuseumStore((s) => s.status);
-  const error = useMuseumStore((s) => s.error);
+  const boot = useMind((s) => s.boot);
+  const status = useMind((s) => s.status);
+  const error = useMind((s) => s.error);
   const loadSettings = useSettingsStore((s) => s.load);
 
   useEffect(() => {
     void loadSettings();
-    void boot().then(async () => {
-      // Dev-only inspection hook: `?enter=demo` opens a museum straight away in a fresh profile.
-      if (!import.meta.env.DEV) return;
-      const id = new URLSearchParams(location.search).get('enter');
-      if (id) await useMuseumStore.getState().enter(id).catch(() => undefined);
-    });
+    void boot();
   }, [boot, loadSettings]);
 
   if (status === 'error') {
@@ -62,22 +61,21 @@ export function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          <Route element={<AppShell />}>
-            <Route path="/welcome" element={<Entrance />} />
-            <Route element={<RequireMuseum />}>
-              <Route index element={<Today />} />
-              <Route path="/library" element={<Suspense fallback={<Booting />}><Library /></Suspense>} />
-              <Route path="/explore" element={<Suspense fallback={<Booting />}><Explore /></Suspense>} />
-              <Route path="/observatory" element={<Suspense fallback={<Booting />}><Observatory /></Suspense>} />
-              <Route path="/archive" element={<Suspense fallback={<Booting />}><Archive /></Suspense>} />
-              <Route path="/workshop" element={<Suspense fallback={<Booting />}><Workshop /></Suspense>} />
-              <Route path="/future" element={<Suspense fallback={<Booting />}><FutureGallery /></Suspense>} />
-              <Route path="/cabinet" element={<Suspense fallback={<Booting />}><Cabinet /></Suspense>} />
-              <Route path="/settings" element={<Suspense fallback={<Booting />}><Settings /></Suspense>} />
-              <Route path="/reflect" element={<Suspense fallback={<Booting />}><Reflect /></Suspense>} />
+          <Route path="/welcome" element={lazy(<Welcome />)} />
+          <Route element={<RequireMind />}>
+            <Route element={<MindShell />}>
+              <Route index element={<SkyPlace />} />
+              <Route path="/unsorted" element={lazy(<Unsorted />)} />
+              <Route path="/clear" element={lazy(<ClearMind />)} />
+              <Route path="/search" element={lazy(<Search />)} />
+              <Route path="/settings" element={lazy(<MindSettings />)} />
+              <Route path="/today" element={lazy(<Soon title="Today" note="Today will open with a thought, then at most two focus goals with one step each." />)} />
+              <Route path="/journal" element={lazy(<Soon title="Journal" note="What happened, and how it felt, with On this day." />)} />
+              <Route path="/goal/:id" element={lazy(<Soon title="A goal's page" note="Why it matters, the thoughts around it, and its projects." />)} />
+              <Route path="/project/:id" element={lazy(<Soon title="A project's page" note="Its shape, its steps, and its light." />)} />
             </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>

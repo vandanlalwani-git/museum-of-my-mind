@@ -1,8 +1,11 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import type { Action, Goal, Link, Memory, Museum, Note, Project, Reflection, Scenario, Thread } from '@/types';
+import type {
+  Connection, Galaxy, Goal as MindGoal, JournalEntry, LegacyRecord, Mind, Project as MindProject, Review, Step, Thought,
+} from '@/mind/types';
 
 export const DB_NAME = 'museum-of-my-mind';
-export const DB_VERSION = 3;
+export const DB_VERSION = 4;
 
 interface MetaEntry { key: string; value: unknown }
 
@@ -18,7 +21,24 @@ export interface MuseumDB extends DBSchema {
   scenarios: { key: string; value: Scenario; indexes: { byMuseum: string } };
   reflections: { key: string; value: Reflection; indexes: { byMuseum: string } };
   meta: { key: string; value: MetaEntry };
+  // Version 4: the mind-first model. The stores above stay untouched so nothing is ever lost.
+  minds: { key: string; value: Mind };
+  'mind.galaxies': { key: string; value: Galaxy; indexes: { byMuseum: string } };
+  'mind.goals': { key: string; value: MindGoal; indexes: { byMuseum: string } };
+  'mind.projects': { key: string; value: MindProject; indexes: { byMuseum: string } };
+  'mind.steps': { key: string; value: Step; indexes: { byMuseum: string } };
+  'mind.thoughts': { key: string; value: Thought; indexes: { byMuseum: string } };
+  'mind.connections': { key: string; value: Connection; indexes: { byMuseum: string } };
+  'mind.journal': { key: string; value: JournalEntry; indexes: { byMuseum: string } };
+  'mind.reviews': { key: string; value: Review; indexes: { byMuseum: string } };
+  'mind.reflections': { key: string; value: Reflection; indexes: { byMuseum: string } };
+  'mind.legacy': { key: string; value: LegacyRecord; indexes: { byMuseum: string } };
 }
+
+export const MIND_STORE_NAMES = [
+  'mind.galaxies', 'mind.goals', 'mind.projects', 'mind.steps', 'mind.thoughts',
+  'mind.connections', 'mind.journal', 'mind.reviews', 'mind.reflections', 'mind.legacy',
+] as const;
 
 let dbPromise: Promise<IDBPDatabase<MuseumDB>> | null = null;
 
@@ -75,6 +95,14 @@ export function getDB(): Promise<IDBPDatabase<MuseumDB>> {
           // Phase 7: kept "Ask my AI" results (accepted proposals only; never keys).
           const reflections = db.createObjectStore('reflections', { keyPath: 'id' });
           reflections.createIndex('byMuseum', 'museumId');
+        }
+        if (oldVersion < 4) {
+          // Phase 12: the mind-first model lives beside the old rooms' stores.
+          db.createObjectStore('minds', { keyPath: 'id' });
+          for (const name of MIND_STORE_NAMES) {
+            const store = db.createObjectStore(name, { keyPath: 'id' });
+            store.createIndex('byMuseum', 'museumId');
+          }
         }
       },
       blocked() {

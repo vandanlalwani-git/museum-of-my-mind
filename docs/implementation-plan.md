@@ -164,10 +164,38 @@ The museum is for seeing, sorting and walking through thoughts. Goals give them 
 - [x] 16 tests, including a proof that every old record lands exactly once and a clean migration of the full demo seed.
 - [x] Mind-first rules written into the product brief and CLAUDE.md.
 - Deliberately not in this phase: the database schema change and the live migration of the keeper's data. Reverting a commit cannot undo stored data, so both land in Phase 12 together with the screens that use them, after an automatic backup.
-### Phase 12 — Shell, dock, capture, Unsorted, Clear my mind, Search, and the switch-over
-- Database version 4 adds the new stores beside the old ones, which stay untouched. On first open, an automatic backup is saved, then `migrateToMind` runs, then the new shell takes over. The app shows "your museum has moved in" with the plain-language report.
-### Phase 13 — The 3D sky: galaxies, solar systems, thoughts, List view
-### Phase 14 — Goal pages, project pages (all six shapes and every step kind), Today
+### Phase 12 — Shell, dock, capture, Unsorted, Clear my mind, Search, and the switch-over (done 2026-10-11)
+- [x] Database version 4 adds `minds` and `mind.*` stores beside the old ones, which are never written again.
+- [x] `src/mind/switchover.ts` runs once on first open:
+  - saves a full version 3 backup to storage;
+  - migrates every own museum into one mind;
+  - keeps whichever museum was open;
+  - shows "Your museum has moved in", with the report and a download of the pre-move copy.
+- [x] `src/mind/store.ts`, `ops.ts`, `select.ts`, `files.ts`: the open mind in memory, every action, shared views, search, suggested homes (shared words, on the device), and export and import of any backup version. Removal sets a deletion marker.
+- [x] The new demo, *Alex's Next Chapter*, written in the new model:
+  - four galaxies, all six project shapes, every step kind, open questions, unsorted thoughts, journal entries and a closed review;
+  - dates relative to seeding, refreshed every two weeks.
+- [x] The new shell:
+  - the sky backdrop, breadcrumbs, a gear for Settings, and the dock (Sky · Today · Capture · Journal · Search);
+  - keyboard shortcuts N, / and ⌘K;
+  - one design for laptop and phone.
+- [x] Capture: Thought, Question, Step or Memory; Unsorted by default; recent places as chips; "Somewhere else…" opens a picker; #tags; ⌘Enter saves. A point of light flies to the dock.
+- [x] Unsorted:
+  - give a thought a home, or keep it in a galaxy as an idea of its own;
+  - turn it into a step, a goal or a project, or let it go;
+  - a suggested home appears when the words clearly match.
+- [x] Clear my mind: one thought per line, a draft that survives closing the page, and everything goes to Unsorted.
+- [x] Search: across everything, with open questions shown before you type.
+- [x] The Sky as a list (galaxies, stars, planets with light rings) with new goals and galaxies added inline.
+- [x] Welcome page and Settings:
+  - rename the museum;
+  - galaxy names and colours;
+  - backups, including the pre-move copy;
+  - sound, motion, Ask my AI, and switching, resetting or deleting museums.
+- [x] The old rooms are out of the navigation; their code is removed in Phase 16.
+- Order change: goal pages, project pages and Today come next (Phase 13), then the 3D sky (Phase 14), because the list already needs pages to open.
+### Phase 13 — Goal pages, project pages (all six shapes and every step kind), Today
+### Phase 14 — The 3D sky: galaxies, solar systems, thoughts, List view
 ### Phase 15 — Journal and the weekly review
 ### Phase 16 — Guided demo tour, retire old rooms, full release checks
 ### Phase 17 — Encrypted QR sync (needs the deferred rule change)
