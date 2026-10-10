@@ -5,3 +5,6 @@ dev-dist
 *.local
 .env
 .env.*
+
+# Local Cloudflare dev state (local test database, build scratch)
+.wrangler
