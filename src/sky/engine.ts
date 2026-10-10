@@ -444,7 +444,7 @@ export class SkyEngine {
       dir = new Vector3(0, 0.55, 1).applyQuaternion(O.galaxy.group.quaternion).normalize();
       if (v.level === 'project' && P) { center = P.mesh.getWorldPosition(new Vector3()); hw = hh = 3.6; }
       else { center = O.star.getWorldPosition(new Vector3()); hw = hh = 11.5; }
-      if (side) { if (this.wide) { hw *= 1.9; hh *= 1.15; sx = 0.24; } else { hh *= 2.2; hw *= 1.15; sy = 0.36; } }
+      if (side) { if (this.wide) { hw *= 1.9; hh *= 1.15; sx = 0.24; } else { hh *= 2.2; hw *= 1.15; sy = 0.29; } }
       else if (!this.wide) { sy = 0.12; hh *= 1.25; } else sx = -0.08;
     } else {
       center = new Vector3(0, -6, 0); dir = new Vector3(0, 0.28, 1).normalize(); hw = this.mindBox.hw; hh = this.mindBox.hh;

@@ -36,6 +36,7 @@ export function MindShell() {
   const setPeek = useSky((s) => s.setPeek);
   const skyInteractive = isSky && skyLive && skyMode === 'sky';
   const movedIn = useMind((s) => !!s.movedIn && s.mind?.kind === 'own');
+  const inDemo = useMind((s) => s.mind?.kind === 'demo');
   // While a modal is open, everything behind it is out of reach for fingers, keys and screen readers alike.
   const behind = captureOpen || movedIn;
 
@@ -65,7 +66,7 @@ export function MindShell() {
   }, [captureOpen, openCapture, navigate, location.pathname, location.search, isSky, isSide, peekOpen, setPeek]);
 
   return (
-    <div className="mshell">
+    <div className={`mshell ${inDemo ? 'mshell--demo' : ''}`}>
       <a href="#place" className="visually-hidden">Skip to content</a>
       <div className="mshell__sky"><SkyBackdrop /></div>
       <div className="mshell__vignette" aria-hidden="true" />
